@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nosotras · Las Omas</title>
+<meta name="description" content="Somos una empresa social comunitaria de Córdoba que transforma realidades a través del trabajo y la economía circular. Conocé nuestra historia e impacto.">
+<meta name="theme-color" content="#803C47">
+<link rel="icon" type="image/png" href="../img/logo.png">
+<link rel="apple-touch-icon" href="../img/logo.png">
+<!-- Vista previa al compartir (WhatsApp, Instagram, Facebook).
+     Cuando el sitio tenga dominio, cambiar las rutas de og:image y og:url por direcciones completas (https://…) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Las Omas">
+<meta property="og:locale" content="es_AR">
+<meta property="og:title" content="Nosotras · Las Omas">
+<meta property="og:description" content="Somos una empresa social comunitaria de Córdoba que transforma realidades a través del trabajo y la economía circular. Conocé nuestra historia e impacto.">
+<meta property="og:image" content="../img/omas%20grupo.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="../css/omas.css">
+</head>
+<body data-pagina="nosotras">
+<nav class="navbar navbar-expand-lg sticky-top barra" id="barra">
+  <div class="container">
+    <a class="navbar-brand marca" href="index.html" aria-label="Las Omas, inicio">
+      <img class="logo" src="../img/logo.png" alt="Las Omas, Asociación Civil" width="252" height="300">
+    </a>
+    <!-- En el celular "Doná" va junto al botón del menú; en la compu va después de los enlaces (así el Tab sigue el orden visual) -->
+    <div class="d-flex align-items-center gap-2 d-lg-none">
+      <a class="btn btn-dona" href="dona.html" data-pagina="dona">Doná</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menú">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+    <div class="collapse navbar-collapse" id="menu">
+      <ul class="navbar-nav mx-lg-auto gap-lg-1">
+        <li class="nav-item"><a class="nav-link" href="index.html" data-pagina="inicio">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="nosotras.html" data-pagina="nosotras">Nosotras</a></li>
+        <li class="nav-item"><a class="nav-link" href="que-hacemos.html" data-pagina="que-hacemos">Qué hacemos</a></li>
+        <li class="nav-item"><a class="nav-link" href="empresas.html" data-pagina="empresas">Empresas</a></li>
+        <li class="nav-item"><a class="nav-link" href="talleres.html" data-pagina="talleres">Talleres</a></li>
+        <li class="nav-item"><a class="nav-link" href="contacto.html" data-pagina="contacto">Contacto</a></li>
+      </ul>
+      <a class="btn btn-dona d-none d-lg-inline-block" href="dona.html" data-pagina="dona">Doná</a>
+    </div>
+  </div>
+</nav>
+<main class="vista" data-vista-id="nosotras">
+  <!-- ===== PORTADA: título gigante y tira de fotos en movimiento ===== -->
+  <header class="tal-hero tal-hero-largo tal-hero-sin-fotos">
+    <div class="tal-hero-arriba">
+      <div class="container">
+        <h1 class="tal-display">Una empresa social comunitaria que <span class="subrayado">transforma realidades</span> a través del trabajo y la economía circular</h1>
+      </div>
+    </div>
+    <div class="container">
+      <div class="tal-intro-fila">
+        <p class="tal-intro">Somos una organización civil y comunitaria de Córdoba nacida desde la autogestión. Brindamos contención integral, formación sociolaboral y oportunidades de ingresos genuinos para mujeres en situación de vulnerabilidad social. A través de modelos productivos sostenibles, convertimos el esfuerzo colectivo en autonomía económica, dignidad y desarrollo comunitario.</p>
+        <button type="button" class="impacto-card" data-bs-toggle="modal" data-bs-target="#impacto">
+          <span class="impacto-card-cifra">+150</span>
+          <span class="impacto-card-txt">mujeres y diversidades participan cada año</span>
+          <span class="ucard-boton">Conocé nuestro impacto <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== PUNTOS CLAVE: foto vertical + lista con tildes ===== -->
+  <section class="nos-bloque pt-0">
+    <div class="container">
+      <div class="row g-4 g-lg-5 align-items-center">
+        <div class="col-lg-6">
+          <img class="nos-foto-alta" src="../img/portada-sonrisa.webp" alt="Integrante de Las Omas sonriendo frente al cartel de la organización" width="400" height="516" loading="lazy">
+        </div>
+        <div class="col-lg-6">
+          <ul class="nos-claves">
+            <li>
+              <h2>Economía Circular y Suprarreciclaje</h2>
+              <p>Recuperamos y transformamos descartes textiles corporativos e industriales en productos de valor.</p>
+            </li>
+            <li>
+              <h2>Formación y Trabajo Genuino</h2>
+              <p>Talleres de oficios con salida laboral concreta y esquemas de producción comunitaria.</p>
+            </li>
+            <li>
+              <h2>Contención y Red Comunitaria</h2>
+              <p>Espacio de escucha, acompañamiento mutuo y fortalecimiento de lazos barriales.</p>
+            </li>
+            <li>
+              <h2>Alianzas de Triple Impacto</h2>
+              <p>Articulamos con empresas y organizaciones para generar valor social, ambiental y económico compartido.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== QUÉ HACEMOS: texto + panel oscuro con las unidades productivas ===== -->
+  <section class="nos-bloque">
+    <div class="container">
+      <div class="row g-4 g-lg-5 align-items-center">
+        <div class="col-lg-5">
+          <div class="nos-texto">
+            <h2 class="nos-titulo">Compromiso social en acción: producción sustentable y autonomía</h2>
+            <p>Integramos capacitación, sustentabilidad ambiental e inclusión laboral mediante unidades productivas activas. No solo formamos: producimos bienes y servicios de calidad para el mercado y la comunidad, demostrando que la economía social es un motor real de cambio.</p>
+          </div>
+        </div>
+        <div class="col-lg-7">
+          <ol class="nos-unidades">
+            <li>
+              <h3>Unidad Textil y Circular <span>“Vuelta de Rosca”</span></h3>
+              <p>Confección sustentable de packaging reutilizable (bolsas de lienzo para marcas e imprentas), merchandising corporativo y trapos industriales a partir del reciclaje y recuperación de toneladas de rezago textil.</p>
+            </li>
+            <li>
+              <h3>Unidad Gastronomía</h3>
+              <p>Servicios de catering artesanal para eventos institucionales y dictado de talleres gastronómicos, fomentando la profesionalización culinaria y la independencia económica.</p>
+            </li>
+            <li>
+              <h3>Ferias Sociales y Ropero Comunitario</h3>
+              <p>Comercialización de indumentaria a precios accesibles para garantizar el acceso digno a prendas de calidad en los barrios, junto a un ropero solidario de asistencia ante emergencias comunitarias.</p>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== IMPACTO: ventana que abre la tarjeta de la portada ===== -->
+  <div class="modal fade umodal" id="impacto" style="--tema:128 60 71" tabindex="-1" aria-labelledby="impacto-titulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+      <div class="modal-content">
+        <div class="umodal-portada">
+          <div class="umodal-titulos">
+            <p class="umodal-sub">Las Omas en números</p>
+            <h2 class="umodal-titulo" id="impacto-titulo">Nuestro impacto</h2>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <ul class="nos-metricas">
+            <li><strong>+150</strong> Mujeres y diversidades que participan activamente en programas y áreas de la organización al año.</li>
+            <li><strong>Descarte</strong>Toneladas de descartes textiles reinsertados en el circuito productivo.</li>
+            <li><strong>Alianzas Estratégicas</strong> con grandes empresas y entidades comprometidas con la RSE y la sustentabilidad.</li>
+            <li><strong>100% Autogestión</strong> y desarrollo con arraigo barrial.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DOS TARJETAS VERTICALES CON BOTÓN ===== -->
+  <section class="nos-bloque">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-6">
+          <a class="ucard" href="empresas.html" style="--tema:128 60 71">
+            <img src="../img/omas%20grupo.webp" alt="" width="1000" height="666" loading="lazy">
+            <span class="ucard-velo" aria-hidden="true"></span>
+            <span class="ucard-cuerpo">
+              <span class="ucard-sub">Empresas</span>
+              <span class="ucard-titulo">Sumate como aliado corporativo</span>
+              <span class="ucard-dato">Convertimos los uniformes y telas que descartás en trabajo para mujeres de la comunidad.</span>
+              <span class="ucard-boton">Conocé cómo sumarte <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </span>
+          </a>
+        </div>
+        <div class="col-md-6">
+          <a class="ucard" href="contacto.html" style="--tema:52 70 90">
+            <img src="../img/las-mujeres-se-ayudan-entre-5RBN73PARRFCFA2KSWXATHPNB4.jpg" alt="" width="780" height="520" loading="lazy">
+            <span class="ucard-velo" aria-hidden="true"></span>
+            <span class="ucard-cuerpo">
+              <span class="ucard-sub">Comunidad</span>
+              <span class="ucard-titulo">Sé parte de OMAS</span>
+              <span class="ucard-dato">Como voluntaria, tallerista o vecina: hay muchas formas de sumarte.</span>
+              <span class="ucard-boton">Escribinos <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="pf">
+  <!-- Luces difusas de fondo y tarjeta de vidrio (inspirado en FooterGlow) -->
+  <div class="pf-luces" aria-hidden="true"><span></span><span></span></div>
+  <div class="container">
+    <div class="pf-vidrio">
+      <div class="pf-marca-col">
+        <a class="pf-marca" href="index.html" aria-label="Las Omas, inicio">
+          <img src="../img/logo.png" alt="" width="252" height="300">
+          <span>Las Omas</span>
+        </a>
+        <p class="pf-txt">Organización de Mujeres que Acompañan con Sentido. Asociación civil sin fines de lucro, en camino a conformar su Cooperativa Textil.</p>
+        <ul class="pf-redes">
+          <li><a href="https://www.instagram.com/lasomasong/" target="_blank" rel="noopener" aria-label="Instagram de Las Omas">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" class="pf-punto"/></svg>
+          </a></li>
+          <li><a href="https://cafecito.app/lasomas" target="_blank" rel="noopener" aria-label="Invitanos un cafecito">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h13v5a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6V9z"/><path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3c0 1.5 1 1.5 1 3M12 3c0 1.5 1 1.5 1 3"/></svg>
+          </a></li>
+        </ul>
+      </div>
+
+      <nav class="pf-columnas" aria-label="Pie de página">
+        <div>
+          <p class="pf-titulo">Secciones</p>
+          <ul class="pf-lista">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="nosotras.html">Nosotras</a></li>
+            <li><a href="que-hacemos.html">Qué hacemos</a></li>
+            <li><a href="talleres.html">Talleres</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="pf-titulo">Sumate</p>
+          <ul class="pf-lista">
+            <li><a href="dona.html">Doná</a></li>
+            <li><a href="empresas.html">Empresas</a></li>
+            <li><a href="contacto.html" data-motivo="Voluntariado">Voluntariado</a></li>
+            <li><a class="pf-cafecito" href="https://cafecito.app/lasomas" target="_blank" rel="noopener">Invitanos un cafecito <span class="pf-latido" aria-hidden="true"></span></a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="pf-titulo">Contacto</p>
+          <ul class="pf-lista pf-contacto">
+            <li><a href="https://maps.app.goo.gl/p1w7CsiWqduSXEgs8" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s7-6.3 7-12a7 7 0 0 0-14 0c0 5.7 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+              <address>Camino Chacra de la Merced km 6,5, Córdoba</address>
+            </a></li>
+            <li><span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              Lunes a viernes, de 9 a 17 h
+            </span></li>
+            <li><a href="contacto.html">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="M4 6l8 7 8-7"/></svg>
+              Escribinos
+            </a></li>
+          </ul>
+          <a class="btn btn-sistema mt-3" href="../admin/ingresar.html" rel="nofollow">Ingreso al sistema</a>
+        </div>
+      </nav>
+    </div>
+    <div class="pf-legal">
+      <span>© 2026 Las Omas · Córdoba, Argentina</span>
+      <span>Todos los derechos reservados.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="../js/modales.js"></script>
+<script src="../js/omas.js"></script>
+</body>
+</html>

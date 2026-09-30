@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ingresar · Sistema Las Omas</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#803C47">
+<link rel="icon" type="image/png" href="../img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="admin.css">
+<link rel="stylesheet" href="ingresar.css">
+</head>
+<body class="pag-ingreso">
+<!-- Ingreso al sistema SGI-OMAS. Solo para cuentas creadas por la coordinación: no hay registro. -->
+<main class="ingreso">
+
+  <!-- Izquierda (solo en pantallas grandes): ondas y herramientas del oficio girando alrededor del logo -->
+  <aside class="ingreso-arte" aria-hidden="true">
+    <div class="ondas">
+      <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span><span style="--i:3"></span>
+      <span style="--i:4"></span><span style="--i:5"></span><span style="--i:6"></span><span style="--i:7"></span>
+    </div>
+
+    <!-- Recorridos como costuras -->
+    <svg class="recorridos" viewBox="-400 -400 800 800">
+      <circle r="150"/><circle r="210"/><circle r="275"/><circle r="345"/>
+    </svg>
+
+    <div class="orbita" style="--radio:150;--dur:22;--retraso:0"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/></svg></div>
+    <div class="orbita" style="--radio:150;--dur:22;--retraso:11"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="3" rx="1"/><rect x="7" y="18" width="10" height="3" rx="1"/><path d="M8.5 6v12M15.5 6v12M8.5 9l7 2M8.5 13l7 2"/></svg></div>
+    <div class="orbita reversa grande" style="--radio:210;--dur:30;--retraso:0"><svg viewBox="0 0 24 24"><path d="M12 3v18M7 21h10M3 7h18M6 7l-3 7a3 3 0 0 0 6 0zM18 7l-3 7a3 3 0 0 0 6 0z"/></svg></div>
+    <div class="orbita reversa" style="--radio:210;--dur:30;--retraso:15"><svg viewBox="0 0 24 24"><path d="M12 20.5l-1.2-1.1C6.3 15.3 3.5 12.8 3.5 9.6 3.5 7 5.5 5 8 5c1.4 0 2.8.7 3.7 1.7h.6C13.2 5.7 14.6 5 16 5c2.5 0 4.5 2 4.5 4.6 0 3.2-2.8 5.7-7.3 9.8z"/></svg></div>
+    <div class="orbita grande" style="--radio:275;--dur:38;--retraso:6"><svg viewBox="0 0 24 24"><circle cx="10" cy="12" r="7"/><circle cx="10" cy="12" r="2"/><path d="M17 12h4.5v6.5H10"/><path d="M13 18.5v-2M16 18.5v-2M19 18.5v-2"/></svg></div>
+    <div class="orbita" style="--radio:275;--dur:38;--retraso:25"><svg viewBox="0 0 24 24"><path d="M5.5 8h13l-1.2 12H6.7z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg></div>
+    <div class="orbita reversa grande" style="--radio:345;--dur:46;--retraso:10"><svg viewBox="0 0 24 24"><path d="M4 20L16.5 7.5"/><path d="M15.2 5.3a2.2 1.2 45 1 1 3.4 3.4"/><path d="M17.5 8.5c2.5 2 1.5 6.5-3 8.5s-8 1.5-9-1"/></svg></div>
+    <div class="orbita reversa" style="--radio:345;--dur:46;--retraso:33"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="9.5" cy="9.5" r="1"/><circle cx="14.5" cy="9.5" r="1"/><circle cx="9.5" cy="14.5" r="1"/><circle cx="14.5" cy="14.5" r="1"/></svg></div>
+
+    <div class="arte-centro">
+      <span class="arte-logo"><img src="../img/logo.png" alt="" width="64" height="76"></span>
+      <span class="arte-nombre">Las Omas</span>
+      <span class="arte-sub">Sistema de gestión</span>
+    </div>
+  </aside>
+
+  <!-- Derecha: el formulario -->
+  <section class="ingreso-lado">
+    <div class="ingreso-caja">
+      <a class="ingreso-marca" href="/index.html">
+        <img src="../img/logo.png" alt="" width="36" height="43"><span>Las Omas</span>
+      </a>
+
+      <div class="revela" style="--orden:0"><h1 class="ingreso-titulo">Hola de nuevo</h1></div>
+      <div class="revela" style="--orden:1"><p class="ingreso-bajada">Ingresá con la cuenta que te dio la coordinación.</p></div>
+
+      <!-- No se guarda ningún dato: cada vez se escriben el usuario y la contraseña -->
+      <form id="form-ingreso" novalidate autocomplete="off">
+        <div class="revela" style="--orden:2"><label class="ingreso-etiqueta" for="usuario">Usuario o email</label></div>
+        <div class="revela ancho" style="--orden:3">
+          <div class="brillo">
+            <input class="ingreso-entrada" id="usuario" name="usuario" autocomplete="off" autocapitalize="none" spellcheck="false" required
+              placeholder="Ej.: laura" aria-describedby="error-usuario">
+          </div>
+          <p class="ingreso-error" id="error-usuario" aria-live="polite"></p>
+        </div>
+
+        <div class="revela" style="--orden:4"><label class="ingreso-etiqueta" for="clave">Contraseña</label></div>
+        <div class="revela ancho" style="--orden:5">
+          <div class="brillo">
+            <input class="ingreso-entrada" id="clave" name="clave" type="password" autocomplete="off" required
+              placeholder="Tu contraseña" aria-describedby="error-clave">
+            <button type="button" class="ver-clave" id="ver-clave" aria-label="Mostrar contraseña" aria-pressed="false">
+              <svg class="ojo-abierto" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="ojo-cerrado" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.9 4.2A10 10 0 0 1 12 4c6.5 0 10 8 10 8a17 17 0 0 1-2.2 3.2M6.6 6.6A17 17 0 0 0 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6M14.1 14.1a3 3 0 1 1-4.2-4.2M2 2l20 20"/></svg>
+            </button>
+          </div>
+          <p class="ingreso-error" id="error-clave" aria-live="polite"></p>
+        </div>
+
+        <div class="revela ancho" style="--orden:6">
+          <p class="ingreso-aviso" id="aviso-form" role="alert" hidden></p>
+          <button type="submit" class="btn-ingresar" id="btn-ingresar">
+            <span class="btn-ingresar-texto">Ingresar</span>
+            <span class="btn-ingresar-linea" aria-hidden="true"></span>
+          </button>
+        </div>
+
+        <div class="revela ancho" style="--orden:7">
+          <button type="button" class="olvide" id="olvide" aria-expanded="false" aria-controls="olvide-nota">¿Te olvidaste la contraseña?</button>
+          <p class="olvide-nota" id="olvide-nota" hidden>Pedile a la coordinación (Laura o Sandra) que te la restablezcan desde el sistema. Por seguridad, las contraseñas no se recuperan por mail.</p>
+        </div>
+      </form>
+
+      <a class="volver-sitio" href="/index.html">‹ Volver al sitio</a>
+    </div>
+  </section>
+</main>
+
+<script src="api.js"></script>
+<script src="ingresar.js"></script>
+</body>
+</html>

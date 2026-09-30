@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Qué hacemos · Las Omas</title>
+<meta name="description" content="Vuelta de Rosca (economía circular textil), Gastronomía y Catering, y Talleres y Ferias: las tres unidades productivas de Las Omas.">
+<meta name="theme-color" content="#803C47">
+<link rel="icon" type="image/png" href="../img/logo.png">
+<link rel="apple-touch-icon" href="../img/logo.png">
+<!-- Vista previa al compartir (WhatsApp, Instagram, Facebook).
+     Cuando el sitio tenga dominio, cambiar las rutas de og:image y og:url por direcciones completas (https://…) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Las Omas">
+<meta property="og:locale" content="es_AR">
+<meta property="og:title" content="Qué hacemos · Las Omas">
+<meta property="og:description" content="Vuelta de Rosca (economía circular textil), Gastronomía y Catering, y Talleres y Ferias: las tres unidades productivas de Las Omas.">
+<meta property="og:image" content="../img/bolsas-lienzo.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="../css/omas.css">
+</head>
+<body data-pagina="que-hacemos">
+<nav class="navbar navbar-expand-lg sticky-top barra" id="barra">
+  <div class="container">
+    <a class="navbar-brand marca" href="index.html" aria-label="Las Omas, inicio">
+      <img class="logo" src="../img/logo.png" alt="Las Omas, Asociación Civil" width="252" height="300">
+    </a>
+    <!-- En el celular "Doná" va junto al botón del menú; en la compu va después de los enlaces (así el Tab sigue el orden visual) -->
+    <div class="d-flex align-items-center gap-2 d-lg-none">
+      <a class="btn btn-dona" href="dona.html" data-pagina="dona">Doná</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menú">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+    <div class="collapse navbar-collapse" id="menu">
+      <ul class="navbar-nav mx-lg-auto gap-lg-1">
+        <li class="nav-item"><a class="nav-link" href="index.html" data-pagina="inicio">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="nosotras.html" data-pagina="nosotras">Nosotras</a></li>
+        <li class="nav-item"><a class="nav-link" href="que-hacemos.html" data-pagina="que-hacemos">Qué hacemos</a></li>
+        <li class="nav-item"><a class="nav-link" href="empresas.html" data-pagina="empresas">Empresas</a></li>
+        <li class="nav-item"><a class="nav-link" href="talleres.html" data-pagina="talleres">Talleres</a></li>
+        <li class="nav-item"><a class="nav-link" href="contacto.html" data-pagina="contacto">Contacto</a></li>
+      </ul>
+      <a class="btn btn-dona d-none d-lg-inline-block" href="dona.html" data-pagina="dona">Doná</a>
+    </div>
+  </div>
+</nav>
+<main class="vista" data-vista-id="que-hacemos">
+  <header class="tal-hero tal-hero-sin-fotos">
+    <div class="tal-hero-arriba">
+      <div class="container">
+        <h1 class="tal-display">Tres unidades, un mismo <span class="subrayado">propósito</span></h1>
+      </div>
+    </div>
+    <div class="container">
+      <div class="tal-intro-fila">
+        <p class="tal-intro">Lo que aprendemos juntas se transforma en trabajo: producción textil sustentable, servicio de catering y formación en oficios para la comunidad.</p>
+      </div>
+    </div>
+  </header>
+  <!-- ===== UNIDADES: tarjetas grandes con foto, color propio y botón ===== -->
+  <section class="seccion pt-0" aria-labelledby="unidades-titulo">
+    <div class="container">
+      <h2 class="tal-titulo" id="unidades-titulo">Nuestras tres unidades</h2>
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <button type="button" class="ucard" data-bs-toggle="modal" data-bs-target="#vuelta-de-rosca" style="--tema:128 60 71">
+            <img src="../img/bolsas-lienzo.webp" alt="" width="400" height="516" loading="lazy">
+            <span class="ucard-velo" aria-hidden="true"></span>
+            <span class="ucard-cuerpo">
+              <span class="ucard-sub">Textil y economía circular</span>
+              <span class="ucard-titulo">Vuelta de Rosca</span>
+              <span class="ucard-dato">40 a 50 mujeres · hasta 4.000 bolsas de lienzo por mes</span>
+              <span class="ucard-boton">Conocé el proyecto <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </span>
+          </button>
+        </div>
+        <div class="col-lg-4">
+          <button type="button" class="ucard" data-bs-toggle="modal" data-bs-target="#gastronomia" style="--tema:158 39 46">
+            <img src="../img/omas%20grupo.webp" alt="" width="400" height="516" loading="lazy">
+            <span class="ucard-velo" aria-hidden="true"></span>
+            <span class="ucard-cuerpo">
+              <span class="ucard-sub">Catering empresarial</span>
+              <span class="ucard-titulo">Gastronomía y Catering</span>
+              <span class="ucard-dato">Pastelería, cocina y atención para eventos</span>
+              <span class="ucard-boton">Conocé el servicio <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </span>
+          </button>
+        </div>
+        <div class="col-lg-4">
+          <button type="button" class="ucard" data-bs-toggle="modal" data-bs-target="#talleres-ferias" style="--tema:52 70 90">
+            <img src="../img/taller-grupo.webp" alt="" width="400" height="516" loading="lazy">
+            <span class="ucard-velo" aria-hidden="true"></span>
+            <span class="ucard-cuerpo">
+              <span class="ucard-sub">El shopping de la chacra</span>
+              <span class="ucard-titulo">Talleres y Ferias</span>
+              <span class="ucard-dato">Formación en oficios y ropa accesible en tres sedes</span>
+              <span class="ucard-boton">Conocé las ferias <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MODAL: VUELTA DE ROSCA ===== -->
+  <div class="modal fade umodal" id="vuelta-de-rosca" style="--tema:128 60 71" tabindex="-1" aria-labelledby="vuelta-de-rosca-titulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+      <div class="modal-content">
+        <div class="umodal-portada">
+          <div class="umodal-titulos">
+            <p class="umodal-sub">Economía circular textil</p>
+            <h2 class="umodal-titulo" id="vuelta-de-rosca-titulo">Vuelta de Rosca</h2>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <p class="udet-lead">El corazón sustentable e innovador de Las Omas: transformamos lo que otros consideran basura en nuevas oportunidades.</p>
+          <div class="udet-puntos">
+        <article>
+          <h3>Alianzas estratégicas, no caridad</h3>
+          <p>Grandes empresas como Naranja X y Holcim desechan entre 2.500 y 4.500 uniformes al año. En lugar de pedir favores, generamos una alianza: les resolvemos un problema de almacenamiento y de pasivo ambiental, y transformamos esos uniformes en merchandising corporativo, como mochilas, cartucheras y cuadernos.</p>
+        </article>
+        <article>
+          <h3>Impacto ambiental real</h3>
+          <p>Confeccionamos bolsas de lienzo de algodón natural que reemplazan a la “fiselina”, un plástico que tarda hasta 400 años en degradarse. Hoy producimos entre 3.000 y 4.000 bolsas por mes para empresas, estampadas y personalizadas.</p>
+        </article>
+        <article>
+          <h3>Desmarcado y desbastado</h3>
+          <p>La ropa que no puede convertirse en merchandising se transforma en trapos de limpieza industrial (el proyecto con el que empezamos en 2018 junto a Coca-Cola) o se tritura. Para que las máquinas no se rompan, un grupo de mujeres hace desde sus casas el “desmarcado”: descosen logos y quitan botones, abrojos y cierres.</p>
+        </article>
+        <article>
+          <h3>Empoderamiento a gran escala</h3>
+          <p>La unidad da trabajo a entre 40 y 50 mujeres con un sistema de producción a destajo, que les da flexibilidad y autonomía económica. Estamos conformando una Cooperativa Textil para poder facturar servicios a más empresas.</p>
+        </article>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: GASTRONOMÍA ===== -->
+  <div class="modal fade umodal" id="gastronomia" style="--tema:158 39 46" tabindex="-1" aria-labelledby="gastronomia-titulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+      <div class="modal-content">
+        <div class="umodal-portada">
+          <div class="umodal-titulos">
+            <p class="umodal-sub">Catering empresarial</p>
+            <h2 class="umodal-titulo" id="gastronomia-titulo">Gastronomía y Catering</h2>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <p class="udet-lead">El sabor de Las Omas llevado al sector corporativo, impulsado por el trabajo en equipo y la profesionalización del oficio.</p>
+          <div class="udet-puntos">
+        <article>
+          <h3>Un servicio en crecimiento</h3>
+          <p>Desde principios de 2024, el catering empresarial tomó una fuerza arrolladora. Ofrecemos un servicio completo de pastelería, cocina y atención para eventos corporativos.</p>
+        </article>
+        <article>
+          <h3>Nueva sede centralizada</h3>
+          <p>Antes cocinábamos en nuestras casas, y era difícil calcular el gasto de gas y luz. Con la nueva sede, construida en un terreno en comodato, tenemos un espacio gastronómico en el frente del predio que concentra la producción, optimiza los gastos y mejora las condiciones de trabajo.</p>
+        </article>
+        <article>
+          <h3>Logística cuidada</h3>
+          <p>Para garantizar la seguridad alimentaria organizamos traslados cuidadosos, con heladeras portátiles que mantienen la cadena de frío de alimentos sensibles.</p>
+        </article>
+        <article>
+          <h3>Lo que viene</h3>
+          <p>Proyectamos sumar un vehículo utilitario acondicionado para el catering, para llegar a más empresas.</p>
+        </article>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: TALLERES Y FERIAS ===== -->
+  <div class="modal fade umodal" id="talleres-ferias" style="--tema:52 70 90" tabindex="-1" aria-labelledby="talleres-ferias-titulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+      <div class="modal-content">
+        <div class="umodal-portada">
+          <div class="umodal-titulos">
+            <p class="umodal-sub">“El shopping de la chacra”</p>
+            <h2 class="umodal-titulo" id="talleres-ferias-titulo">Talleres y Ferias</h2>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <p class="udet-lead">Más que un espacio de venta: un motor de dignidad, autonomía económica y contención social para toda la comunidad.</p>
+          <div class="udet-puntos">
+        <article>
+          <h3>La dignidad de elegir</h3>
+          <p>En 2018 transformamos el viejo “roperito comunitario”, donde se regalaba la ropa, en una Feria Americana. No es lo mismo recibir una prenda por caridad que tener la autonomía de ir, elegir lo que a una le gusta y comprarlo.</p>
+        </article>
+        <article>
+          <h3>Motor económico para las mujeres</h3>
+          <p>Cerca del 90% de la ropa donada va a la feria. Los precios son ínfimos, pero el volumen de ventas paga el trabajo de las seis mujeres que la atienden, la luz, y el café y la yerba del salón. Gracias a este modelo abrimos nuevas sedes en los barrios Bulnes y Las Heras.</p>
+        </article>
+        <article>
+          <h3>Red de contención</h3>
+          <p>La feria no pierde su esencia solidaria: si una mamá embarazada no tiene recursos para su bebé, o una familia lo pierde todo en un incendio, les damos la ropa de forma totalmente gratuita.</p>
+        </article>
+        <article>
+          <h3>Espacio de capacitación</h3>
+          <p>La recepción y la administración de la nueva sede están pensadas para dictar cursos de pastelería, cocina y otros oficios. Es el mismo espíritu con el que las mujeres de la comunidad se capacitaron en albañilería para levantar las paredes de su propia sede.</p>
+          <a class="enlace-flecha" href="talleres.html">Ver talleres abiertos →</a>
+        </article>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<footer class="pf">
+  <!-- Luces difusas de fondo y tarjeta de vidrio (inspirado en FooterGlow) -->
+  <div class="pf-luces" aria-hidden="true"><span></span><span></span></div>
+  <div class="container">
+    <div class="pf-vidrio">
+      <div class="pf-marca-col">
+        <a class="pf-marca" href="index.html" aria-label="Las Omas, inicio">
+          <img src="../img/logo.png" alt="" width="252" height="300">
+          <span>Las Omas</span>
+        </a>
+        <p class="pf-txt">Organización de Mujeres que Acompañan con Sentido. Asociación civil sin fines de lucro, en camino a conformar su Cooperativa Textil.</p>
+        <ul class="pf-redes">
+          <li><a href="https://www.instagram.com/lasomasong/" target="_blank" rel="noopener" aria-label="Instagram de Las Omas">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" class="pf-punto"/></svg>
+          </a></li>
+          <li><a href="https://cafecito.app/lasomas" target="_blank" rel="noopener" aria-label="Invitanos un cafecito">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h13v5a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6V9z"/><path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3c0 1.5 1 1.5 1 3M12 3c0 1.5 1 1.5 1 3"/></svg>
+          </a></li>
+        </ul>
+      </div>
+
+      <nav class="pf-columnas" aria-label="Pie de página">
+        <div>
+          <p class="pf-titulo">Secciones</p>
+          <ul class="pf-lista">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="nosotras.html">Nosotras</a></li>
+            <li><a href="que-hacemos.html">Qué hacemos</a></li>
+            <li><a href="talleres.html">Talleres</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="pf-titulo">Sumate</p>
+          <ul class="pf-lista">
+            <li><a href="dona.html">Doná</a></li>
+            <li><a href="empresas.html">Empresas</a></li>
+            <li><a href="contacto.html" data-motivo="Voluntariado">Voluntariado</a></li>
+            <li><a class="pf-cafecito" href="https://cafecito.app/lasomas" target="_blank" rel="noopener">Invitanos un cafecito <span class="pf-latido" aria-hidden="true"></span></a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="pf-titulo">Contacto</p>
+          <ul class="pf-lista pf-contacto">
+            <li><a href="https://maps.app.goo.gl/p1w7CsiWqduSXEgs8" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s7-6.3 7-12a7 7 0 0 0-14 0c0 5.7 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+              <address>Camino Chacra de la Merced km 6,5, Córdoba</address>
+            </a></li>
+            <li><span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              Lunes a viernes, de 9 a 17 h
+            </span></li>
+            <li><a href="contacto.html">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="M4 6l8 7 8-7"/></svg>
+              Escribinos
+            </a></li>
+          </ul>
+          <a class="btn btn-sistema mt-3" href="../admin/ingresar.html" rel="nofollow">Ingreso al sistema</a>
+        </div>
+      </nav>
+    </div>
+    <div class="pf-legal">
+      <span>© 2026 Las Omas · Córdoba, Argentina</span>
+      <span>Todos los derechos reservados.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="../js/modales.js"></script>
+<script src="../js/omas.js"></script>
+</body>
+</html>

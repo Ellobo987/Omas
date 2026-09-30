@@ -1,0 +1,891 @@
+/* ===== Paleta OMAS (única: si hay que cambiar un color, se cambia solo acá) =====
+   #9E272E rojo (solo "Doná") · #803C47 vino · #B6C3D1 azul gris · #EBE3E1 rosado claro · #FFFFFF blanco
+   Algunos nombres quedaron de versiones anteriores (--celeste, --rosa-logo) y hoy apuntan a estos colores. */
+:root{
+  --crema:#FFFFFF; --superficie:#FFFFFF; --linea:#E2DAD8;
+  --rosa:#EBE3E1; --rosa-suave:#EBE3E1; --rosa-claro:#EBE3E1; --celeste-suave:#EBE3E1;
+  --celeste:#B6C3D1; --azulgris:#B6C3D1; --azulgris-suave:#E4EAF0;
+  --bordo:#9E272E; --bordo-hondo:#7E1F25; --vino:#803C47; --vino-hondo:#652F38; --rosa-logo:#B6C3D1;
+  --acento-texto:#803C47; --boton:#803C47; --boton-hover:#652F38; --boton-texto:#FFFFFF;
+  --tinta:#2A1E20; --tinta-suave:#65595B; --foto-a:#EBE3E1; --foto-b:#B6C3D1;
+  --hilo:#E3A53A; --sobre-bordo:#FFF6F2;
+  --display:"Albert Sans","Segoe UI",Helvetica,Arial,sans-serif;
+  --texto:"Open Sans","Segoe UI",Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --crema:#161214; --superficie:#211B1D; --linea:#393033;
+    --rosa:#2B2326; --rosa-suave:#2B2326; --rosa-claro:#2B2326; --celeste-suave:#2B2326;
+    --celeste:#2E3945; --azulgris:#2E3945; --azulgris-suave:#232C35;
+    --bordo:#9E272E; --bordo-hondo:#B5363D; --vino:#803C47; --vino-hondo:#95505B; --rosa-logo:#5B6B7C;
+    --acento-texto:#DDA2AC; --boton:#9A4B57; --boton-hover:#AE5E6A; --boton-texto:#FFFFFF;
+    --tinta:#F2EBEA; --tinta-suave:#C2B5B6; --foto-a:#2B2326; --foto-b:#2E3945;
+    --hilo:#EDB555; --sobre-bordo:#FFF1EC;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --crema:#161214; --superficie:#211B1D; --linea:#393033;
+  --rosa:#2B2326; --rosa-suave:#2B2326; --rosa-claro:#2B2326; --celeste-suave:#2B2326;
+  --celeste:#2E3945; --azulgris:#2E3945; --azulgris-suave:#232C35;
+  --bordo:#9E272E; --bordo-hondo:#B5363D; --vino:#803C47; --vino-hondo:#95505B; --rosa-logo:#5B6B7C;
+  --acento-texto:#DDA2AC; --boton:#9A4B57; --boton-hover:#AE5E6A; --boton-texto:#FFFFFF;
+  --tinta:#F2EBEA; --tinta-suave:#C2B5B6; --foto-a:#2B2326; --foto-b:#2E3945;
+  --hilo:#EDB555; --sobre-bordo:#FFF1EC;
+}
+
+/* ===== Base ===== */
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{
+  background:var(--crema);color:var(--tinta);
+  font-family:var(--texto);font-size:16px;line-height:1.65;
+  --bs-body-bg:var(--crema);--bs-body-color:var(--tinta);--bs-border-color:var(--linea);
+  --bs-emphasis-color:var(--tinta);--bs-secondary-color:var(--tinta-suave);
+}
+h1,h2,h3,.modal-title{font-family:var(--display);text-wrap:balance;color:var(--tinta)}
+a{color:var(--acento-texto)}
+a:hover{color:var(--acento-texto);text-decoration-thickness:2px}
+:focus-visible{outline:3px solid var(--hilo)!important;outline-offset:2px}
+.container{padding-inline:20px}
+
+/* ===== Barra ===== */
+.barra{background:color-mix(in srgb,var(--crema) 92%,transparent);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--linea);padding-block:10px;top:env(safe-area-inset-top,0px)}
+.marca{display:flex;align-items:center;gap:8px;color:var(--bordo)!important}
+
+.barra .nav-link{color:var(--tinta);font-weight:600;font-size:15px;padding-inline:12px!important;border-radius:8px}
+.barra .nav-link:hover{color:var(--bordo);background:var(--rosa-suave)}
+.navbar-toggler{border-color:var(--linea)}
+.navbar-toggler-icon{filter:none}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .navbar-toggler-icon{filter:invert(1)}}
+:root[data-theme="dark"] .navbar-toggler-icon{filter:invert(1)}
+
+/* ===== Botones ===== */
+.btn{font-family:var(--display);font-weight:700;border-radius:999px;padding:.6rem 1.3rem}
+.btn-lg{padding:.8rem 1.6rem;font-size:1.05rem}
+.btn-dona,.btn-principal{background:var(--bordo);color:#fff;border:2px solid var(--bordo)}
+.btn-dona:hover,.btn-principal:hover,.btn-dona:focus,.btn-principal:focus{background:var(--bordo-hondo);border-color:var(--bordo-hondo);color:#fff}
+.btn-dona{padding:.45rem 1.25rem}
+.btn-borde{background:transparent;color:var(--acento-texto);border:2px solid currentColor}
+.btn-borde:hover{background:var(--rosa-suave);color:var(--acento-texto);border-color:currentColor}
+.btn-link.volver{color:var(--tinta-suave);text-decoration:none;margin-right:auto;padding-inline:0}
+
+/* ===== Tipografía de sección ===== */
+.etiqueta{font-family:var(--display);font-size:13px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--acento-texto);margin-bottom:.5rem}
+
+.texto-chico{font-size:14px;color:var(--tinta-suave)}
+.seccion{padding-block:72px}
+
+/* Subrayado tipo hilo, como en el sitio actual */
+.subrayado{position:relative;white-space:nowrap}
+.subrayado::after{content:"";position:absolute;left:-2%;right:-2%;bottom:.02em;height:.28em;
+  background:no-repeat center/100% 100% url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'%3E%3Cpath d='M2 8c30-6 60-6 98-2s70 4 98-3' fill='none' stroke='%23B6C3D1' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E");z-index:-1}
+
+/* ===== Portada ===== */
+.portada{padding-block:56px 64px;position:relative;isolation:isolate}
+
+/* ===== Recuadro de foto ===== */
+.foto{
+  position:relative;width:100%;max-width:100%;aspect-ratio:4/3;border-radius:18px;overflow:hidden;
+  background:
+    radial-gradient(circle at 25% 30%,color-mix(in srgb,var(--foto-a) 80%,#fff 20%),transparent 60%),
+    linear-gradient(135deg,var(--foto-a),var(--foto-b));
+  background-size:cover;background-position:center;
+}
+
+/* ===== Cifras ===== */
+.cifras{background:var(--bordo);color:var(--sobre-bordo);padding-block:44px 36px}
+.cifras p{margin:0}
+
+.cifras-nota{margin-top:28px!important;padding-top:16px;border-top:1px dashed color-mix(in srgb,var(--sobre-bordo) 45%,transparent);font-size:14px;opacity:.9;display:flex;gap:8px;align-items:center}
+.cifras-nota svg{width:12px;height:12px;fill:var(--hilo);flex:none}
+
+/* ===== Camino ===== */
+.camino{list-style:none;padding:0;margin:0;display:grid;gap:14px;counter-reset:paso}
+.camino li{background:var(--superficie);border:1px solid var(--linea);border-radius:18px;padding:22px 24px 20px 76px;position:relative;counter-increment:paso}
+.camino li::before{content:counter(paso);position:absolute;left:22px;top:20px;width:38px;height:38px;border-radius:50%;
+  display:grid;place-items:center;font-family:var(--display);font-weight:800;color:#fff;background:var(--bordo)}
+.camino li:not(:last-child)::after{content:"";position:absolute;left:40px;top:62px;bottom:-16px;border-left:2px dashed var(--hilo)}
+.camino h3{font-size:1.2rem;font-weight:700;margin-bottom:.35rem}
+.camino p{margin:0;color:var(--tinta-suave)}
+
+/* ===== Unidades ===== */
+.unidad{background:var(--superficie);border-radius:22px;overflow:hidden;height:100%;border:1px solid var(--linea)}
+.unidad .foto{border-radius:0;aspect-ratio:16/10}
+
+.unidad h3{font-size:1.3rem;font-weight:800;margin-bottom:.1rem}
+
+.unidad p:last-child{margin:0;color:var(--tinta-suave)}
+
+/* ===== Talleres ===== */
+.taller{background:var(--superficie);border:1px solid var(--linea);border-radius:18px;padding:20px 22px;height:100%;display:flex;flex-direction:column;gap:10px}
+.taller h3{font-size:1.1rem;font-weight:700;margin:0}
+.taller p{margin:0;font-size:14.5px;color:var(--tinta-suave)}
+
+.taller .btn{padding:.4rem 1rem;font-size:14px}
+
+/* ===== Donar ===== */
+
+/* ===== Empresas ===== */
+.circuito{padding-left:1.2rem;display:grid;gap:10px;margin:0}
+.circuito li::marker{color:var(--acento-texto);font-family:var(--display);font-weight:800}
+.productos{list-style:none;padding:0;margin:0;border-top:1px solid var(--linea)}
+.productos li{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px 0;border-bottom:1px solid var(--linea)}
+
+/* ===== Contacto ===== */
+.datos{display:grid;grid-template-columns:auto 1fr;gap:12px 20px;margin:0}
+.datos dt{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.08em;color:var(--acento-texto);padding-top:3px}
+.datos dd{margin:0}
+.formulario{background:var(--superficie);border:1px solid var(--linea);border-radius:22px;padding:28px}
+.form-label{font-weight:600;font-size:14.5px;color:var(--tinta)}
+legend.form-label{float:none;width:auto}
+.form-control,.form-select,.input-group-text{background-color:var(--superficie);color:var(--tinta);border-color:var(--linea);border-radius:12px;padding:.65rem .9rem}
+.input-group-text{background:var(--rosa-suave)}
+.form-control:focus,.form-select:focus{border-color:var(--bordo);box-shadow:0 0 0 .2rem color-mix(in srgb,var(--bordo) 22%,transparent);background-color:var(--superficie);color:var(--tinta)}
+.form-control::placeholder{color:var(--tinta-suave);opacity:.7}
+.form-check-input:checked{background-color:var(--bordo);border-color:var(--bordo)}
+.form-control.is-invalid{border-color:#C0392B}
+
+/* ===== Pie ===== */
+
+.btn-sistema{border:1.5px solid color-mix(in srgb,var(--crema) 40%,transparent);color:var(--crema);padding:.4rem 1rem;font-size:14px}
+.btn-sistema:hover{border-color:var(--crema);color:var(--crema);background:rgb(255 255 255 / .06)}
+
+/* El pie usa colores invertidos: en modo oscuro se aclara la tinta de fondo */
+
+/* ===== Modales ===== */
+.modal-content{background:var(--crema);color:var(--tinta);border:0;border-radius:24px}
+.modal-header,.modal-footer{border-color:var(--linea);padding-inline:28px}
+.modal-body{padding:24px 28px}
+.modal-title{font-size:1.6rem;font-weight:800;margin:0}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn-close{filter:invert(1) grayscale(100%) brightness(200%)}}
+:root[data-theme="dark"] .btn-close{filter:invert(1) grayscale(100%) brightness(200%)}
+.eleccion{all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;flex-direction:column;gap:4px;
+  background:var(--superficie);border:2px solid var(--linea);border-radius:18px;padding:22px;transition:border-color .15s,background .15s}
+.eleccion:hover{border-color:var(--bordo);background:var(--rosa-suave)}
+.eleccion:focus-visible{outline:3px solid var(--hilo);outline-offset:2px}
+.eleccion-titulo{font-family:var(--display);font-weight:800;font-size:1.2rem;color:var(--tinta)}
+.eleccion-txt{font-size:14px;color:var(--tinta-suave)}
+.elegido{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.elegido span{font-size:13px;font-weight:700;padding:4px 12px;border-radius:999px;background:var(--rosa);color:var(--tinta)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{cursor:pointer;padding:.5rem 1rem;border-radius:999px;border:1.5px solid var(--linea);background:var(--superficie);font-weight:600;font-size:14.5px;color:var(--tinta);user-select:none}
+.chip:hover{border-color:var(--bordo)}
+.btn-check:checked + .chip{background:var(--bordo);border-color:var(--bordo);color:#fff}
+.btn-check:focus-visible + .chip{outline:3px solid var(--hilo);outline-offset:2px}
+.pago{background:var(--rosa-suave);border-radius:14px;padding:14px 16px}
+.gracias{text-align:center;padding-block:12px}
+.gracias-corazon{width:56px;height:52px;fill:var(--bordo);margin-bottom:10px}
+.gracias h3{font-size:1.5rem;font-weight:800}
+
+/* ===== Fotos reales ===== */
+
+.unidad > img{width:100%;aspect-ratio:16/11;object-fit:cover;display:block}
+.enlace-flecha{display:inline-block;margin-top:14px;font-weight:700;text-decoration:none}
+
+/* Circuito con fotos */
+.circuito-fotos{list-style:none;padding:0;margin:28px 0 0;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;counter-reset:c}
+.circuito-fotos li{counter-increment:c;position:relative}
+.circuito-fotos img{width:100%;aspect-ratio:4/4.6;object-fit:cover;border-radius:18px;display:block;margin-bottom:14px}
+.circuito-fotos li::before{content:counter(c);position:absolute;top:12px;left:12px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+  background:var(--bordo);color:#fff;font-family:var(--display);font-weight:800;box-shadow:0 4px 12px rgb(0 0 0 / .25)}
+.circuito-fotos h3{font-size:1.1rem;font-weight:800;margin-bottom:.25rem}
+.circuito-fotos p{font-size:14.5px;color:var(--tinta-suave);margin:0}
+@media (max-width:991.98px){.circuito-fotos{grid-template-columns:repeat(2,1fr)}}
+
+/* Empresas adheridas */
+.adheridas{margin-top:56px;padding-top:32px;border-top:1px dashed var(--linea)}
+.logos{list-style:none;padding:0;margin:20px 0 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.logos li{display:grid;place-items:center;text-align:center;min-height:88px;padding:12px;border-radius:16px;background:var(--superficie);border:1px solid var(--linea);
+  font-family:var(--display);font-weight:800;font-size:1.05rem;color:var(--tinta-suave);
+  transition:border-color .25s ease,color .25s ease}
+/* Los logos van sobre blanco para que se lean también en modo oscuro */
+.logos li.con-logo{background:#fff}
+.logos li img{display:block;max-width:100%;max-height:48px;width:auto;height:auto;
+  filter:grayscale(1);opacity:.6;transition:filter .25s ease,opacity .25s ease}
+.logos li:not(.logo-sumate):hover{border-color:var(--vino);color:var(--vino)}
+.logos li:hover img{filter:none;opacity:1}
+.logos .logo-sumate{background:transparent;border:1.5px dashed var(--bordo);filter:none}
+.logo-sumate button{all:unset;cursor:pointer;color:var(--acento-texto);font-weight:800;font-size:.95rem}
+.logo-sumate button:focus-visible{outline:3px solid var(--hilo);outline-offset:4px}
+
+/* Galería */
+
+/* ===== Página Talleres ===== */
+.vista[hidden]{display:none!important}
+
+.taller{padding:0;overflow:hidden;gap:0}
+
+.taller .foto{aspect-ratio:16/10;border-radius:0}
+
+.unidad > img,.circuito-fotos img{height:auto}
+
+/* ===== Paleta del logo: menos rojo, más rosa y celeste ===== */
+.marca{padding-block:0}
+.logo{height:62px;width:auto;display:block}
+@media (max-width:575.98px){.logo{height:52px}}
+
+.btn-principal{background:var(--boton);border-color:var(--boton);color:var(--boton-texto)}
+.btn-principal:hover,.btn-principal:focus{background:var(--boton-hover);border-color:var(--boton-hover);color:var(--boton-texto)}
+.btn-borde{color:var(--tinta)}
+.btn-borde:hover{background:var(--rosa-claro);color:var(--tinta)}
+.cifras{background:var(--celeste);color:var(--tinta)}
+.cifras-nota{border-top-color:color-mix(in srgb,var(--tinta) 30%,transparent)}
+.cifras-nota svg{fill:var(--bordo)}
+.camino li::before{background:var(--rosa-logo);color:var(--tinta)}
+.camino li:not(:last-child)::after{border-left-color:var(--rosa-logo)}
+.circuito-fotos li::before{background:var(--crema);color:var(--tinta)}
+.circuito li::marker{color:var(--tinta)}
+
+.btn-check:checked + .chip{background:var(--boton);border-color:var(--boton);color:var(--boton-texto)}
+.form-check-input:checked{background-color:var(--boton);border-color:var(--boton)}
+.form-control:focus,.form-select:focus{border-color:var(--acento-texto);box-shadow:0 0 0 .2rem color-mix(in srgb,var(--acento-texto) 20%,transparent)}
+.logos .logo-sumate{border-color:var(--acento-texto)}
+.elegido span{background:var(--celeste)}
+
+.barra .nav-link:hover{color:var(--tinta);background:var(--rosa-claro)}
+.barra .nav-link.active{color:var(--tinta);background:var(--celeste-suave)}
+
+/* ===== Pie claro (legible en modo claro y oscuro) ===== */
+
+.btn-sistema{border-color:var(--linea);color:var(--tinta)}
+.btn-sistema:hover{border-color:var(--tinta);color:var(--tinta);background:var(--celeste-suave)}
+
+/* ===== Acentos con la paleta de arriba: rojo solo en "Doná"; vino y azul gris como acentos ===== */
+/* Cifras sobre azul gris */
+.cifras{background:var(--azulgris);color:var(--tinta)}
+.cifras-nota{border-top-color:color-mix(in srgb,var(--tinta) 25%,transparent)}
+.cifras-nota svg{fill:var(--vino)}
+/* Pasos numerados */
+.camino li::before{background:var(--azulgris);color:var(--tinta)}
+.camino li:not(:last-child)::after{border-left-color:var(--azulgris)}
+.circuito-fotos li::before{background:#fff;color:#2A1E20}
+/* Donar: fondo blanco, cuadros en azul gris */
+
+.elegido span{background:var(--azulgris-suave)}
+.logos .logo-sumate{border-color:var(--vino)}
+.btn-dona{background:var(--bordo);border-color:var(--bordo);color:#fff}
+.btn-dona:hover,.btn-dona:focus{background:var(--bordo-hondo);border-color:var(--bordo-hondo);color:#fff}
+.gracias-corazon{fill:var(--vino)}
+
+.barra .nav-link.active{background:var(--azulgris-suave)}
+
+/* ===== Páginas separadas ===== */
+
+.pilares{list-style:none;padding:0;margin:18px 0 20px;display:grid;gap:10px}
+.pilares li{display:grid;grid-template-columns:130px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--linea)}
+.pilares strong{font-family:var(--display);color:var(--acento-texto)}
+.pilares span{color:var(--tinta-suave)}
+@media (max-width:575.98px){.pilares li{grid-template-columns:1fr;gap:2px}}
+.acceso{display:flex;flex-direction:column;height:100%;background:var(--superficie);border:1px solid var(--linea);border-radius:20px;overflow:hidden;text-decoration:none;color:var(--tinta);transition:transform .15s,box-shadow .15s}
+.acceso:hover{color:var(--tinta);transform:translateY(-3px);box-shadow:0 14px 30px -18px rgb(40 20 25 / .45)}
+.acceso img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;display:block}
+.acceso-titulo{font-family:var(--display);font-weight:800;font-size:1.2rem;padding:16px 20px 2px}
+.acceso-titulo::after{content:" →";color:var(--acento-texto)}
+.acceso-txt{font-size:14.5px;color:var(--tinta-suave);padding:0 20px 20px}
+.logo-sumate a{color:var(--acento-texto);font-weight:800;font-size:.95rem;text-decoration:none}
+
+.barra .nav-link.active{color:var(--tinta);background:var(--azulgris-suave)}
+
+/* ===== Estilo Studio.Design =====
+   Solo cambia la forma: Inter apretada y grande, botones de 8px, tarjetas de 8px,
+   fotos de 4px, collage en la portada y secciones amplias sin líneas divisorias.
+   Los colores siguen siendo los de OMAS. */
+:root{
+  --display:"Inter","Segoe UI",Helvetica,Arial,sans-serif;
+  --texto:"Inter","Segoe UI",Helvetica,Arial,sans-serif;
+  --compacta:"Inter Tight","Inter","Segoe UI",Arial,sans-serif;
+}
+body{font-size:16px;line-height:1.6;font-feature-settings:"palt"}
+
+/* Tipografía: títulos grandes, pesados pero no al máximo, con -0.04em */
+
+.modal-title,.gracias h3{font-weight:700;letter-spacing:-.04em}
+.camino h3,.unidad h3,.taller h3,.circuito-fotos h3,.acceso-titulo,.eleccion-titulo{font-weight:700;letter-spacing:-.03em}
+.pilares strong{font-weight:700;letter-spacing:-.02em}
+
+/* Etiquetas chicas en Inter Tight, sin mayúsculas forzadas */
+.etiqueta,.datos dt{
+  font-family:var(--compacta);font-weight:500;font-size:15px;letter-spacing:0;text-transform:none}
+
+/* Barra: navegación compacta en Inter Tight */
+.barra .nav-link{font-family:var(--compacta);font-weight:500;font-size:15px;line-height:1.4;border-radius:4px}
+.navbar-toggler{border-radius:4px}
+
+/* Botones: 8px, 12px 24px, texto apretado; solo los botones se elevan al pasar el cursor */
+.btn{font-family:var(--display);font-weight:600;font-size:16px;letter-spacing:-.04em;line-height:1.4;
+  border-radius:8px;padding:12px 24px;border-width:1px;transition:background-color .2s,border-color .2s,color .2s,box-shadow .2s}
+.btn-lg{padding:14px 28px;font-size:16px}
+.btn-dona{padding:8px 20px}
+.btn:hover{box-shadow:0 2px 15px 0 rgb(0 0 0 / .1)}
+.btn-link:hover{box-shadow:none}
+.taller .btn{border-radius:4px;padding:8px 16px;font-size:14px;letter-spacing:-.02em}
+.btn-sistema{border-radius:4px;padding:8px 16px;font-size:14px}
+.enlace-flecha,.logo-sumate a,.logo-sumate button{font-weight:600;letter-spacing:-.02em}
+
+/* Controles: sin píldoras */
+.chip{border-radius:8px;border-width:1px;font-family:var(--compacta);font-weight:500}
+.elegido span{border-radius:4px;font-family:var(--compacta);font-weight:500}
+.form-control,.form-select,.input-group-text{border-radius:8px}
+.input-group > :not(:first-child){border-top-left-radius:0;border-bottom-left-radius:0}
+.input-group > :not(:last-child){border-top-right-radius:0;border-bottom-right-radius:0}
+.form-control:focus,.form-select:focus{box-shadow:0 0 0 1px var(--acento-texto)}
+
+/* Superficies: tarjetas 8px, superficies de apoyo 12px, fotos 4px, sin sombras */
+.camino li,.unidad,.taller,.eleccion,.acceso,.logos li{border-radius:8px}
+.formulario,.modal-content,.pago{border-radius:12px}
+.camino li::before,.circuito-fotos li::before{border-radius:4px;font-weight:600}
+.acceso,.unidad,.taller{overflow:hidden}
+.foto,.circuito-fotos img{border-radius:4px}
+.acceso:hover,.circuito-fotos li::before{box-shadow:none;transform:none}
+.acceso:hover{border-color:var(--vino)}
+.acceso{transition:border-color .2s ease}
+
+/* Líneas finas y continuas */
+.adheridas,.cifras-nota{border-top-style:solid}
+.camino li:not(:last-child)::after{border-left-width:1px;border-left-style:solid}
+.logos .logo-sumate{border-width:1px;border-style:solid}
+
+/* Ritmo: secciones amplias, sin líneas divisorias entre ellas */
+.seccion{padding-block:100px}
+
+.portada{padding-block:64px 100px}
+.cifras{padding-block:60px 48px}
+
+@media (max-width:767.98px){
+  .seccion{padding-block:64px}
+  
+  .portada{padding-block:32px 64px}
+}
+
+/* Fotos en tarjetas: todas con la misma proporción, de borde a borde */
+.unidad > img,.unidad .foto{aspect-ratio:4/3;height:auto}
+.acceso img{aspect-ratio:4/3;transition:transform .5s ease}
+.acceso:hover img{transform:scale(1.04)}
+.taller .foto{aspect-ratio:4/3}
+
+/* Portada: título enorme arriba, collage de fotos superpuestas y bajada abajo a la derecha */
+
+/* Talleres: dos fotos desparejas que se superponen un poco */
+
+/* Galería "Así trabajamos": mosaico con una foto grande, una alta y cuatro cuadradas */
+
+/* La grande y la alta toman la altura de las filas que marcan las cuadradas */
+
+/* Circuito de empresas y fotos con epígrafe */
+.circuito-fotos{gap:16px}
+.circuito-fotos img{aspect-ratio:4/5}
+
+/* ===== Página Nosotras (inspirada en New Balance Foundation) =====
+   Títulos con serifa, portada en panel de color a todo el ancho, bloques de dos
+   columnas con mucho aire y tarjetas de foto. Solo usa colores de OMAS. */
+:root{--serif:"Source Serif 4",Georgia,"Times New Roman",serif}
+
+/* Bloques de dos columnas */
+.nos-bloque{padding-block:80px}
+.nos-titulo{font-family:var(--serif);font-weight:400;font-size:clamp(2rem,1.3rem + 2.4vw,2.9rem);line-height:1.12;letter-spacing:-.01em;margin-bottom:1.25rem}
+.nos-texto{max-width:34em}
+.nos-texto p{color:var(--tinta-suave)}
+.nos-foto-alta{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;border-radius:4px;display:block}
+
+/* Puntos clave con tilde */
+.nos-claves{list-style:none;padding:0;margin:0;display:grid;gap:28px}
+.nos-claves li{position:relative;padding-left:48px}
+.nos-claves li::before{content:"";position:absolute;left:0;top:2px;width:30px;height:30px;border-radius:50%;background:var(--bordo) no-repeat center/16px
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3L13 4.5' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+.nos-claves h2{font-family:var(--serif);font-weight:400;font-size:1.6rem;line-height:1.2;letter-spacing:-.01em;margin-bottom:.4rem}
+.nos-claves p{margin:0;color:var(--tinta-suave)}
+
+/* Panel oscuro con las unidades productivas numeradas */
+.nos-unidades{list-style:none;counter-reset:unidad;margin:0;padding:12px 32px;background:var(--tinta);color:var(--crema);border-radius:8px}
+.nos-unidades li{counter-increment:unidad;display:grid;grid-template-columns:48px 1fr;padding:24px 0}
+.nos-unidades li + li{border-top:1px solid color-mix(in srgb,var(--crema) 18%,transparent)}
+.nos-unidades li::before{content:counter(unidad,decimal-leading-zero);font-family:var(--serif);font-size:1.25rem;color:var(--azulgris);grid-row:span 2}
+.nos-unidades h3{font-family:var(--serif);font-weight:400;font-size:1.45rem;color:var(--crema);margin-bottom:.4rem}
+.nos-unidades h3 span{white-space:nowrap}
+.nos-unidades p{margin:0;font-size:15px;color:color-mix(in srgb,var(--crema) 80%,transparent)}
+@media (max-width:575.98px){.nos-unidades{padding:4px 20px}.nos-unidades li{grid-template-columns:36px 1fr}}
+
+/* Métricas de impacto */
+
+.nos-metricas{list-style:none;padding:0;margin:8px 0 0;display:grid;grid-template-columns:repeat(4,1fr);gap:32px}
+.nos-metricas li{color:var(--tinta-suave);font-size:15px;line-height:1.5;padding-top:20px;border-top:1px solid color-mix(in srgb,var(--tinta) 25%,transparent)}
+.nos-metricas strong{display:block;font-family:var(--serif);font-weight:400;font-size:clamp(1.9rem,1.4rem + 1.4vw,2.6rem);line-height:1.1;letter-spacing:-.01em;color:var(--tinta);margin-bottom:.6rem}
+@media (max-width:991.98px){.nos-metricas{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:575.98px){.nos-metricas{grid-template-columns:1fr;gap:24px}}
+/* Tarjetas verticales con botón oscuro */
+
+@media (max-width:767.98px){.nos-bloque{padding-block:56px}}
+
+/* ===== Página Talleres (inspirada en Scape) =====
+   Portada con título gigante y tira de fotos en movimiento (la usan todas las páginas), bloques de color macizo,
+   formas curvas superpuestas y una franja en movimiento. Solo colores de OMAS. */
+.tal-titulo{font-family:var(--serif);font-weight:400;font-size:clamp(2.6rem,1.4rem + 4.4vw,5rem);line-height:1.02;letter-spacing:.005em;margin-bottom:1.25rem}
+.tal-titulo-claro{color:#fff}
+.tal-bloque{padding-block:96px}
+.tal-lila{background:var(--azulgris-suave)}
+.tal-oliva{background:var(--azulgris)}
+.tal-bloque p{font-size:1.05rem}
+.tal-foto{width:100%;height:auto;aspect-ratio:4/3.4;object-fit:cover;display:block}
+@media (max-width:767.98px){.tal-bloque{padding-block:64px}}
+
+/* Formas curvas (trazo grueso) que se superponen a fotos y textos */
+.tal-forma{position:absolute;pointer-events:none;z-index:3}
+.tal-forma path{fill:none;stroke-width:26;stroke-linecap:round}
+
+.tal-forma-granate{width:clamp(150px,20vw,280px);right:4%;top:40px;opacity:.9}
+.tal-forma-granate path{stroke:var(--rosa)}
+
+/* Portada: título gigante blanco que pisa la tira de fotos */
+.tal-hero{position:relative}
+.tal-hero-arriba{background:var(--vino);padding-top:40px;padding-bottom:clamp(40px,4vw,56px)}
+
+.tal-display{position:relative;z-index:2;font-family:var(--serif);font-weight:400;color:#fff;
+  font-size:clamp(3.6rem,1rem + 11vw,10.5rem);line-height:.86;letter-spacing:.005em;margin:16px 0 0;max-width:8ch}
+/* Tira de fotos: se desliza sola en bucle, sin frenarse ni perder color (omas.js la duplica) */
+.tal-tira-zona{position:relative;margin-top:clamp(-120px,-9vw,-60px)}
+.tal-tira-ventana{overflow:hidden}
+.tal-tira{display:flex;gap:12px;width:max-content;padding-bottom:48px}
+.tal-tira img{flex:0 0 auto;width:clamp(200px,24vw,330px);height:auto;aspect-ratio:4/4.6;object-fit:cover;display:block}
+.tal-tira img:nth-child(even){margin-top:48px}
+.tal-tira.en-movimiento{animation:tira-desliza 70s linear infinite}
+/* La tira está duplicada: correr la mitad (más medio espacio) vuelve exactamente al inicio */
+@keyframes tira-desliza{to{transform:translateX(calc(-50% - 6px))}}
+@media (prefers-reduced-motion: reduce){.tal-tira.en-movimiento{animation:none}}
+.tal-intro{font-size:clamp(1.2rem,1rem + .8vw,1.6rem);font-weight:600;line-height:1.4;letter-spacing:-.02em;max-width:32em;padding-block:24px 88px;margin:0}
+@media (max-width:767.98px){
+  .tal-tira{padding-bottom:24px}
+  .tal-tira img:nth-child(even){margin-top:24px}
+  .tal-intro{padding-block:16px 56px}
+}
+
+/* Piezas que usa Inicio con este estilo */
+.tal-bloque .etiqueta{margin-bottom:.5rem}
+.tal-intro-fila{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px 48px;padding-block:24px 88px}
+.tal-intro-fila .tal-intro{padding:0}
+.tal-granate .acceso{border-color:transparent}
+.tal-cierre{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px}
+@media (max-width:767.98px){.tal-intro-fila{padding-block:16px 56px}}
+
+/* Franja roja con los nombres de los talleres en movimiento */
+.tal-marquesina{display:flex;align-items:center;gap:16px;background:var(--bordo);color:#fff;padding-right:16px}
+.tal-marquesina-ventana{flex:1;overflow:hidden}
+.tal-marquesina-pista{display:flex;width:max-content;animation:tal-desliza 40s linear infinite}
+.tal-marquesina-pista p{margin:0;padding-block:18px;white-space:nowrap;font-family:var(--serif);font-size:clamp(1.3rem,1rem + 1vw,1.9rem);letter-spacing:.02em}
+@keyframes tal-desliza{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion: reduce){.tal-marquesina-pista{animation:none}}
+.tal-btn-claro{flex:none;background:#fff;border-color:#fff;color:var(--bordo)}
+.tal-btn-claro:hover,.tal-btn-claro:focus{background:var(--rosa);border-color:var(--rosa);color:var(--bordo)}
+
+/* Bloque vino con las propuestas */
+.tal-granate{position:relative;overflow:hidden;background:var(--vino);color:#fff;padding-block:112px}
+
+/* Cita destacada con retrato */
+
+/* Preguntas rápidas desplegables */
+.tal-faq details{border-top:1px solid var(--linea)}
+.tal-faq details:last-child{border-bottom:1px solid var(--linea)}
+.tal-faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:22px;font-weight:600;font-size:1.1rem;letter-spacing:-.02em}
+.tal-faq summary::-webkit-details-marker{display:none}
+.tal-faq summary::after{content:"+";flex:none;font-size:1.6rem;font-weight:400;line-height:1;color:var(--acento-texto);transition:transform .2s ease}
+.tal-faq details[open] summary::after{transform:rotate(45deg)}
+.tal-faq details p{margin:0;padding-bottom:22px;color:var(--tinta-suave)}
+
+/* ===== Tira de logos en movimiento (inspirado en Steep) =====
+   Los logos se deslizan solos en un bucle sin cortes; se frena al pasar el cursor
+   y los bordes se desvanecen. omas.js duplica la lista y activa el movimiento. */
+.logos-carrusel{overflow:hidden;margin-top:20px}
+.logos-carrusel .logos{margin:0}
+.logos-carrusel.en-movimiento{
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
+          mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.logos-carrusel.en-movimiento .logos{display:flex;width:max-content;gap:12px;animation:logos-desliza 45s linear infinite}
+.logos-carrusel.en-movimiento .logos li{flex:0 0 180px}
+.logos-carrusel.en-movimiento:hover .logos{animation-play-state:paused}
+/* La lista está duplicada: correr la mitad (más medio espacio) vuelve exactamente al inicio */
+@keyframes logos-desliza{to{transform:translateX(calc(-50% - 6px))}}
+.logo-sumate{margin:16px 0 0}
+
+/* Aparición suave de los bloques al bajar (lo activa omas.js) */
+.con-revelar .revelar{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+.con-revelar .revelar.visible{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){.con-revelar .revelar{opacity:1;transform:none}}
+
+/* ===== Tipografía unificada (como en Nosotras) =====
+   Títulos con serifa (Source Serif 4, peso normal) en todas las páginas;
+   el texto, los botones y el menú siguen en Inter. */
+.modal-title,.gracias h3,.tal-titulo,.tal-display,.tal-marquesina-pista p{
+  font-family:var(--serif);font-weight:400;letter-spacing:-.02em}
+
+.tal-display{font-size:clamp(3.2rem,1rem + 8vw,8rem);line-height:1;max-width:none}
+/* Con la serifa el título ocupa una sola línea: más espacio para que solo roce las fotos */
+.tal-hero-arriba{padding-bottom:clamp(96px,10vw,140px)}
+/* Corazones que suben detrás del título (los crea omas.js). --corazon es su color */
+.con-corazones{position:relative;overflow:hidden;isolation:isolate;--corazon:#A0505E}
+.con-corazones > .container{position:relative;z-index:1}
+.corazones-fondo{position:absolute;inset:0;z-index:0;pointer-events:none;filter:url(#goo-corazones);color:var(--corazon)}
+.corazones-fondo svg{position:absolute;top:0;left:0;width:30px;height:30px;fill:currentColor;will-change:transform}
+.corazones-filtro{position:absolute;width:0;height:0}
+/* Portadas sin tira de fotos (Empresas, Talleres, Contacto) */
+.tal-hero-sin-fotos .tal-hero-arriba{padding-bottom:clamp(48px,5vw,72px)}
+.tal-hero-sin-fotos .tal-intro-fila,.tal-hero-sin-fotos>.container>.tal-intro{padding-top:clamp(32px,4vw,56px)}
+.tal-titulo{line-height:1.1}
+
+/* Portada con título largo (Nosotras): letra más chica para que no ocupe media pantalla */
+.tal-hero-largo .tal-display{font-size:clamp(2rem,1.1rem + 2.8vw,3.4rem);line-height:1.12;max-width:none}
+.tal-hero-largo .tal-intro{font-size:clamp(1.05rem,1rem + .4vw,1.25rem);max-width:40em}
+
+/* ===== Qué hacemos: tarjetas grandes de las unidades =====
+   Cada tarjeta tiene su color en --tema (valores R G B), que tiñe el degradé,
+   la sombra y el botón. Al pasar el cursor la tarjeta crece y la foto se acerca. */
+.ucard{--tema:128 60 71;position:relative;display:flex;align-items:flex-end;height:clamp(440px,52vw,560px);
+  border-radius:18px;overflow:hidden;color:#fff;text-decoration:none;isolation:isolate;
+  box-shadow:0 18px 40px -18px rgb(var(--tema) / .55);transition:transform .5s ease,box-shadow .5s ease}
+.ucard:hover,.ucard:focus-visible{color:#fff;transform:scale(1.03);box-shadow:0 26px 60px -16px rgb(var(--tema) / .7)}
+.ucard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:transform .6s ease}
+.ucard:hover img,.ucard:focus-visible img{transform:scale(1.1)}
+.ucard-velo{position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(to top,rgb(var(--tema) / .95),rgb(var(--tema) / .7) 35%,transparent 70%)}
+.ucard-cuerpo{display:flex;flex-direction:column;width:100%;padding:28px}
+.ucard-sub{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgb(255 255 255 / .8)}
+.ucard-titulo{font-family:var(--serif);font-size:clamp(1.9rem,1.4rem + 1.2vw,2.5rem);line-height:1.05;margin-top:6px}
+.ucard-dato{font-size:15px;font-weight:500;color:rgb(255 255 255 / .85);margin-top:8px}
+.ucard-boton{display:flex;align-items:center;justify-content:space-between;margin-top:24px;padding:12px 16px;
+  border-radius:10px;font-size:15px;font-weight:600;background:rgb(255 255 255 / .14);border:1px solid rgb(255 255 255 / .3);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);transition:background .3s ease}
+.ucard:hover .ucard-boton{background:rgb(255 255 255 / .26)}
+.ucard-boton svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s ease}
+.ucard:hover .ucard-boton svg{transform:translateX(4px)}
+@media (prefers-reduced-motion: reduce){.ucard:hover,.ucard:focus-visible,.ucard:hover img{transform:none}}
+
+/* Tarjetas chicas (propuestas de Talleres): más bajas y con letra más chica */
+.ucard-chica{height:clamp(260px,30vw,340px);border-radius:14px}
+.ucard-chica .ucard-cuerpo{padding:18px}
+.ucard-chica .ucard-sub{font-size:11px}
+.ucard-chica .ucard-titulo{font-size:clamp(1.15rem,1rem + .5vw,1.45rem);line-height:1.1}
+.ucard-chica .ucard-boton{margin-top:14px;padding:8px 12px;font-size:13px}
+@media (max-width:575.98px){.ucard-chica .ucard-boton{display:none}}
+
+/* Talleres: dato de 150 mujeres junto a la presentación */
+
+/* Talleres: los tres pasos para anotarse, en una fila */
+.tal-pasos{list-style:none;counter-reset:paso;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:0;margin:0 0 32px}
+.tal-pasos li{counter-increment:paso;display:flex;flex-direction:column;gap:2px;padding:16px 18px 16px 58px;position:relative;
+  background:var(--superficie);border:1px solid var(--linea);border-radius:12px;color:var(--tinta-suave);font-size:15px;line-height:1.4}
+.tal-pasos li::before{content:counter(paso);position:absolute;left:16px;top:16px;width:30px;height:30px;border-radius:50%;
+  display:grid;place-items:center;background:var(--vino);color:#fff;font-weight:700;font-size:14px}
+.tal-pasos strong{color:var(--tinta);font-weight:700}
+@media (max-width:767.98px){.tal-pasos{grid-template-columns:1fr;gap:10px}}
+
+/* Nosotras: tarjeta de impacto en la portada (abre la ventana con las métricas) */
+.impacto-card{flex:none;display:flex;flex-direction:column;align-items:flex-start;width:min(100%,300px);padding:22px;
+  border:0;border-radius:16px;text-align:left;font:inherit;cursor:pointer;color:#fff;background:var(--vino);
+  box-shadow:0 18px 40px -18px rgb(128 60 71 / .6);transition:transform .4s ease,box-shadow .4s ease}
+.impacto-card:hover,.impacto-card:focus-visible{transform:translateY(-4px) scale(1.02);box-shadow:0 26px 50px -18px rgb(128 60 71 / .75)}
+.impacto-card-cifra{font-family:var(--serif);font-size:clamp(2.8rem,2rem + 2vw,3.6rem);line-height:1}
+.impacto-card-cifra-larga{font-size:clamp(2rem,1.6rem + 1.2vw,2.6rem);white-space:nowrap}
+.impacto-card-txt{margin-top:6px;font-size:15px;font-weight:500;line-height:1.35;color:rgb(255 255 255 / .85)}
+.impacto-card .ucard-boton{width:100%;margin-top:18px}
+.impacto-card:hover .ucard-boton{background:rgb(255 255 255 / .26)}
+.impacto-card:hover .ucard-boton svg{transform:translateX(4px)}
+@media (prefers-reduced-motion: reduce){.impacto-card:hover,.impacto-card:focus-visible{transform:none}}
+
+/* ===== Empresas ===== */
+.emp-display{font-size:clamp(2.4rem,1.2rem + 4.6vw,5.4rem);line-height:1.04}
+.emp-acciones{display:flex;flex-wrap:wrap;gap:12px;flex:none}
+.emp-etiqueta{font-family:var(--texto);font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--tinta-suave);margin:0 0 4px}
+.emp-logos{padding-block:8px 72px}
+/* Qué gana tu empresa: cuatro beneficios con ícono */
+.emp-beneficios{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.emp-beneficios article{padding:26px 24px;background:var(--superficie);border:1px solid var(--linea);border-radius:14px;transition:border-color .3s ease,transform .3s ease}
+.emp-beneficios article:hover{border-color:var(--vino);transform:translateY(-3px)}
+.emp-beneficios svg{width:40px;height:40px;padding:8px;border-radius:10px;background:var(--vino);fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-bottom:18px}
+.emp-beneficios h3{font-family:var(--serif);font-weight:400;font-size:1.45rem;line-height:1.15;margin-bottom:.5rem}
+.emp-beneficios p{margin:0;font-size:15px;color:var(--tinta-suave)}
+@media (max-width:991.98px){.emp-beneficios{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:575.98px){.emp-beneficios{grid-template-columns:1fr}}
+/* Cómo funciona, más compacto */
+.circuito-compacto{margin-top:0}
+.circuito-compacto img{aspect-ratio:4/3}
+/* Servicios: lista compacta en 4 columnas */
+.emp-servicios{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(4,1fr);gap:32px}
+.emp-servicios li{border-top:3px solid var(--vino);padding-top:18px}
+.emp-servicios h3{font-family:var(--serif);font-weight:400;font-size:1.45rem;line-height:1.15;margin-bottom:.4rem}
+.emp-servicios p{margin:0;font-size:15px;color:var(--tinta-suave)}
+@media (max-width:991.98px){.emp-servicios{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:575.98px){.emp-servicios{grid-template-columns:1fr;gap:24px}}
+/* Cierre: llamado a la acción (vino) a la izquierda y preguntas a la derecha */
+.emp-cierre{display:grid;grid-template-columns:5fr 6fr;gap:56px;align-items:center}
+.emp-final{background:var(--vino);color:#fff;padding:48px 40px;border-radius:18px}
+.emp-final .tal-titulo{color:#fff;font-size:clamp(2rem,1.4rem + 1.8vw,3rem);margin-bottom:.5rem}
+.emp-final p{font-size:1.1rem;color:rgb(255 255 255 / .85);margin-bottom:24px}
+.emp-btn-linea{background:transparent;color:#fff;border:2px solid #fff}
+.emp-btn-linea:hover,.emp-btn-linea:focus{background:rgb(255 255 255 / .12);color:#fff;border-color:#fff}
+@media (max-width:991.98px){.emp-cierre{grid-template-columns:1fr;gap:40px}}
+@media (max-width:575.98px){.emp-final{padding:36px 24px}}
+
+/* Logos de empresas: recuadro rosado en lugar de blanco. Las imágenes traen fondo
+   blanco propio; con "multiply" ese blanco toma el color del recuadro. */
+:root{--logo-fondo:#F1E3E5;--logo-borde:#E4CFD3}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--logo-fondo:#D8C1C6;--logo-borde:#D8C1C6}}
+:root[data-theme="dark"]{--logo-fondo:#D8C1C6;--logo-borde:#D8C1C6}
+.logos li.con-logo{background:var(--logo-fondo);border-color:var(--logo-borde)}
+.logos li.con-logo img{mix-blend-mode:multiply;opacity:.75}
+.logos li.con-logo:hover img{opacity:1}
+
+/* Inicio, "¿Qué estás buscando?": al pasar el cursor la tarjeta sube, la foto se
+   acerca y se tiñe de vino, el fondo se vuelve rosado y la flecha avanza */
+.tal-granate .acceso{position:relative;isolation:isolate;
+  transition:transform .4s ease,box-shadow .4s ease,background-color .4s ease}
+.tal-granate .acceso img{transition:transform .6s ease,filter .6s ease}
+.tal-granate .acceso::before{content:"";position:absolute;left:0;right:0;top:0;aspect-ratio:4/3;z-index:1;pointer-events:none;
+  background:linear-gradient(to top,rgb(128 60 71 / .55),transparent 70%);opacity:0;transition:opacity .4s ease}
+.tal-granate .acceso-titulo::after{display:inline-block;transition:transform .3s ease}
+.tal-granate .acceso:hover,.tal-granate .acceso:focus-visible{transform:translateY(-8px);background:color-mix(in srgb,var(--superficie) 82%,var(--vino));
+  box-shadow:0 24px 44px -16px rgb(0 0 0 / .55)}
+.tal-granate .acceso:hover img,.tal-granate .acceso:focus-visible img{transform:scale(1.1)}
+.tal-granate .acceso:hover::before,.tal-granate .acceso:focus-visible::before{opacity:1}
+.tal-granate .acceso:hover .acceso-titulo::after,.tal-granate .acceso:focus-visible .acceso-titulo::after{transform:translateX(6px)}
+@media (prefers-reduced-motion: reduce){.tal-granate .acceso:hover,.tal-granate .acceso:hover img{transform:none}}
+
+/* Empresas, "Cómo funciona": cada paso reacciona al pasar el cursor.
+   El paso sube, la foto se acerca dentro de su marco, el número crece y
+   se vuelve vino, y el título toma el color vino */
+.circuito-compacto li{padding:12px 12px 18px;border-radius:16px;transition:transform .4s ease,background-color .4s ease,box-shadow .4s ease}
+.circuito-compacto .circuito-marco{display:block;overflow:hidden;border-radius:12px;margin-bottom:14px}
+.circuito-compacto .circuito-marco img{margin:0;border-radius:0;transition:transform .6s ease,filter .6s ease}
+.circuito-compacto li::before{top:24px;left:24px;z-index:1;transition:transform .3s ease,background-color .3s ease,color .3s ease}
+.circuito-compacto h3{transition:color .3s ease}
+.circuito-compacto li:hover{transform:translateY(-8px);background:var(--superficie);box-shadow:0 22px 40px -20px rgb(0 0 0 / .5)}
+.circuito-compacto li:hover .circuito-marco img{transform:scale(1.1);filter:saturate(1.15)}
+.circuito-compacto li:hover::before{transform:scale(1.2);background:var(--vino);color:#fff}
+.circuito-compacto li:hover h3{color:var(--vino)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .circuito-compacto li:hover h3{color:#E8A9B4}}
+:root[data-theme="dark"] .circuito-compacto li:hover h3{color:#E8A9B4}
+@media (prefers-reduced-motion: reduce){.circuito-compacto li:hover,.circuito-compacto li:hover .circuito-marco img{transform:none}}
+
+/* ===== Talleres: propuestas en lista, con foto y descripción que cambian =====
+   Compu: nombres a la izquierda y el taller elegido a la derecha.
+   Celular: cada nombre se despliega hacia abajo. */
+/* ===== Mapa de la sede (Talleres) =====
+   Cerrado: tarjeta chica con cuadrícula que se inclina con el cursor.
+   Abierto: se agranda, aparece el mapa y la barra de datos queda abajo. */
+.mapa{padding-bottom:26px;perspective:1000px}
+.mapa-caja{--giro-x:0deg;--giro-y:0deg;position:relative;width:260px;height:150px;border-radius:16px;overflow:hidden;
+  background:var(--vino-hondo,#652F38);border:1px solid rgb(255 255 255 / .12);
+  transform:rotateX(var(--giro-x)) rotateY(var(--giro-y));transform-style:preserve-3d;
+  box-shadow:0 18px 40px -20px rgb(0 0 0 / .6);
+  transition:width .5s cubic-bezier(.2,.8,.2,1),height .5s cubic-bezier(.2,.8,.2,1),transform .25s ease-out}
+.mapa.abierto .mapa-caja{width:min(100%,620px);height:340px}
+.mapa-rejilla{position:absolute;inset:0;opacity:.14;transition:opacity .3s ease;
+  background-image:linear-gradient(rgb(255 255 255 / .6) 1px,transparent 1px),linear-gradient(90deg,rgb(255 255 255 / .6) 1px,transparent 1px);
+  background-size:20px 20px}
+.mapa.abierto .mapa-rejilla{opacity:0}
+.mapa-marco{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .45s ease .15s,visibility 0s linear .6s}
+.mapa.abierto .mapa-marco{opacity:1;visibility:visible;transition:opacity .45s ease .15s,visibility 0s}
+.mapa-marco iframe{width:100%;height:100%;border:0;display:block}
+/* El botón cubre la tarjeta cerrada; abierta, queda solo como barra de arriba para poder usar el mapa */
+.mapa-abrir{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:18px;
+  border:0;background:none;color:#fff;font:inherit;text-align:left;cursor:pointer;z-index:2}
+.mapa.abierto .mapa-abrir{pointer-events:none;padding:0}
+.mapa-arriba{display:flex;align-items:flex-start;justify-content:space-between;width:100%}
+/* Abierto: solo la pastilla "Cerrar" cierra; el resto de la barra deja pasar
+   los clics al mapa (por ejemplo al "Abrir en Maps" de Google) */
+.mapa.abierto .mapa-arriba{justify-content:flex-end;padding:12px 14px}
+.mapa.abierto .mapa-icono{display:none}
+.mapa.abierto .mapa-estado,.mapa.abierto:hover .mapa-estado,.mapa.abierto .mapa-estado:hover{pointer-events:auto;cursor:pointer;background:#000}
+.mapa-icono{width:20px;height:20px;fill:none;stroke:#E8A9B4;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+  filter:drop-shadow(0 0 4px rgb(232 169 180 / .4));transition:filter .3s ease}
+.mapa:hover .mapa-icono{filter:drop-shadow(0 0 9px rgb(232 169 180 / .8))}
+.mapa-estado{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:rgb(255 255 255 / .12);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;transition:transform .2s ease,background .2s ease}
+.mapa:hover .mapa-estado{transform:scale(1.05);background:rgb(255 255 255 / .2)}
+.mapa-estado i{width:6px;height:6px;border-radius:50%;background:#E8A9B4;box-shadow:0 0 0 0 rgb(232 169 180 / .6);animation:mapa-pulso 2s infinite}
+@keyframes mapa-pulso{70%{box-shadow:0 0 0 6px rgb(232 169 180 / 0)}100%{box-shadow:0 0 0 0 rgb(232 169 180 / 0)}}
+.mapa-abajo{display:flex;flex-direction:column;gap:3px}
+.mapa-lugar{font-family:var(--serif);font-size:1.3rem;line-height:1.1;transition:transform .3s ease}
+.mapa:hover .mapa-lugar{transform:translateX(4px)}
+.mapa-coord{font-size:12px;color:rgb(255 255 255 / .75)}
+.mapa-coord-num{display:none}
+.mapa.abierto .mapa-coord-num{display:inline}
+.mapa-linea{height:1px;margin-top:6px;background:linear-gradient(90deg,#E8A9B4,rgb(232 169 180 / .3),transparent);
+  transform-origin:left;transform:scaleX(.3);transition:transform .4s ease}
+.mapa:hover .mapa-linea{transform:scaleX(1)}
+/* Abierto: los datos pasan a una etiqueta sobre el mapa, abajo a la izquierda */
+.mapa.abierto .mapa-abajo{position:absolute;left:14px;bottom:14px;right:auto;max-width:calc(100% - 28px);padding:10px 14px;border-radius:10px;
+  background:rgb(0 0 0 / .65);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);pointer-events:none}
+.mapa.abierto .mapa-linea{display:none}
+.mapa-llegar{display:inline-block;margin-top:14px;font-weight:600}
+/* ===== Contacto: datos en tarjetas con ícono ===== */
+.contacto-datos{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.contacto-dato{display:flex;flex-direction:column;gap:4px;padding:24px;border-radius:14px;background:var(--superficie);border:1px solid var(--linea);
+  color:var(--tinta);text-decoration:none;transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease}
+.contacto-dato svg{width:42px;height:42px;padding:9px;border-radius:10px;background:var(--vino);fill:none;stroke:#fff;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;margin-bottom:14px;transition:transform .35s ease}
+.contacto-dato-titulo{font-family:var(--serif);font-size:1.45rem;line-height:1.15}
+.contacto-dato-txt{font-size:15px;color:var(--tinta-suave)}
+.contacto-dato-nota{font-size:13px;font-style:italic;color:var(--tinta-suave);opacity:.8}
+.contacto-dato-accion{margin-top:auto;padding-top:12px;font-size:14.5px;font-weight:600;color:var(--acento-texto);transition:transform .3s ease}
+button.contacto-dato{font:inherit;text-align:left;cursor:pointer;width:100%}
+a.contacto-dato:hover,a.contacto-dato:focus-visible,button.contacto-dato:hover,button.contacto-dato:focus-visible{color:var(--tinta);transform:translateY(-6px);border-color:var(--vino);box-shadow:0 20px 36px -20px rgb(0 0 0 / .5)}
+a.contacto-dato:hover svg,button.contacto-dato:hover svg{transform:scale(1.1) rotate(-4deg)}
+a.contacto-dato:hover .contacto-dato-accion,button.contacto-dato:hover .contacto-dato-accion{transform:translateX(4px)}
+div.contacto-dato:hover{border-color:color-mix(in srgb,var(--vino) 50%,var(--linea))}
+@media (max-width:991.98px){.contacto-datos{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:575.98px){.contacto-datos{grid-template-columns:1fr}}
+.contacto-intro{font-size:1.1rem;color:var(--tinta-suave);margin-bottom:28px}
+.contacto-wsp{padding:22px;border-radius:14px;background:color-mix(in srgb,var(--superficie) 85%,#25D366);border:1px solid color-mix(in srgb,var(--linea) 60%,#25D366)}
+.btn-wsp{display:inline-flex;align-items:center;gap:10px;background:#1FA855;border:2px solid #1FA855;color:#fff;font-weight:600}
+.btn-wsp:hover,.btn-wsp:focus{background:#178a45;border-color:#178a45;color:#fff}
+.btn-wsp svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ===== Pie de página (inspirado en FooterGlow) =====
+   Dos luces vino difusas detrás de una tarjeta de vidrio con la marca,
+   las redes (Instagram y Cafecito) y tres columnas de enlaces */
+.pf{position:relative;overflow:hidden;padding-block:72px 28px;margin-top:0;background:var(--crema);color:var(--tinta);isolation:isolate}
+.pf-luces span{position:absolute;width:420px;height:420px;border-radius:50%;background:rgb(128 60 71 / .28);filter:blur(80px);z-index:-1;pointer-events:none}
+.pf-luces span:first-child{top:-160px;left:12%}
+.pf-luces span:last-child{bottom:-180px;right:10%;background:rgb(158 39 46 / .22)}
+.pf-vidrio{display:flex;flex-wrap:wrap;justify-content:space-between;gap:40px 56px;padding:clamp(28px,4vw,48px);border-radius:20px;
+  background:radial-gradient(circle at 30% 0%,rgb(255 255 255 / .55),rgb(243 221 225 / .35) 60%,rgb(250 240 242 / .6));
+  border:1px solid rgb(128 60 71 / .14);-webkit-backdrop-filter:blur(4px) saturate(160%);backdrop-filter:blur(4px) saturate(160%)}
+.pf-marca-col{flex:1 1 280px;max-width:360px}
+.pf-marca{display:inline-flex;align-items:center;gap:12px;text-decoration:none;color:var(--tinta)}
+.pf-marca img{width:48px;height:auto;padding:4px;border-radius:12px;background:#fff}
+.pf-marca span{font-family:var(--serif);font-size:1.8rem;line-height:1}
+.pf-marca:hover{color:var(--tinta)}
+.pf-txt{margin:18px 0 22px;font-size:14.5px;line-height:1.6;color:var(--tinta-suave)}
+.pf-redes{list-style:none;display:flex;gap:12px;padding:0;margin:0}
+.pf-redes a{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:var(--vino);color:#fff;transition:transform .3s ease,background .3s ease}
+.pf-redes a:hover,.pf-redes a:focus-visible{transform:translateY(-3px) rotate(-4deg);background:var(--bordo);color:#fff}
+.pf-redes svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pf-redes .pf-punto{fill:currentColor;stroke:none}
+.pf-columnas{flex:2 1 520px;display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.pf-titulo{font-family:var(--texto);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--vino);margin:0 0 14px}
+.pf-lista{list-style:none;padding:0;margin:0;display:grid;gap:10px;font-size:15px}
+.pf-lista a{color:var(--tinta-suave);text-decoration:none;transition:color .2s ease,padding-left .2s ease}
+.pf-lista a:hover,.pf-lista a:focus-visible{color:var(--tinta);padding-left:4px}
+.pf-cafecito{display:inline-flex;align-items:center;gap:8px}
+.pf-latido{position:relative;width:8px;height:8px;border-radius:50%;background:var(--vino)}
+.pf-latido::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--vino);animation:pf-ping 1.6s cubic-bezier(0,0,.2,1) infinite}
+@keyframes pf-ping{75%,100%{transform:scale(2.4);opacity:0}}
+.pf-contacto a,.pf-contacto span{display:flex;align-items:flex-start;gap:10px;color:var(--tinta-suave)}
+.pf-contacto svg{width:18px;height:18px;flex:none;margin-top:2px;fill:none;stroke:var(--vino);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pf-contacto address{margin:0;font-style:normal}
+.pf .btn-sistema{border:1px solid color-mix(in srgb,var(--tinta) 25%,transparent);color:var(--tinta);background:transparent;padding:6px 14px;font-size:13.5px;border-radius:8px}
+.pf .btn-sistema:hover{border-color:var(--vino);color:var(--tinta);background:rgb(128 60 71 / .08)}
+.pf-nota{margin:10px 0 0;font-size:13px;color:var(--tinta-suave)}
+.pf-legal{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;margin-top:28px;font-size:13px;color:var(--tinta-suave)}
+@media (max-width:767.98px){.pf-columnas{grid-template-columns:1fr 1fr}.pf-legal{justify-content:center;text-align:center}}
+@media (max-width:420px){.pf-columnas{grid-template-columns:1fr}}
+@media (prefers-reduced-motion: reduce){.pf-latido::after{animation:none}}
+/* Modo oscuro: vidrio oscuro con luces vino */
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pf-vidrio{
+  background:radial-gradient(circle at 30% 0%,rgb(255 255 255 / .08),rgb(40 12 16 / .25) 60%,rgb(42 14 18 / .7));border-color:rgb(255 255 255 / .06)}
+  :root:not([data-theme="light"]) .pf-titulo,:root:not([data-theme="light"]) .pf-contacto svg{color:#E8A9B4;stroke:#E8A9B4}}
+:root[data-theme="dark"] .pf-vidrio{background:radial-gradient(circle at 30% 0%,rgb(255 255 255 / .08),rgb(40 12 16 / .25) 60%,rgb(42 14 18 / .7));border-color:rgb(255 255 255 / .06)}
+:root[data-theme="dark"] .pf-titulo,:root[data-theme="dark"] .pf-contacto svg{color:#E8A9B4;stroke:#E8A9B4}
+
+/* ===== Doná ===== */
+.dona-guia{font-size:1.1rem;color:var(--tinta-suave);max-width:40em;margin-bottom:28px}
+.ucard-dona{height:clamp(340px,34vw,400px)}
+/* Qué logra tu aporte: tres montos */
+.dona-montos{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.dona-montos li{padding:26px 24px;border-radius:14px;background:var(--superficie);border:1px solid var(--linea);color:var(--tinta-suave);font-size:15.5px;
+  transition:transform .35s ease,border-color .35s ease}
+.dona-montos li:hover{transform:translateY(-4px);border-color:var(--vino)}
+.dona-montos strong{display:block;font-family:var(--serif);font-weight:400;font-size:clamp(2.2rem,1.6rem + 1.6vw,3rem);line-height:1;color:var(--tinta);margin-bottom:10px}
+@media (max-width:767.98px){.dona-montos{grid-template-columns:1fr;gap:14px}}
+/* Datos para transferir */
+.dona-ver-mapa{padding:0;border:0;background:none;color:var(--acento-texto);font-weight:600;cursor:pointer}
+.dona-ver-mapa:hover{text-decoration:underline}
+
+/* Mapa fijo (Contacto): ocupa todo el ancho y ya está abierto */
+.mapa-fija{padding-bottom:0}
+.mapa-fija .mapa-caja,.mapa-fija.abierto .mapa-caja{width:100%;height:clamp(300px,50vh,460px);transform:none;border-radius:14px}
+@media (prefers-reduced-motion: reduce){.mapa-caja{transition:none}.mapa-estado i{animation:none}}
+
+/* Título de la sección con la tarjeta de impacto en la esquina derecha */
+.prop-cabecera{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:24px 40px;margin-bottom:40px}
+.prop-cabecera .tal-titulo{margin:0;flex:1 1 420px}
+.prop-lista{list-style:none;padding:0;margin:0}
+.prop-nombre{display:flex;align-items:baseline;gap:18px;width:100%;padding:18px 0;border:0;border-top:1px solid color-mix(in srgb,var(--tinta) 18%,transparent);
+  background:none;text-align:left;cursor:pointer;color:var(--tinta-suave);
+  font-family:var(--serif);font-size:clamp(1.35rem,1rem + 1.2vw,2rem);line-height:1.15;transition:color .3s ease,padding-left .3s ease}
+.prop-item:last-child .prop-nombre{border-bottom:1px solid color-mix(in srgb,var(--tinta) 18%,transparent)}
+.prop-num{font-family:var(--texto);font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--tinta-suave);flex:none;transition:color .3s ease}
+.prop-nombre:hover,.prop-item.activo .prop-nombre{color:var(--tinta)}
+.prop-item.activo .prop-nombre{padding-left:14px;box-shadow:inset 4px 0 0 var(--vino)}
+.prop-item.activo .prop-num{color:var(--vino)}
+.prop-detalle img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:center 25%;border-radius:14px;display:block;margin-bottom:18px}
+.prop-cat{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tinta-suave);margin:0 0 6px}
+.prop-desc{font-size:1.05rem;line-height:1.55;margin:0 0 14px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .prop-item.activo .prop-num{color:#E8A9B4}}
+:root[data-theme="dark"] .prop-item.activo .prop-num{color:#E8A9B4}
+
+/* Compu: la descripción del taller elegido aparece fija a la derecha */
+@media (min-width:992px){
+  .prop{position:relative;min-height:620px}
+  .prop-lista{width:46%}
+  .prop-detalle{position:absolute;top:0;right:0;width:48%;opacity:0;visibility:hidden;transform:translateY(12px);
+    transition:opacity .45s ease,transform .45s ease,visibility 0s linear .45s}
+  .prop-item.activo .prop-detalle{opacity:1;visibility:visible;transform:none;transition:opacity .45s ease,transform .45s ease,visibility 0s}
+  /* Pase automático (omas.js): la barrita marca cuánto falta para el siguiente taller
+     y se frena mientras el cursor está sobre la sección */
+  .prop-nombre{position:relative}
+  .prop.girando .prop-item.activo .prop-nombre::before{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
+    background:var(--vino);transform-origin:left;animation:prop-avance 6s linear forwards}
+  .prop.girando:hover .prop-item.activo .prop-nombre::before,
+  .prop.girando:has(:focus-visible) .prop-item.activo .prop-nombre::before{animation-play-state:paused}
+}
+@keyframes prop-avance{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+/* Celular y tablet: desplegable */
+@media (max-width:991.98px){
+  .prop-detalle{display:none;padding:4px 0 24px}
+  .prop-item.activo .prop-detalle{display:block;animation:prop-abre .4s ease}
+  .prop-nombre::after{content:"+";margin-left:auto;font-family:var(--texto);font-size:1.4rem;color:var(--tinta-suave);transition:transform .3s ease}
+  .prop-item.activo .prop-nombre::after{transform:rotate(45deg)}
+}
+@keyframes prop-abre{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.prop-detalle{transition:none!important;animation:none!important}}
+
+/* Talleres: tarjetas de inscripción con el estilo de las de Qué hacemos,
+   del mismo alto que tenían las anteriores */
+.ucard-taller{height:470px;border-radius:14px}
+.ucard-taller .ucard-velo{background:linear-gradient(to top,rgb(var(--tema) / .97),rgb(var(--tema) / .85) 45%,rgb(var(--tema) / .2) 75%,transparent 90%)}
+.ucard-taller .ucard-cuerpo{padding:22px}
+.ucard-taller .ucard-titulo{font-size:clamp(1.5rem,1.2rem + .8vw,1.85rem);font-weight:400;color:#fff;margin-bottom:0}
+.ucard-taller .ucard-dato{font-size:14.5px;line-height:1.45;margin-bottom:0}
+.taller-horario{margin:10px 0 0;font-size:14px;font-weight:700;color:#fff}
+.taller-inscribir{width:100%;margin-top:18px;color:#fff;font:inherit;font-size:15px;font-weight:600;text-align:left;cursor:pointer}
+/* El botón cubre toda la tarjeta, así se puede tocar en cualquier parte */
+.taller-inscribir::after{content:"";position:absolute;inset:0}
+.ucard-taller:hover .ucard-boton{background:rgb(255 255 255 / .26)}
+.ucard-taller:hover .ucard-boton svg,.ucard-taller:focus-within .ucard-boton svg{transform:translateX(4px)}
+.ucard-taller:focus-within{transform:scale(1.03)}
+@media (prefers-reduced-motion: reduce){.ucard-taller:focus-within{transform:none}}
+
+/* La tarjeta es un botón: se le quitan los estilos de botón del navegador */
+button.ucard{width:100%;padding:0;border:0;background:none;font:inherit;text-align:left;cursor:pointer}
+
+/* Ventana que se abre al tocar una tarjeta: portada con foto y color, y la información debajo */
+.umodal .modal-content{overflow:hidden}
+.umodal-portada{position:relative;flex:none;display:flex;align-items:flex-end;min-height:clamp(200px,28vh,280px);isolation:isolate;color:#fff;background:var(--vino)}
+/* Los corazones (omas.js) quedan detrás del título y de la cruz de cerrar */
+.umodal-portada > .umodal-titulos{position:relative;z-index:1}
+.umodal-portada .btn-close{z-index:2}
+.umodal-titulos{padding:28px}
+.umodal-sub{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgb(255 255 255 / .85);margin:0 0 4px}
+.umodal-titulo{font-family:var(--serif);font-weight:400;font-size:clamp(2rem,1.4rem + 2vw,3.2rem);line-height:1.05;color:#fff;margin:0}
+.umodal-portada .btn-close{position:absolute;top:18px;right:18px;padding:10px;border-radius:50%;background-color:rgb(0 0 0 / .35);opacity:1}
+.umodal .modal-body{padding:32px clamp(20px,4vw,48px) 44px;border-top:6px solid rgb(var(--tema))}
+.udet-lead{font-size:clamp(1.1rem,1rem + .5vw,1.35rem);font-weight:500;line-height:1.45;max-width:40em;margin:0}
+.udet-puntos{display:grid;grid-template-columns:repeat(2,1fr);gap:36px 56px;margin-top:40px}
+.udet-puntos article{border-top:3px solid rgb(var(--tema));padding-top:20px}
+.udet-puntos h3{font-family:var(--serif);font-weight:400;font-size:clamp(1.4rem,1.2rem + .6vw,1.75rem);line-height:1.15;margin-bottom:.6rem}
+.udet-puntos p{margin:0;color:var(--tinta-suave)}
+.udet-puntos .enlace-flecha{display:inline-block;margin-top:12px}
+@media (max-width:767.98px){.udet-puntos{grid-template-columns:1fr;gap:28px;margin-top:28px}}

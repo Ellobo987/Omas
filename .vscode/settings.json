@@ -1,0 +1,9 @@
+{
+  "liveServer.settings.root": "/PARTE VISUAL DE OMAS",
+  "liveServer.settings.mount": [
+    ["/css", "./css"],
+    ["/img", "./img"],
+    ["/js", "./js"],
+    ["/admin", "./admin"]
+  ]
+}

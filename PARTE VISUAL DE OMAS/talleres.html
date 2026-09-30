@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Talleres · Las Omas</title>
+<meta name="description" content="Talleres gratuitos de oficios en Córdoba: tejido, cerámica, bioconstrucción, habilidades digitales, cocina y costura. Anotate en Las Omas.">
+<meta name="theme-color" content="#803C47">
+<link rel="icon" type="image/png" href="../img/logo.png">
+<link rel="apple-touch-icon" href="../img/logo.png">
+<!-- Vista previa al compartir (WhatsApp, Instagram, Facebook).
+     Cuando el sitio tenga dominio, cambiar las rutas de og:image y og:url por direcciones completas (https://…) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Las Omas">
+<meta property="og:locale" content="es_AR">
+<meta property="og:title" content="Talleres · Las Omas">
+<meta property="og:description" content="Talleres gratuitos de oficios en Córdoba: tejido, cerámica, bioconstrucción, habilidades digitales, cocina y costura. Anotate en Las Omas.">
+<meta property="og:image" content="../img/pasteleria.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="../css/omas.css">
+</head>
+<body data-pagina="talleres">
+<nav class="navbar navbar-expand-lg sticky-top barra" id="barra">
+  <div class="container">
+    <a class="navbar-brand marca" href="index.html" aria-label="Las Omas, inicio">
+      <img class="logo" src="../img/logo.png" alt="Las Omas, Asociación Civil" width="252" height="300">
+    </a>
+    <!-- En el celular "Doná" va junto al botón del menú; en la compu va después de los enlaces (así el Tab sigue el orden visual) -->
+    <div class="d-flex align-items-center gap-2 d-lg-none">
+      <a class="btn btn-dona" href="dona.html" data-pagina="dona">Doná</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menú">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+    <div class="collapse navbar-collapse" id="menu">
+      <ul class="navbar-nav mx-lg-auto gap-lg-1">
+        <li class="nav-item"><a class="nav-link" href="index.html" data-pagina="inicio">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="nosotras.html" data-pagina="nosotras">Nosotras</a></li>
+        <li class="nav-item"><a class="nav-link" href="que-hacemos.html" data-pagina="que-hacemos">Qué hacemos</a></li>
+        <li class="nav-item"><a class="nav-link" href="empresas.html" data-pagina="empresas">Empresas</a></li>
+        <li class="nav-item"><a class="nav-link" href="talleres.html" data-pagina="talleres">Talleres</a></li>
+        <li class="nav-item"><a class="nav-link" href="contacto.html" data-pagina="contacto">Contacto</a></li>
+      </ul>
+      <a class="btn btn-dona d-none d-lg-inline-block" href="dona.html" data-pagina="dona">Doná</a>
+    </div>
+  </div>
+</nav>
+<main class="vista" data-vista-id="talleres">
+
+  <!-- ===== PORTADA: título ===== -->
+  <header class="tal-hero tal-hero-sin-fotos">
+    <div class="tal-hero-arriba">
+      <div class="container">
+        <h1 class="tal-display">Nuestros <span class="subrayado">talleres</span></h1>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== IMPACTO: ventana que abre la tarjeta de la portada ===== -->
+  <div class="modal fade umodal" id="impacto-talleres" style="--tema:128 60 71" tabindex="-1" aria-labelledby="impacto-talleres-titulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+      <div class="modal-content">
+        <div class="umodal-portada">
+          <div class="umodal-titulos">
+            <p class="umodal-sub">Nuestros talleres en números</p>
+            <h2 class="umodal-titulo" id="impacto-talleres-titulo">Nuestro impacto</h2>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <p class="udet-lead mb-3">Nuestros talleres están pensados como espacios de formación y encuentro. Aquí, mujeres y diversidades no solo aprenden un oficio, sino que también construyen redes de apoyo, reconocen su propio valor y adquieren las herramientas necesarias para emprender, generar ingresos y sostener a sus familias.</p>
+          <p class="udet-lead">Cada año, alrededor de 150 mujeres de todos lados participan activamente en estos espacios, fortaleciendo tanto sus saberes individuales como el entramado de nuestra comunidad. Cada propuesta parte de lo posible y lo cercano; nace del hacer con las manos y con el corazón.</p>
+          <ul class="nos-metricas mt-5">
+            <li><strong>150</strong> mujeres de todos lados participan cada año.</li>
+            <li><strong>Seis</strong> propuestas de formación en oficios y habilidades digitales.</li>
+            <li><strong>Gratuitos</strong> todos nuestros talleres.</li>
+            <li><strong>No hay edad</strong> Toda mujer es bienvenida.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PROPUESTAS: lista de talleres; al elegir uno cambia la foto y la descripción (omas.js) ===== -->
+  <section class="tal-bloque tal-lila" aria-labelledby="propuestas-titulo">
+    <div class="container">
+      <div class="prop-cabecera">
+        <h2 class="tal-titulo" id="propuestas-titulo">Nuestras propuestas de formación</h2>
+        <button type="button" class="impacto-card" data-bs-toggle="modal" data-bs-target="#impacto-talleres">
+          <span class="impacto-card-cifra">150</span>
+          <span class="impacto-card-txt">mujeres de todos lados participan cada año</span>
+          <span class="ucard-boton">Conocé nuestro impacto <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </button>
+      </div>
+      <div class="prop">
+        <ol class="prop-lista">
+          <li class="prop-item activo">
+            <button type="button" class="prop-nombre" aria-expanded="true" aria-controls="p-tejido"><span class="prop-num">01</span>Tejido y Muñequería con Desecho Textil</button>
+            <div class="prop-detalle" id="p-tejido">
+              <img src="../img/munequeria.webp" alt="Alfiletero con forma de corazón hecho en el taller" width="900" height="1200" loading="lazy">
+              <p class="prop-cat">Oficios</p>
+              <p class="prop-desc">Recuperamos saberes populares fomentando la reutilización creativa. Enseñamos a tejer, coser y crear muñecos y objetos únicos, dándole una nueva vida a retazos, lanas y telas en desuso.</p>
+              <a class="enlace-flecha" href="#inscripcion">Ver horarios y anotarme →</a>
+            </div>
+          </li>
+          <li class="prop-item">
+            <button type="button" class="prop-nombre" aria-expanded="false" aria-controls="p-ceramica"><span class="prop-num">02</span>Cartapesta y Cerámica</button>
+            <div class="prop-detalle" id="p-ceramica">
+              <img src="../img/ceramica.jpg" alt="Integrante de Las Omas mostrando una taza de cerámica verde con corazones rosados" width="900" height="1200" loading="lazy">
+              <p class="prop-cat">Oficios</p>
+              <p class="prop-desc">A través del reciclaje de papel y el trabajo con arcilla, desarrollamos piezas decorativas y utilitarias. Fomentamos la expresión artística, la concentración y la capacidad de generar productos listos para la venta.</p>
+              <a class="enlace-flecha" href="#inscripcion">Ver horarios y anotarme →</a>
+            </div>
+          </li>
+          <li class="prop-item">
+            <button type="button" class="prop-nombre" aria-expanded="false" aria-controls="p-bioconstruccion"><span class="prop-num">03</span>Bioconstrucción</button>
+            <div class="prop-detalle" id="p-bioconstruccion">
+              <img src="../img/bioconstruccion.webp" alt="Columnas de una obra de bioconstrucción en un terreno" width="900" height="1200" loading="lazy">
+              <p class="prop-cat">Oficios</p>
+              <p class="prop-desc">Un espacio para aprender a construir desde la sustentabilidad. Utilizamos barro, paja y materiales reciclados para levantar pequeñas estructuras o mejorar espacios, siempre priorizando el trabajo colectivo y el respeto por la tierra.</p>
+              <a class="enlace-flecha" href="#inscripcion">Ver horarios y anotarme →</a>
+            </div>
+          </li>
+          <li class="prop-item">
+            <button type="button" class="prop-nombre" aria-expanded="false" aria-controls="p-digital"><span class="prop-num">04</span>Habilidades Digitales y Reparación de PC</button>
+            <div class="prop-detalle" id="p-digital">
+              <img src="../img/digital.webp" alt="Mujeres aprendiendo a usar la computadora en el taller" width="900" height="1200" loading="lazy">
+              <p class="prop-cat">Digital</p>
+              <p class="prop-desc">Buscamos reducir la brecha tecnológica brindando herramientas clave para la vida cotidiana y el mundo laboral. Enseñamos desde cero: uso de la computadora, navegación en internet, manejo de redes sociales y reparación de PC y notebooks.</p>
+              <a class="enlace-flecha" href="#inscripcion">Ver horarios y anotarme →</a>
+            </div>
+          </li>
+          <li class="prop-item">
+            <button type="button" class="prop-nombre" aria-expanded="false" aria-controls="p-cocina"><span class="prop-num">05</span>Cocina y Pastelería</button>
+            <div class="prop-detalle" id="p-cocina">
+              <img src="../img/pasteleria.jpg" alt="Integrante de Las Omas sonriendo con una torta de chocolate que dice Gracias" width="900" height="1200" loading="lazy">
+              <p class="prop-cat">Oficios</p>
+              <p class="prop-desc">Compartimos recetas prácticas, sabrosas y accesibles utilizando productos locales. Las participantes aprenden a organizar la producción, ya sea para el consumo familiar o para dar el primer paso en su propio emprendimiento.</p>
+              <a class="enlace-flecha" href="#inscripcion">Ver horarios y anotarme →</a>
+            </div>
+          </li>
+          <li class="prop-item">
+            <button type="button" class="prop-nombre" aria-expanded="false" aria-controls="p-molderia"><span class="prop-num">06</span>Moldería y Costura</button>
+            <div class="prop-detalle" id="p-molderia">
+              <img src="../img/maquina.webp" alt="Detalle de una máquina de coser" width="900" height="1200" loading="lazy">
+              <p class="prop-cat">Oficios</p>
+              <p class="prop-desc">Capacitamos en la confección de moldes para indumentaria y en el manejo de máquinas de coser, tanto domésticas como industriales. Creamos utilitarios textiles y trabajamos en la reutilización de uniformes y otros productos.</p>
+              <a class="enlace-flecha" href="#inscripcion">Ver horarios y anotarme →</a>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+  <!-- ===== INSCRIPCIÓN: pasos y talleres (los arma omas.js) ===== -->
+  <section class="tal-bloque" id="inscripcion">
+    <div class="container">
+      <h2 class="tal-titulo">Anotate a un taller</h2>
+      <ol class="tal-pasos">
+        <li><strong>Elegí el taller</strong> Mirá el día y el horario que te quedan cómodos.</li>
+        <li><strong>Completá tus datos</strong> Nombre, DNI y un teléfono con WhatsApp.</li>
+        <li><strong>Te confirmamos</strong> Te escribimos para darte la bienvenida.</li>
+      </ol>
+      <div class="mb-4">
+        <div class="chips" role="group" aria-label="Filtrar talleres">
+          <input type="radio" class="btn-check" name="filtro" id="f-todos" value="todos" checked><label class="chip" for="f-todos">Todos</label>
+          <input type="radio" class="btn-check" name="filtro" id="f-oficios" value="oficios"><label class="chip" for="f-oficios">Oficios</label>
+          <input type="radio" class="btn-check" name="filtro" id="f-digital" value="digital"><label class="chip" for="f-digital">Digital</label>
+        </div>
+      </div>
+      <div class="row g-4" id="lista-talleres"></div>
+    </div>
+  </section>
+
+  <!-- ===== PREGUNTAS RÁPIDAS ===== -->
+  <section class="tal-bloque">
+    <div class="container">
+      <div class="row g-4 g-lg-5">
+        <div class="col-lg-4">
+          <h2 class="tal-titulo">Preguntas rápidas</h2>
+        </div>
+        <div class="col-lg-8">
+          <div class="tal-faq">
+            <details>
+              <summary>¿Dónde son los talleres?</summary>
+              <p>En la Sede OMAS, Camino Chacra de la Merced km 6,5.</p>
+              <!-- Mapa: tarjeta que se inclina con el cursor y al tocarla se expande con el mapa (omas.js) -->
+              <div class="mapa" data-cid="14715882120728170231" data-lat="-31.4026041" data-lng="-64.0920019">
+                <div class="mapa-caja">
+                  <div class="mapa-rejilla" aria-hidden="true"></div>
+                  <div class="mapa-marco"></div>
+                  <button type="button" class="mapa-abrir" aria-expanded="false">
+                    <span class="mapa-arriba">
+                      <svg class="mapa-icono" viewBox="0 0 24 24" aria-hidden="true"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
+                      <span class="mapa-estado"><i></i><span class="mapa-estado-txt">Ver mapa</span></span>
+                    </span>
+                    <span class="mapa-abajo">
+                      <span class="mapa-lugar">Sede OMAS</span>
+                      <span class="mapa-coord">Camino Chacra de la Merced km 6,5<span class="mapa-coord-num"> · 31,4026° S, 64,0920° O</span></span>
+                      <span class="mapa-linea"></span>
+                    </span>
+                  </button>
+                </div>
+                <a class="enlace-flecha mapa-llegar" href="https://maps.app.goo.gl/p1w7CsiWqduSXEgs8" target="_blank" rel="noopener">Cómo llegar →</a>
+              </div>
+            </details>
+            <details>
+              <summary>¿Cuánto cuestan?</summary>
+              <p>Son gratuitos.</p>
+            </details>
+            <details>
+              <summary>¿Quiénes pueden participar?</summary>
+              <p>Cualquier Mujer es bienvenida.</p>
+            </details>
+            <details>
+              <summary>¿Tenés una idea para un taller o querés enseñar?</summary>
+              <p>Buscamos talleristas voluntarias para sumar nuevas propuestas. <a href="contacto.html" data-motivo="Voluntariado">Escribinos</a>.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section></main>
+<footer class="pf">
+  <!-- Luces difusas de fondo y tarjeta de vidrio (inspirado en FooterGlow) -->
+  <div class="pf-luces" aria-hidden="true"><span></span><span></span></div>
+  <div class="container">
+    <div class="pf-vidrio">
+      <div class="pf-marca-col">
+        <a class="pf-marca" href="index.html" aria-label="Las Omas, inicio">
+          <img src="../img/logo.png" alt="" width="252" height="300">
+          <span>Las Omas</span>
+        </a>
+        <p class="pf-txt">Organización de Mujeres que Acompañan con Sentido. Asociación civil sin fines de lucro, en camino a conformar su Cooperativa Textil.</p>
+        <ul class="pf-redes">
+          <li><a href="https://www.instagram.com/lasomasong/" target="_blank" rel="noopener" aria-label="Instagram de Las Omas">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" class="pf-punto"/></svg>
+          </a></li>
+          <li><a href="https://cafecito.app/lasomas" target="_blank" rel="noopener" aria-label="Invitanos un cafecito">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h13v5a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6V9z"/><path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3c0 1.5 1 1.5 1 3M12 3c0 1.5 1 1.5 1 3"/></svg>
+          </a></li>
+        </ul>
+      </div>
+
+      <nav class="pf-columnas" aria-label="Pie de página">
+        <div>
+          <p class="pf-titulo">Secciones</p>
+          <ul class="pf-lista">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="nosotras.html">Nosotras</a></li>
+            <li><a href="que-hacemos.html">Qué hacemos</a></li>
+            <li><a href="talleres.html">Talleres</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="pf-titulo">Sumate</p>
+          <ul class="pf-lista">
+            <li><a href="dona.html">Doná</a></li>
+            <li><a href="empresas.html">Empresas</a></li>
+            <li><a href="contacto.html" data-motivo="Voluntariado">Voluntariado</a></li>
+            <li><a class="pf-cafecito" href="https://cafecito.app/lasomas" target="_blank" rel="noopener">Invitanos un cafecito <span class="pf-latido" aria-hidden="true"></span></a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="pf-titulo">Contacto</p>
+          <ul class="pf-lista pf-contacto">
+            <li><a href="https://maps.app.goo.gl/p1w7CsiWqduSXEgs8" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s7-6.3 7-12a7 7 0 0 0-14 0c0 5.7 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+              <address>Camino Chacra de la Merced km 6,5, Córdoba</address>
+            </a></li>
+            <li><span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              Lunes a viernes, de 9 a 17 h
+            </span></li>
+            <li><a href="contacto.html">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="M4 6l8 7 8-7"/></svg>
+              Escribinos
+            </a></li>
+          </ul>
+          <a class="btn btn-sistema mt-3" href="../admin/ingresar.html" rel="nofollow">Ingreso al sistema</a>
+        </div>
+      </nav>
+    </div>
+    <div class="pf-legal">
+      <span>© 2026 Las Omas · Córdoba, Argentina</span>
+      <span>Todos los derechos reservados.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="../js/modales.js"></script>
+<script src="../js/omas.js"></script>
+</body>
+</html>

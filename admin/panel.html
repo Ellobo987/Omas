@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inicio · Sistema Las Omas</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#803C47">
+<link rel="icon" type="image/png" href="../img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="admin.css">
+<link rel="stylesheet" href="panel.css">
+</head>
+<body class="pag-panel">
+<!-- PROTOTIPO SGI-OMAS · Panel de administración: menú lateral, barra superior y resumen (Inicio).
+     Datos de ejemplo. Cuando exista la API, los números vienen de ella a través de api.js. -->
+<div class="panel">
+
+  <!-- ===== Menú lateral: lo arma menu.js (es el mismo en todas las pantallas) ===== -->
+  <aside class="lateral" id="lateral" aria-label="Menú del sistema"></aside>
+  <div class="velo" id="velo" hidden></div>
+
+  <!-- ===== Contenido ===== -->
+  <div class="principal">
+    <header class="barra-sup">
+      <button type="button" class="abrir-menu" data-abrir-menu aria-label="Abrir menú" aria-controls="lateral" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <h1 class="barra-titulo">Inicio</h1>
+      <a class="btn-pesar" href="pesaje.html">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Registrar pesaje</span>
+      </a>
+    </header>
+
+    <main class="contenido" id="contenido">
+      <div class="saludo">
+        <h2 class="saludo-titulo" id="saludo">Hola</h2>
+        <p class="saludo-texto" id="saludo-texto"></p>
+      </div>
+
+      <!-- El inicio responde tres preguntas: qué resolver hoy, cómo van los pedidos y cómo va el mes -->
+      <div class="inicio">
+        <div class="inicio-col">
+          <!-- 1. Lo que hay que resolver: una sola lista, lo más urgente primero -->
+          <section class="tarjeta tarjeta-hoy" aria-labelledby="hoy-titulo">
+            <div class="tarjeta-cabeza">
+              <h3 class="tarjeta-titulo grande" id="hoy-titulo">Para hoy</h3>
+            </div>
+            <ul class="tareas" id="tareas"></ul>
+          </section>
+
+          <!-- 2. Pedidos de clientes -->
+          <section class="tarjeta" aria-labelledby="pedidos-titulo">
+            <div class="tarjeta-cabeza">
+              <h3 class="tarjeta-titulo" id="pedidos-titulo">Pedidos</h3>
+            </div>
+            <ul class="pedidos" id="pedidos"></ul>
+          </section>
+        </div>
+
+        <div class="inicio-col">
+          <!-- 3. Cómo va el mes: dos números y una frase -->
+          <section class="tarjeta" aria-labelledby="mes-titulo">
+            <div class="tarjeta-cabeza">
+              <h3 class="tarjeta-titulo" id="mes-titulo">Cómo va el mes</h3>
+            </div>
+            <div id="mes"></div>
+          </section>
+
+          <!-- Actividad en vivo -->
+          <section class="tarjeta" aria-labelledby="vivo-titulo">
+            <div class="tarjeta-cabeza">
+              <h3 class="tarjeta-titulo" id="vivo-titulo">Hoy en el depósito</h3>
+              <span class="en-vivo"><i></i>En vivo</span>
+            </div>
+            <ul class="feed" id="feed" aria-live="polite"></ul>
+            <a class="enlace-chico mt-2 d-inline-block" href="pesaje.html">Ir a pesajes →</a>
+          </section>
+        </div>
+      </div>
+
+      <p class="nota-chica mt-4">Prototipo con datos de ejemplo.</p>
+    </main>
+  </div>
+</div>
+
+<div class="aviso" id="aviso" role="status" aria-live="polite"></div>
+<script src="api.js"></script>
+<script src="menu.js"></script>
+<script src="panel.js"></script>
+</body>
+</html>

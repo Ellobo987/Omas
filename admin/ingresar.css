@@ -1,0 +1,109 @@
+/* ===== SGI-OMAS · Ingreso al sistema =====
+   Usa los colores de admin.css. A la izquierda (pantallas grandes) ondas y herramientas del oficio
+   girando alrededor del logo; a la derecha el formulario, que aparece de a partes. */
+
+.pag-ingreso{min-height:100dvh}
+.ingreso{display:grid;min-height:100dvh}
+@media (min-width:992px){.ingreso{grid-template-columns:1fr 1fr}}
+
+/* ===== Arte de la izquierda ===== */
+.ingreso-arte{display:none;position:relative;overflow:hidden;isolation:isolate;background:var(--vino);color:#fff}
+@media (min-width:992px){.ingreso-arte{display:block}}
+
+/* Ondas que laten, desvaneciéndose hacia abajo */
+.ondas{position:absolute;inset:0;z-index:-1;
+  -webkit-mask-image:linear-gradient(to bottom,#000 35%,transparent 95%);mask-image:linear-gradient(to bottom,#000 35%,transparent 95%)}
+.ondas span{position:absolute;top:50%;left:50%;width:calc(130px + var(--i) * 84px);height:calc(130px + var(--i) * 84px);border-radius:50%;
+  border:1px solid rgb(255 255 255 / calc(.24 - var(--i) * .022));background:rgb(255 255 255 / calc(.07 - var(--i) * .007));
+  transform:translate(-50%,-50%);animation:onda 2.8s ease-in-out infinite;animation-delay:calc(var(--i) * .1s)}
+.ondas span:last-child{border-style:dashed}
+@keyframes onda{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(.93)}}
+
+/* Recorridos de las órbitas, punteados como una costura */
+.recorridos{position:absolute;top:50%;left:50%;width:800px;height:800px;margin:-400px 0 0 -400px;
+  fill:none;stroke:rgb(255 255 255 / .26);stroke-width:1.2;stroke-dasharray:6 7}
+
+.orbita{position:absolute;top:50%;left:50%;width:46px;height:46px;margin:-23px 0 0 -23px;display:grid;place-items:center;border-radius:50%;
+  background:var(--vino-hondo);border:1px solid rgb(255 255 255 / .3);
+  animation:orbita calc(var(--dur) * 1s) linear infinite;animation-delay:calc(var(--retraso) * -1s)}
+.orbita.grande{width:58px;height:58px;margin:-29px 0 0 -29px}
+.orbita.reversa{animation-direction:reverse}
+.orbita svg{width:54%;height:54%;fill:none;stroke:#fff;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+@keyframes orbita{
+  from{transform:rotate(0deg) translateY(calc(var(--radio) * 1px)) rotate(0deg)}
+  to{transform:rotate(360deg) translateY(calc(var(--radio) * 1px)) rotate(-360deg)}
+}
+
+.arte-centro{position:absolute;top:50%;left:50%;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;transform:translate(-50%,-50%)}
+.arte-logo{display:grid;place-items:center;width:100px;height:100px;margin-bottom:14px;border-radius:50%;background:#fff;box-shadow:0 14px 34px -14px rgb(0 0 0 / .5)}
+.arte-logo img{width:56px;height:auto}
+.arte-nombre{font-family:var(--serif);font-size:3rem;line-height:1;letter-spacing:-.01em}
+.arte-sub{margin-top:8px;font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgb(255 255 255 / .78)}
+
+/* ===== Formulario ===== */
+.ingreso-lado{display:flex;align-items:center;justify-content:center;padding:32px 24px calc(32px + env(safe-area-inset-bottom));background:var(--crema)}
+.ingreso-caja{width:100%;max-width:400px}
+.ingreso-marca{display:inline-flex;align-items:center;gap:10px;margin-bottom:40px;color:inherit;text-decoration:none;font-family:var(--serif);font-size:1.3rem}
+.ingreso-marca img{width:36px;height:auto}
+.ingreso-titulo{font-family:var(--serif);font-weight:400;font-size:clamp(2.2rem,1.8rem + 2vw,2.8rem);line-height:1.05;letter-spacing:-.01em;margin:0 0 6px}
+.ingreso-bajada{color:var(--tinta-suave);margin:0 0 26px}
+.ingreso-etiqueta{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
+
+/* Borde que se ilumina siguiendo el mouse: una luz bordó detrás del campo
+   (ingresar.js mueve --x y --y) que se ve en el filo de 3px alrededor */
+.brillo{--x:50%;--y:50%;position:relative;padding:3px;border-radius:15px}
+.brillo::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;
+  background:radial-gradient(150px circle at var(--x) var(--y),var(--vino),transparent 80%);transition:opacity .35s ease}
+.brillo:hover::before{opacity:1}
+.brillo:focus-within::before{opacity:.55}
+.ingreso-entrada{position:relative;z-index:1;display:block;width:100%;height:50px;padding:0 14px;border:1px solid var(--linea);border-radius:12px;background:var(--superficie);
+  color:inherit;font:inherit;box-shadow:0 2px 3px -1px rgb(0 0 0 / .08);transition:border-color .2s ease,box-shadow .2s ease}
+.ingreso-entrada::placeholder{color:var(--tinta-suave);opacity:.7}
+.ingreso-entrada:focus{outline:none;border-color:var(--vino);box-shadow:0 0 0 3px color-mix(in srgb,var(--vino) 22%,transparent)}
+.ingreso-entrada[aria-invalid="true"]{border-color:var(--atraso)}
+#clave{padding-right:52px}
+.ver-clave{position:absolute;top:3px;right:3px;bottom:3px;z-index:2;display:grid;place-items:center;width:48px;border:0;border-radius:0 12px 12px 0;background:none;color:var(--tinta-suave)}
+.ver-clave:hover{color:var(--tinta)}
+.ver-clave svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ver-clave .ojo-abierto,.ver-clave[aria-pressed="true"] .ojo-cerrado{display:none}
+.ver-clave[aria-pressed="true"] .ojo-abierto{display:block}
+.ingreso-error{min-height:20px;margin:4px 0 8px;font-size:13px;font-weight:500;color:var(--atraso)}
+.ingreso-error.mayus{color:var(--alerta)}
+
+.ingreso-aviso{margin:0 0 12px;padding:10px 14px;border-radius:12px;background:var(--atraso-suave);color:var(--atraso);font-size:14px;font-weight:500}
+
+.btn-ingresar{position:relative;display:block;width:100%;height:52px;overflow:hidden;border:0;border-radius:14px;background:var(--boton);color:var(--boton-texto);
+  font:inherit;font-size:1.05rem;font-weight:600;box-shadow:inset 0 1px 0 rgb(255 255 255 / .18);transition:background .2s ease,transform .1s ease}
+.btn-ingresar:hover{background:var(--boton-hover)}
+.btn-ingresar:active{transform:scale(.99)}
+.btn-ingresar-texto::after{content:"→";display:inline-block;margin-left:8px;transition:transform .2s ease}
+.btn-ingresar:hover .btn-ingresar-texto::after{transform:translateX(4px)}
+/* Hilo de luz que aparece abajo del botón al pasar el mouse */
+.btn-ingresar-linea{position:absolute;left:0;right:0;bottom:0;height:2px;opacity:0;transition:opacity .5s ease;
+  background:linear-gradient(90deg,transparent,#F2C9D0,transparent)}
+.btn-ingresar-linea::after{content:"";position:absolute;left:25%;right:25%;bottom:0;height:3px;filter:blur(4px);background:inherit}
+.btn-ingresar:hover .btn-ingresar-linea,.btn-ingresar:focus-visible .btn-ingresar-linea{opacity:1}
+.btn-ingresar.cargando{pointer-events:none}
+.btn-ingresar.cargando .btn-ingresar-texto::after{content:none}
+.btn-ingresar.cargando .btn-ingresar-texto::before{content:"";display:inline-block;width:16px;height:16px;margin-right:10px;vertical-align:-3px;
+  border:2px solid rgb(255 255 255 / .4);border-top-color:#fff;border-radius:50%;animation:gira .7s linear infinite}
+.btn-ingresar.adentro{background:var(--ok);pointer-events:none}
+.btn-ingresar.adentro .btn-ingresar-texto::after{content:none}
+@keyframes gira{to{transform:rotate(360deg)}}
+.sacude{animation:sacude .4s ease}
+@keyframes sacude{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+.olvide{display:block;margin:16px auto 0;padding:6px;border:0;background:none;color:var(--acento-texto);font:inherit;font-size:14px;font-weight:600}
+.olvide-nota{margin:8px 0 0;padding:12px 14px;border-radius:12px;background:var(--azulgris-suave);font-size:14px}
+
+.volver-sitio{display:inline-block;margin-top:32px;font-size:14px;font-weight:600;color:var(--acento-texto);text-decoration:none}
+.volver-sitio:hover{text-decoration:underline}
+
+/* ===== Aparición de a partes: una cinta bordó se corre y deja ver cada cosa ===== */
+.revela{position:relative;overflow:hidden;width:fit-content;max-width:100%}
+.revela.ancho{width:calc(100% + 8px);max-width:none;margin:-4px;padding:4px} /* margen para que no se corte el borde de foco */
+.revela > *{animation:revela-sube .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(.22s + var(--orden) * .07s)}
+.revela::after{content:"";position:absolute;top:4px;bottom:4px;left:0;right:0;z-index:3;border-radius:4px;background:var(--vino);pointer-events:none;
+  animation:revela-caja .45s ease-in both;animation-delay:calc(var(--orden) * .07s)}
+@keyframes revela-sube{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+@keyframes revela-caja{from{left:0}to{left:100%}}
