@@ -7,6 +7,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resumir o borrar lo qu
 - La API (ASP.NET Core .NET 10 + SQL Server) todavía no existe: `api.js` la simula con `modoPrototipo: true`.
 - Usuarios de prueba: laura (Coordinadora), sandra (Supervisión), florencia (Depósito). La clave de todos es `omas2026`.
 - Para verlo: Live Server de VS Code (la raíz ya está configurada). El panel está en `/admin/ingresar.html`.
+- Código en GitHub (público): https://github.com/Ellobo987/Omas, rama `main`. Los commits usan el email noreply `Ellobo987@users.noreply.github.com` (configurado solo en este repo) para no mostrar el personal.
 
 ## Decisiones (y por qué)
 - **HTML/CSS/JS sin frameworks ni build, con Bootstrap por CDN:** así el equipo lo puede entender y tocar sin herramientas extra.
