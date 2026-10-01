@@ -2,6 +2,11 @@
    El formulario de donación (paso a paso) y el de inscripción a talleres.
    Antes estaban copiados en cada .html; ahora viven solo acá y se agregan
    a la página al cargar. Tiene que cargarse ANTES de omas.js. */
+
+/* Aviso de datos que va antes de cada botón de enviar: la Ley 25.326 pide
+   decir para qué se usan los datos en el momento en que se piden. */
+var avisoDatos = `<p class="aviso-datos">Usamos estos datos solo para lo que nos pedís acá. No los compartimos con nadie. <a href="privacidad.html">Cómo cuidamos tus datos</a></p>`;
+
 document.body.insertAdjacentHTML("beforeend", `
 <!-- ===== MODAL: DONAR (paso a paso) ===== -->
 <div class="modal fade" id="modal-dona" tabindex="-1" aria-labelledby="dona-titulo" aria-hidden="true">
@@ -61,6 +66,7 @@ document.body.insertAdjacentHTML("beforeend", `
             <p class="mb-1"><strong>Datos para transferir</strong></p>
             <p class="mb-0 texto-chico">Alias: LAS.OMAS.DONA · CBU: a completar · Titular: Asociación Civil OMAS</p>
           </div>
+          ${avisoDatos}
           <button class="btn btn-principal mt-3" type="submit">Confirmar donación</button>
         </form>
 
@@ -85,6 +91,7 @@ document.body.insertAdjacentHTML("beforeend", `
             <div class="col-sm-6"><label class="form-label" for="pr-tel">Teléfono</label><input class="form-control" id="pr-tel" type="tel" required autocomplete="tel" aria-describedby="pr-tel-error"><div class="invalid-feedback" id="pr-tel-error">Escribí el número con característica, por ejemplo 351 555-1234.</div></div>
           </div>
           <p class="texto-chico mt-3 mb-0">Recibimos donaciones en la sede, lunes a viernes de 9 a 17 h. Lo que está en buen estado va a la feria, y lo demás se transforma en el taller.</p>
+          ${avisoDatos}
           <button class="btn btn-principal mt-3" type="submit">Avisar mi donación</button>
         </form>
 
@@ -109,6 +116,7 @@ document.body.insertAdjacentHTML("beforeend", `
             <input class="form-check-input" type="checkbox" id="ed-rse">
             <label class="form-check-label" for="ed-rse">Es parte de nuestro programa de Responsabilidad Social</label>
           </div>
+          ${avisoDatos}
           <button class="btn btn-principal mt-3" type="submit">Enviar propuesta de aporte</button>
         </form>
 
@@ -143,6 +151,7 @@ document.body.insertAdjacentHTML("beforeend", `
             <input class="form-check-input" type="checkbox" id="er-reporte" checked>
             <label class="form-check-label" for="er-reporte">Quiero recibir el reporte de impacto (kilos recuperados y trabajo generado)</label>
           </div>
+          ${avisoDatos}
           <button class="btn btn-principal mt-3" type="submit">Coordinar la donación</button>
         </form>
 
@@ -181,6 +190,7 @@ document.body.insertAdjacentHTML("beforeend", `
             <div class="col-sm-6"><label class="form-label" for="t-dni">DNI</label><input class="form-control" id="t-dni" required inputmode="numeric" aria-describedby="t-dni-error"><div class="invalid-feedback" id="t-dni-error">El DNI tiene 7 u 8 números, con o sin puntos.</div></div>
             <div class="col-sm-6"><label class="form-label" for="t-tel">Teléfono (WhatsApp)</label><input class="form-control" id="t-tel" type="tel" required autocomplete="tel" aria-describedby="t-tel-error"><div class="invalid-feedback" id="t-tel-error">Escribí el número con característica, por ejemplo 351 555-1234.</div></div>
           </div>
+          ${avisoDatos}
           <button class="btn btn-principal mt-3" type="submit">Inscribirme</button>
         </form>
         <div class="gracias" id="taller-ok" hidden>

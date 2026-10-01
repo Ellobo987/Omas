@@ -2,7 +2,7 @@
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resumir o borrar lo que ya no aporte.
 
 ## Estado actual
-- **Sitio público** (`PARTE VISUAL DE OMAS/`): 7 páginas terminadas (inicio, nosotras, qué hacemos, talleres, empresas, doná, contacto). Tiene modales compartidos para donar paso a paso y para inscribirse a talleres (`js/modales.js`).
+- **Sitio público** (`PARTE VISUAL DE OMAS/`): 7 páginas terminadas (inicio, nosotras, qué hacemos, talleres, empresas, doná, contacto) más `privacidad.html` (Ley 25.326, enlazada en el pie). Todos los formularios llevan el aviso de datos (`avisoDatos` en `modales.js`, clase `.aviso-datos`). Tiene modales compartidos para donar paso a paso y para inscribirse a talleres (`js/modales.js`).
 - **SGI-OMAS** (`admin/`): prototipo del frontend con datos de ejemplo. Ya funcionan el ingreso, el Inicio del panel y Depósito y pesajes (donación que entra, retiro y devolución de costureras, taras, tolerancia del 5 %, funciona sin internet).
 - La API (ASP.NET Core .NET 10 + SQL Server) todavía no existe: `api.js` la simula con `modoPrototipo: true`.
 - Usuarios de prueba: laura (Coordinadora), sandra (Supervisión), florencia (Depósito). La clave de todos es `omas2026`.
@@ -30,7 +30,8 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resumir o borrar lo qu
 ## Próximos pasos
 - Módulos marcados como `pronto` en `menu.js`: Producción, Rendimiento, Ventas y pedidos, Catering, Talleres, Reportes para empresas y Usuarios.
 - Conectar la API real y reemplazar los datos de ejemplo (pesajes, panel, talleres de `omas.js`).
-- Completar el CBU en el modal de donación.
+- Completar el CBU en el modal de donación, y el CUIT y la personería en `privacidad.html`. Que alguien con formación legal revise esa página.
+- Confirmar permisos de logos de empresas y de fotos (dos imágenes parecen bajadas de un medio). Evaluar si el DNI hace falta en la inscripción a talleres.
 - Cuando haya dominio: pasar `og:image` y `og:url` a URLs completas.
 
 ## Cómo trabajamos
