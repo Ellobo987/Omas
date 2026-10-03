@@ -1,14 +1,11 @@
 (function(){
-  /* ===== Talleres (datos de ejemplo: después vienen del módulo Talleres del sistema) ===== */
-  var talleres = [
-    {nombre:"Moldería y Costura", tipo:"oficios", img:"img/costurera.webp", desc:"Moldes, máquinas domésticas e industriales y reutilización de uniformes.", dias:"Lun y Mié", hora:"14 a 17 h"},
-    {nombre:"Cocina y Pastelería", tipo:"oficios", img:"img/pasteleria.jpg", desc:"Recetas prácticas con productos locales, para casa o para emprender.", dias:"Mar", hora:"9 a 12 h"},
-    {nombre:"Habilidades digitales y reparación de PC", tipo:"digital", img:"img/digital.webp", desc:"Desde cero: uso de la compu, internet, redes y arreglo de notebooks.", dias:"Jue", hora:"15 a 17 h"},
-    {nombre:"Tejido y muñequería", tipo:"oficios", img:"img/munequeria.webp", desc:"Muñecos y objetos únicos con retazos, lanas y telas en desuso.", dias:"Vie", hora:"10 a 12 h"},
-    {nombre:"Bioconstrucción", tipo:"oficios", img:"img/bioconstruccion.webp", desc:"Construir con barro, paja y materiales reciclados, en equipo.", dias:"Sáb", hora:"9 a 13 h"}
-  ];
-  /* Las páginas están en "PARTE VISUAL DE OMAS/", las imágenes una carpeta arriba */
-  talleres.forEach(function(t){ if(t.img) t.img = "../" + t.img; });
+  /* ===== Talleres =====
+     La lista viene de OmasApi (admin/api.js), que talleres.html carga antes que este archivo.
+     La coordinación les cambia la fecha desde el panel (módulo Talleres); nombre, foto y
+     descripción quedan fijos. El texto de la fecha lo arma OmasApi.textoFecha, igual que en el panel. */
+  var talleres = [];
+  function escTexto(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+  function horarioTaller(t){ return t.sinFecha ? "Fecha a confirmar" : OmasApi.textoFecha(t.cuando); }
   var nombresTipo ={oficios:"Oficios", digital:"Digital", bienestar:"Bienestar"};
   /* Colores de las tarjetas (R G B), se turnan: vino, bordó y azul pizarra */
   var temas = ["128 60 71", "158 39 46", "52 70 90"];
@@ -17,24 +14,38 @@
   /* Tarjetas de inscripción, con el mismo estilo que las de Qué hacemos:
      foto de fondo, degradé de color y botón. Toda la tarjeta abre la inscripción. */
   var lista = document.getElementById("lista-talleres");
-  if(lista){
+  function dibujarTalleres(){
     talleres.forEach(function(t, i){
       var col = document.createElement("div");
       col.className = "col-sm-6 col-lg-4";
       col.dataset.tipo = t.tipo;
       col.innerHTML =
         '<article class="ucard ucard-taller" style="--tema:' + temas[i % temas.length] + '">' +
-          (t.img ? '<img src="' + t.img + '" alt="" width="400" height="516" loading="lazy">' : '') +
+          (t.img ? '<img src="' + escTexto(t.img) + '" alt="" width="400" height="516" loading="lazy">' : '') +
           '<span class="ucard-velo" aria-hidden="true"></span>' +
           '<div class="ucard-cuerpo">' +
-            '<span class="ucard-sub">' + nombresTipo[t.tipo] + '</span>' +
-            '<h3 class="ucard-titulo">' + t.nombre + '</h3>' +
-            '<p class="ucard-dato">' + t.desc + '</p>' +
-            '<p class="taller-horario">' + t.dias + ' · ' + t.hora + '</p>' +
+            '<span class="ucard-sub">' + escTexto(nombresTipo[t.tipo]) + '</span>' +
+            '<h3 class="ucard-titulo">' + escTexto(t.nombre) + '</h3>' +
+            '<p class="ucard-dato">' + escTexto(t.desc) + '</p>' +
+            '<p class="taller-horario">' + escTexto(horarioTaller(t)) + '</p>' +
             '<button type="button" class="ucard-boton taller-inscribir" data-taller="' + i + '">Inscribirme ' + flecha + '</button>' +
           '</div>' +
         '</article>';
       lista.appendChild(col);
+    });
+  }
+  if(lista){
+    var pedidoTalleres = window.OmasApi ? OmasApi.listarTalleres() : Promise.reject();
+    pedidoTalleres.then(function(datos){
+      /* Las páginas están en "PARTE VISUAL DE OMAS/", las imágenes una carpeta arriba */
+      // Si era un día puntual que ya pasó, se muestra "Fecha a confirmar" (y se pueden anotar igual)
+      talleres = datos.map(function(t){
+        return Object.assign({}, t, { img: t.img ? "../" + t.img : "", sinFecha: !t.cuando || t.cuando.modo === "aConfirmar" || OmasApi.yaPaso(t.cuando) });
+      });
+      dibujarTalleres();
+    }).catch(function(){
+      // Si el sistema no responde, la página no queda vacía
+      lista.innerHTML = '<p class="col-12">No pudimos cargar los talleres. <a href="contacto.html" data-motivo="Talleres">Escribinos</a> y te contamos cuáles vienen.</p>';
     });
     document.querySelectorAll('input[name="filtro"]').forEach(function(r){
       r.addEventListener("change", function(){
@@ -94,19 +105,38 @@
     if(!b) return;
     tallerActual = talleres[+b.dataset.taller];
     document.getElementById("taller-titulo").textContent = tallerActual.nombre;
-    document.getElementById("taller-detalle").textContent =
-      tallerActual.dias + ", " + tallerActual.hora + " · Sede OMAS";
-    formTaller.hidden = false; tallerOk.hidden = true; formTaller.reset();
+    document.getElementById("taller-detalle").textContent = horarioTaller(tallerActual) + " · Sede OMAS";
+    formTaller.hidden = false; tallerOk.hidden = true; formTaller.reset(); estadoTaller.textContent = "";
     limpiarErrores(formTaller);
     modalTaller.show();
   });
 
-  formTaller.addEventListener("submit", function(e){
+  /* La inscripción va a la API (POST /api/inscripciones) y aparece en el panel,
+     en Talleres → Inscriptas. Si no se puede enviar, se avisa y no se pierde lo escrito. */
+  var estadoTaller = document.getElementById("taller-estado");
+  formTaller.addEventListener("submit", async function(e){
     e.preventDefault();
     if(!validar(formTaller)) return;
+    var boton = formTaller.querySelector('[type="submit"]');
     var nombre = document.getElementById("t-nombre").value.trim().split(" ")[0];
+    boton.disabled = true; estadoTaller.textContent = "Enviando…";
+    try {
+      await OmasApi.inscribirTaller({
+        tallerId: tallerActual.id,
+        nombre: document.getElementById("t-nombre").value,
+        dni: document.getElementById("t-dni").value,
+        telefono: document.getElementById("t-tel").value
+      });
+    } catch(err){
+      estadoTaller.textContent = "No pudimos enviar la inscripción. Probá de nuevo o escribinos por WhatsApp.";
+      boton.disabled = false;
+      return;
+    }
+    boton.disabled = false; estadoTaller.textContent = "";
     document.getElementById("taller-ok-txt").textContent =
-      nombre + ", te esperamos en " + tallerActual.nombre + ". Te vamos a escribir por WhatsApp para confirmar.";
+      tallerActual.sinFecha
+        ? nombre + ", te anotamos en " + tallerActual.nombre + ". Cuando tengamos la fecha te escribimos por WhatsApp."
+        : nombre + ", te esperamos en " + tallerActual.nombre + ". Te vamos a escribir por WhatsApp para confirmar.";
     formTaller.hidden = true; tallerOk.hidden = false;
   });
 

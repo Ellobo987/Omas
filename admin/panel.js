@@ -28,11 +28,14 @@
     { nombre: "Marta Quiroga", kg: 8, debia: dia(-3) },
     { nombre: "Noemí Vera", kg: 5.5, debia: dia(-1) }
   ];
+  // Las bolsas se piden por unidad (empresas de 1.000 para arriba) y los trapos por kilo
   var PEDIDOS = [
-    { cliente: "ANJOR", producto: "Trapos", kg: 50, entregado: 20, vence: dia(3) },
-    { cliente: "Coca-Cola", producto: "Trapos en bolsas de 10 kg", kg: 180, entregado: 100, vence: dia(12) },
-    { cliente: "All Color", producto: "Trapos", kg: 20, entregado: 0, vence: dia(9) }
+    { cliente: "Muta Objetos", producto: "Bolsas de lienzo a medida", cantidad: 3000, entregado: 2100, unidad: "bolsas", vence: dia(2) },
+    { cliente: "ANJOR", producto: "Trapos", cantidad: 50, entregado: 20, unidad: "kg", vence: dia(3) },
+    { cliente: "Coca-Cola", producto: "Bolsas de lienzo", cantidad: 1000, entregado: 0, unidad: "bolsas", vence: dia(20) },
+    { cliente: "Coca-Cola", producto: "Trapos en bolsas de 10 kg", cantidad: 180, entregado: 100, unidad: "kg", vence: dia(12) }
   ];
+  function cant(n, unidad){ return num(n) + " " + unidad; }
   var DIFERENCIAS = [{ origen: "Holcim", remito: 257, balanza: 245.5 }];
 
   var RELOJ = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
@@ -50,10 +53,10 @@
         accion: "Avisarle" });
     });
     PEDIDOS.forEach(function(p){
-      var faltan = p.kg - p.entregado, n = diasHasta(p.vence);
+      var faltan = p.cantidad - p.entregado, n = diasHasta(p.vence);
       if(faltan > 0 && n <= 3) tareas.push({ nivel: "atento", etiqueta: "Vence pronto", icono: CAJA,
-        titulo: p.cliente + " necesita " + num(faltan) + " kg más " + cuando(p.vence),
-        detalle: "Ya se entregaron " + num(p.entregado) + " de los " + num(p.kg) + " kg.",
+        titulo: p.cliente + " necesita " + cant(faltan, p.unidad) + " más " + cuando(p.vence),
+        detalle: "Ya se entregaron " + num(p.entregado) + " de " + cant(p.cantidad, p.unidad) + " · " + p.producto + ".",
         accion: "Ver pedido" });
     });
     DIFERENCIAS.forEach(function(d){
@@ -79,13 +82,14 @@
   /* ===== 2. Pedidos: cuánto falta y para cuándo, con una barra de un solo color ===== */
   function dibujarPedidos(){
     document.getElementById("pedidos").innerHTML = PEDIDOS.slice().sort(function(a, b){ return a.vence - b.vence; }).map(function(p){
-      var pct = Math.min(100, p.entregado / p.kg * 100), faltan = p.kg - p.entregado, pronto = diasHasta(p.vence) <= 3;
+      var pct = Math.min(100, p.entregado / p.cantidad * 100), faltan = p.cantidad - p.entregado, pronto = diasHasta(p.vence) <= 3;
+      var nombreUnidad = p.unidad === "kg" ? "kilos" : p.unidad;
       return "<li>" +
         '<div class="pedido-cabeza"><strong>' + esc(p.cliente) + '</strong><span class="pedido-vence' + (pronto ? " cerca" : "") + '">' +
           (pronto ? RELOJ : "") + "Para " + cuando(p.vence) + "</span></div>" +
-        '<div class="avance" role="img" aria-label="' + num(p.entregado) + " de " + num(p.kg) + ' kilos entregados"><i data-ancho="' + pct.toFixed(1) + '"></i></div>' +
-        '<p class="pedido-pie">' + (faltan > 0 ? "Faltan <b>" + num(faltan) + " kg</b>" : "<b>Completo</b>") +
-          " · " + num(p.entregado) + " de " + num(p.kg) + " kg · " + esc(p.producto) + "</p>" +
+        '<div class="avance" role="img" aria-label="' + num(p.entregado) + " de " + num(p.cantidad) + " " + nombreUnidad + ' entregados"><i data-ancho="' + pct.toFixed(1) + '"></i></div>' +
+        '<p class="pedido-pie">' + (faltan > 0 ? "Faltan <b>" + esc(cant(faltan, p.unidad)) + "</b>" : "<b>Completo</b>") +
+          " · " + num(p.entregado) + " de " + esc(cant(p.cantidad, p.unidad)) + " · " + esc(p.producto) + "</p>" +
         "</li>";
     }).join("");
     setTimeout(function(){

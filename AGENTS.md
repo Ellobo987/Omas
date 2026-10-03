@@ -1,6 +1,6 @@
 # AGENTS.md — Las Omas (sitio + SGI-OMAS)
 Sitio público y sistema de gestión interno (SGI-OMAS) de **Las Omas**, una asociación civil de mujeres de Córdoba que ofrece contención, oficios y trabajo en economía circular textil. El sitio busca donaciones, inscripciones a talleres y empresas aliadas. El SGI-OMAS es el proyecto de la cátedra: ordenar el depósito, la producción y el rendimiento del taller.
-La memoria entre sesiones (estado, decisiones y próximos pasos) está en [memory.md](memory.md).
+La memoria entre sesiones (estado, decisiones y próximos pasos) está en [memory.md](memory.md). Cómo trabaja de verdad Las Omas (unidades, circuito de la ropa, ventas, cooperativa) está en [relevamiento.md](relevamiento.md): **leerlo antes de diseñar un módulo**.
 
 ## Stack y estructura
 - HTML + CSS + JavaScript sin frameworks, sin npm y sin build. Bootstrap 5.3.3 y Google Fonts por CDN.
@@ -30,7 +30,10 @@ No hay build, tests ni lint. Para verlo:
 ## Reglas de dominio / trampas conocidas
 - **El sistema no maneja pagos a costureras**: nada de liquidaciones, sueldos, adelantos, reparto 85/15, descuentos de bolsas o tijeras ni montos en pesos por trabajadora. Esos pagos son informales y registrarlos tiene riesgo legal. En su lugar existe **Rendimiento** (kg por pedido, tiempos de retiro y devolución, calidad). Las planillas de pagos solo sirven como fuente de kilos y de pedidos.
 - Pesajes: hay tres registros (entra una donación, retira una costurera, devuelve una costurera). La tara se descuenta del peso. Se acepta una diferencia de hasta 5 % entre lo retirado y lo devuelto. Si no hay internet, los pesajes quedan "sin subir".
-- Códigos de lote por destino: F feria, D desmarcado, T trapos, B bolsas, X desbastado, Z descarte (ej. `T-0231`).
+- Códigos de lote por destino: F feria, D desmarcado, T trapos, M taller textil (merchandising), B bolsas, X desbastado, Z descarte (ej. `T-0231`).
+- Pedidos: las **bolsas de lienzo se piden por unidad** (de 100 a 6.000) y los **trapos por kg**. Cada pedido lleva su unidad: nunca suponer kg.
+- Todo lo textil va a facturar la **Cooperativa Textil** (en formación). Catering y talleres siguen en la asociación civil. Ventas y gastos tienen que saber a qué entidad pertenecen.
+- No escribir en el repo (que es público) datos personales ni situaciones particulares de las mujeres que salgan del relevamiento.
 - Roles: Coordinadora (todo, incluso Usuarios), Supervisión (aprueba), Depósito (registra, no aprueba).
 - No hay registro público: las cuentas las crea la Coordinadora.
 - Sesión: cookie HttpOnly/Secure/SameSite=Strict, no persistente y sin "recordarme". El prototipo usa `sessionStorage`, **nunca** `localStorage`.

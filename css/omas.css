@@ -775,8 +775,6 @@ div.contacto-dato:hover{border-color:color-mix(in srgb,var(--vino) 50%,var(--lin
 .pf-contacto a,.pf-contacto span{display:flex;align-items:flex-start;gap:10px;color:var(--tinta-suave)}
 .pf-contacto svg{width:18px;height:18px;flex:none;margin-top:2px;fill:none;stroke:var(--vino);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .pf-contacto address{margin:0;font-style:normal}
-.pf .btn-sistema{border:1px solid color-mix(in srgb,var(--tinta) 25%,transparent);color:var(--tinta);background:transparent;padding:6px 14px;font-size:13.5px;border-radius:8px}
-.pf .btn-sistema:hover{border-color:var(--vino);color:var(--tinta);background:rgb(128 60 71 / .08)}
 .pf-nota{margin:10px 0 0;font-size:13px;color:var(--tinta-suave)}
 .pf-legal{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;margin-top:28px;font-size:13px;color:var(--tinta-suave)}
 .pf-legal a{color:inherit}

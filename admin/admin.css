@@ -229,6 +229,7 @@ button.etiqueta:hover{transform:rotate(-.6deg);border-color:color-mix(in srgb,va
 .etiqueta-campo{display:block;font-size:14px;font-weight:600;margin:0 0 6px}
 .entrada{width:100%;padding:12px 14px;margin-bottom:16px;border:1px solid var(--linea);border-radius:12px;background:var(--superficie);color:inherit;font:inherit}
 .entrada:focus{border-color:var(--vino);outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--vino) 18%,transparent)}
+.entrada[aria-invalid="true"]{border-color:var(--atraso)}
 textarea.entrada{min-height:84px;resize:vertical}
 .fila-entrada{display:flex;gap:8px}
 .fila-entrada .entrada{margin-bottom:0}

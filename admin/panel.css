@@ -28,6 +28,16 @@
 .menu-item:hover{background:var(--rosa);color:var(--tinta)}
 .menu-item.activo{background:color-mix(in srgb,var(--vino) 10%,var(--superficie));color:var(--acento-texto);font-weight:600}
 .menu-item.activo::before{content:"";position:absolute;left:-14px;top:8px;bottom:8px;width:4px;border-radius:0 4px 4px 0;background:var(--vino)}
+/* Módulo con opciones (Talleres): el botón se ve igual que los enlaces y la flechita gira al abrir */
+button.menu-item{width:100%;border:0;background:none;font-family:inherit;text-align:left}
+button.menu-item.activo{background:color-mix(in srgb,var(--vino) 10%,var(--superficie))}
+.menu-item svg.menu-flecha{width:18px;height:18px;margin-left:auto;stroke-width:2.2;transition:transform .2s ease}
+.menu-item[aria-expanded="true"] .menu-flecha{transform:rotate(180deg)}
+@media (prefers-reduced-motion: reduce){.menu-flecha{transition:none}}
+.submenu{list-style:none;margin:2px 0 6px;padding:0 0 0 30px}
+.submenu-item{display:block;padding:8px 12px;margin-bottom:2px;border-radius:10px;color:var(--tinta-suave);text-decoration:none;font-size:14.5px}
+.submenu-item:hover{background:var(--rosa);color:var(--tinta)}
+.submenu-item[aria-current="page"]{color:var(--acento-texto);font-weight:600;background:color-mix(in srgb,var(--vino) 6%,var(--superficie))}
 .pronto{margin-left:auto;padding:1px 7px;border-radius:999px;background:var(--azulgris-suave);font-size:10.5px;font-weight:600;letter-spacing:.02em;color:var(--tinta-suave)}
 
 .lateral-usuario{display:flex;align-items:center;gap:10px;margin-top:auto;padding:12px 8px 4px;border-top:1px solid var(--linea)}
@@ -136,3 +146,64 @@
 :root[data-theme="dark"] .avance i{background:#C98A95}
 .pedido-pie{margin:7px 0 0;font-size:13.5px;color:var(--tinta-suave);font-variant-numeric:tabular-nums}
 .pedido-pie b{font-weight:600;color:var(--tinta)}
+
+/* ===== Talleres: tarjetas para cambiar la fecha que se ve en el sitio (talleres.js) ===== */
+.taller-lista{display:grid;gap:14px}
+.taller-form{margin-top:4px}
+.taller-error{margin:10px 0 0;font-size:14px;font-weight:600;color:var(--atraso)}
+/* Opciones para tocar (modo y días): radios y casillas de verdad, con forma de píldora.
+   El input queda oculto pero sigue andando con el teclado y el lector de pantalla. */
+.chips-panel{display:flex;flex-wrap:wrap;gap:8px}
+.chip-check{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.chips-panel .pildora{display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin:0;cursor:pointer;user-select:none}
+.chips-panel .pildora-dia{min-width:56px}
+.chip-check:checked+.pildora{background:var(--vino);border-color:var(--vino);color:#fff}
+.chip-check:focus-visible+.pildora{outline:3px solid color-mix(in srgb,var(--vino) 55%,transparent);outline-offset:2px}
+.fila-horario{margin-bottom:4px}
+.campo-hora{flex:1;min-width:0;margin:0}
+.campo-hora span{display:block;font-size:13px;color:var(--tinta-suave);margin-bottom:4px}
+.taller-botones{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:16px}
+.taller-ver{display:flex;align-items:center;justify-content:center;margin-top:20px;text-decoration:none}
+/* Secciones de Talleres (Modificar talleres / Inscripciones): una debajo de la otra, grandes para el pulgar */
+.pestanas{display:flex;flex-direction:column;gap:6px;padding:6px;margin:8px 0 20px;border-radius:16px;background:var(--azulgris-suave)}
+.pestana{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:56px;padding:14px 18px;border-radius:12px;font-size:1.08rem;color:var(--tinta-suave);font-weight:600;text-decoration:none}
+.pestana:hover{color:var(--tinta)}
+.pestana[aria-current="page"]{background:var(--superficie);color:var(--tinta);box-shadow:0 1px 3px rgb(0 0 0 / .08)}
+.pestana-num{min-width:24px;padding:1px 8px;border-radius:999px;background:var(--vino);color:#fff;font-size:12.5px;font-weight:700;text-align:center}
+/* Lista de inscriptas */
+.inscriptas{list-style:none;margin:0;padding:0}
+.inscriptas li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px dashed var(--linea)}
+.inscriptas li:first-child{padding-top:0}
+.inscriptas li:last-child{border-bottom:0;padding-bottom:0}
+.inscripta-datos{display:flex;flex-direction:column;min-width:0}
+.inscripta-datos strong{font-weight:600}
+/* Talleres más ancho que el resto del panel: en la compu entran dos tarjetas por fila */
+.pag-talleres .app{max-width:960px}
+.pag-talleres .pestanas{max-width:560px}
+.taller-grilla{display:grid;gap:18px;align-items:start}
+@media (min-width:768px){.taller-grilla{grid-template-columns:1fr 1fr}}
+/* Tarjeta vertical de taller: foto grande arriba, datos abajo */
+.taller-card{padding:0;overflow:hidden;box-shadow:0 1px 2px rgb(0 0 0 / .04),0 10px 28px -16px rgb(0 0 0 / .25);transition:transform .2s ease,box-shadow .2s ease}
+@media (hover:hover){.taller-card:not(.editando):hover{transform:translateY(-3px);box-shadow:0 2px 4px rgb(0 0 0 / .05),0 18px 36px -16px rgb(0 0 0 / .3)}}
+@media (prefers-reduced-motion: reduce){.taller-card{transition:none}.taller-card:not(.editando):hover{transform:none}}
+.taller-card-foto{position:relative;aspect-ratio:16/9;background:var(--azulgris-suave)}
+.taller-card-foto img{display:block;width:100%;height:100%;object-fit:cover}
+.taller-estado{position:absolute;top:12px;left:12px;padding:5px 12px;border-radius:999px;background:var(--vino);color:#fff;font-size:12.5px;font-weight:700;box-shadow:0 2px 8px rgb(0 0 0 / .18)}
+.taller-estado.a-confirmar{background:var(--alerta-suave);color:var(--alerta)}
+.taller-estado.ya-paso{background:var(--atraso-suave);color:var(--atraso)}
+.taller-card-cuerpo{display:flex;flex-direction:column;gap:8px;padding:16px 18px 18px}
+.taller-card-titulo{margin:0 0 2px;font-family:var(--serif);font-weight:400;font-size:1.5rem;line-height:1.15}
+.taller-card-fecha,.taller-card-anotadas{display:flex;align-items:center;gap:8px;margin:0}
+.taller-card-fecha{font-size:15.5px;font-weight:600;color:var(--tinta)}
+.taller-card-anotadas{font-size:14px;color:var(--tinta-suave)}
+.taller-card-fecha svg,.taller-card-anotadas svg{flex:none;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.taller-card-fecha svg{color:var(--acento-texto)}
+.taller-card-boton{margin-top:8px}
+/* Vista previa: imita la tarjeta del sitio público (foto de fondo, degradé vino, texto blanco) */
+.previa-sitio{position:relative;isolation:isolate;overflow:hidden;aspect-ratio:4/3;max-height:280px;width:100%;border-radius:16px;background:var(--vino);color:#fff}
+.previa-sitio img{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover}
+.previa-velo{position:absolute;inset:0;z-index:-1;background:linear-gradient(to top,color-mix(in srgb,var(--vino) 96%,transparent) 0%,color-mix(in srgb,var(--vino) 60%,transparent) 45%,transparent 85%)}
+.previa-cuerpo{position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;gap:4px;padding:16px}
+.previa-titulo{font-family:var(--serif);font-size:1.3rem;line-height:1.1}
+.previa-horario{font-size:14px;font-weight:600}
+.previa-boton{align-self:flex-start;margin-top:6px;padding:6px 12px;border-radius:999px;background:#fff;color:var(--vino);font-size:13px;font-weight:700}

@@ -192,11 +192,12 @@ document.body.insertAdjacentHTML("beforeend", `
           </div>
           ${avisoDatos}
           <button class="btn btn-principal mt-3" type="submit">Inscribirme</button>
+          <p class="texto-chico mt-2 mb-0" id="taller-estado" role="status"></p>
         </form>
         <div class="gracias" id="taller-ok" hidden>
           <h3>¡Listo, te anotamos!</h3>
           <p id="taller-ok-txt"></p>
-          <p class="texto-chico mb-0">En el boceto no se envía nada. En el sistema real, la inscripción llega al módulo de Talleres.</p>
+          <p class="texto-chico mb-0">Prototipo: la inscripción se ve en el panel (Talleres → Inscriptas) si lo abrís en esta misma pestaña.</p>
         </div>
       </div>
     </div>

@@ -28,6 +28,7 @@
     "Tela para trapos": "Trapos de 30 × 40",
     "Uniformes para desmarcar": "Prendas desmarcadas",
     "Lienzo para bolsas": "Bolsas de lienzo",
+    "Uniformes para merchandising": "Merchandising",
     "Textil para desbastado": "Desbastado"
   };
   // Lotes que las costureras tienen en su casa o en el taller
@@ -46,15 +47,18 @@
     { codigo: "B-0051", material: "Lienzo para bolsas", kg: 22.3, ubicacion: "Estante C3" },
     { codigo: "X-0017", material: "Textil para desbastado", kg: 90.0, ubicacion: "Piso, sector D" }
   ];
-  var DONANTES = ["Naranja X", "Holcim", "Conci", "Otra empresa"];
+  var DONANTES = ["Naranja X", "Holcim", "Conci", "Hiper Libertad", "Otra empresa"];
+  // Los destinos son las preguntas de la coordinación: cuántos kg fueron a feria, a trapos, a desbastado y al taller
   var DESTINOS = [
     { id: "feria", nombre: "Feria", letra: "F", material: "Prendas para feria" },
     { id: "desmarcado", nombre: "Desmarcado", letra: "D", material: "Uniformes para desmarcar" },
     { id: "trapos", nombre: "Trapos", letra: "T", material: "Tela para trapos" },
+    // Merchandising con los propios uniformes de la empresa ("Vuelta de Rosca")
+    { id: "taller", nombre: "Taller textil", letra: "M", material: "Uniformes para merchandising" },
     { id: "desbastado", nombre: "Desbastado", letra: "X", material: "Textil para desbastado" },
     { id: "descarte", nombre: "Descarte", letra: "Z", material: "Descarte" }
   ];
-  var proximoCodigo = { F: 88, D: 121, T: 241, B: 52, X: 18, Z: 9 };
+  var proximoCodigo = { F: 88, D: 121, T: 241, M: 34, B: 52, X: 18, Z: 9 };
   // Tara: lo que se descuenta porque no es tela (se carga una vez en la configuración)
   var TARAS = [
     { id: "no", nombre: "Sin tara", kg: 0 },
@@ -306,7 +310,7 @@
     var d = estado.d;
     return '<div class="foto"><label class="btn-foto">' + ICONO.camara + (d.foto ? "Cambiar foto" : "Foto del visor de la balanza") +
       '<input type="file" accept="image/*" capture="environment" class="oculto-visual" data-foto></label>' +
-      (d.foto ? '<img src="' + d.foto + '" alt="Foto del visor de la balanza">' : '<span class="nota-chica">Opcional, queda de respaldo</span>') + "</div>";
+      (d.foto ? '<img src="' + d.foto + '" alt="Foto del visor de la balanza">' : '<span class="nota-chica">Obligatoria para seguir: queda de respaldo</span>') + "</div>";
   }
   function teclear(tecla){
     var c = estado.d.campos[estado.d.activo], v = c.bruto;
@@ -345,7 +349,7 @@
         "). Revisá que no falte una coma.<br><button type=\"button\" class=\"pildora\" data-accion=\"confirmarRaro\">Sí, está bien</button></div>";
     }
     d.faltaNota = !!total && rel > TOLERANCIA;
-    return { html: html, boton: { texto: "Continuar", habilitado: t > 0 && (!raro || d.confirmoRaro) } };
+    return { html: html, boton: { texto: "Continuar", habilitado: t > 0 && (!raro || d.confirmoRaro) && !!d.foto } };
   };
 
   function calidadCompleta(){
@@ -465,11 +469,36 @@
     }).join("") +
       '<hr class="puntada">' +
       '<label class="etiqueta-campo" for="remito">Número de remito</label>' +
-      '<input class="entrada" id="remito" inputmode="numeric" data-dato="remito" placeholder="Ej.: 0004-00012345" value="' + esc(d.remito) + '">' +
+      '<input class="entrada mb-1" id="remito" inputmode="numeric" maxlength="14" data-dato="remito" aria-describedby="remito-ayuda"' +
+        (d.remito && !remitoValido(d.remito) ? ' aria-invalid="true"' : "") + ' value="' + esc(d.remito) + '">' +
+      '<p class="nota-chica mb-3" id="remito-ayuda" aria-live="polite">' + ayudaRemito(d.remito) + "</p>" +
       '<label class="etiqueta-campo" for="kgRemito">Kilos que dice el remito</label>' +
       '<input class="entrada" id="kgRemito" inputmode="decimal" data-dato="kgRemito" placeholder="Ej.: 250" value="' + esc(d.kgRemito) + '">';
-    return { html: html, boton: { texto: "Empezar a pesar", habilitado: !!d.empresa && num(d.kgRemito) > 0 } };
+    return { html: html, boton: { texto: "Empezar a pesar", habilitado: !!d.empresa && remitoValido(d.remito) && num(d.kgRemito) > 0 } };
   };
+
+  /* El remito tiene 13 números y un guion. Contamos los números para avisar si faltan o sobran,
+     así se nota al toque un dígito de menos o de más. Que sea correlativo lo va a controlar la API. */
+  var REMITO_DIGITOS = 13, REMITO_GUIONES = 1;
+  function contarRemito(v){
+    v = v || "";
+    return { numeros: (v.match(/\d/g) || []).length, guiones: (v.match(/-/g) || []).length, otros: /[^\d-]/.test(v) };
+  }
+  function remitoValido(v){
+    var c = contarRemito(v);
+    return c.numeros === REMITO_DIGITOS && c.guiones === REMITO_GUIONES && !c.otros &&
+      !/^-|-$|--/.test(v);
+  }
+  function ayudaRemito(v){
+    var c = contarRemito(v);
+    if(!v) return "Tiene " + REMITO_DIGITOS + " números y un guion.";
+    if(c.otros) return "Usá solo números y el guion.";
+    if(c.numeros < REMITO_DIGITOS) return "Faltan " + (REMITO_DIGITOS - c.numeros) + " números (tiene que tener " + REMITO_DIGITOS + ").";
+    if(c.numeros > REMITO_DIGITOS) return "Sobran " + (c.numeros - REMITO_DIGITOS) + " números (tiene que tener " + REMITO_DIGITOS + ").";
+    if(c.guiones !== REMITO_GUIONES) return "Tiene que tener un solo guion.";
+    if(!remitoValido(v)) return "El guion va entre los números.";
+    return "Número de remito correcto.";
+  }
 
   function totalPesadas(){ return estado.d.pesadas.reduce(function(s, p){ return s + p; }, 0); }
   PASOS.pesadas = function(){
@@ -488,7 +517,7 @@
         '<div class="balance-estado ' + (bien ? "bien" : "ojo") + '">' + (bien ? ICONO.bien + "Coincide con el remito" :
           ICONO.ojo + (dif < 0 ? "Faltan " + kg(-dif) + " respecto del remito" : "Hay " + kg(dif) + " más que en el remito")) + "</div></div>";
     }
-    return { html: html, boton: { texto: "Clasificar en fardos", habilitado: d.pesadas.length > 0 } };
+    return { html: html, boton: { texto: "Clasificar en fardos", habilitado: d.pesadas.length > 0 && !!d.foto } };
   };
 
   function restante(){
@@ -749,6 +778,12 @@
       return;
     }
     if(el.dataset.dato){ estado.d[el.dataset.dato] = el.value; refrescarBoton(); }
+    // El aviso del remito se actualiza en su lugar, sin redibujar la pantalla
+    if(el.id === "remito"){
+      var mal = el.value && !remitoValido(el.value);
+      if(mal) el.setAttribute("aria-invalid", "true"); else el.removeAttribute("aria-invalid");
+      document.getElementById("remito-ayuda").textContent = ayudaRemito(el.value);
+    }
   });
   app.addEventListener("change", function(e){
     var el = e.target;
