@@ -898,3 +898,26 @@ button.ucard{width:100%;padding:0;border:0;background:none;font:inherit;text-ali
 .udet-puntos p{margin:0;color:var(--tinta-suave)}
 .udet-puntos .enlace-flecha{display:inline-block;margin-top:12px}
 @media (max-width:767.98px){.udet-puntos{grid-template-columns:1fr;gap:28px;margin-top:28px}}
+
+.tal-intro-bloque {
+  max-width: 42em;
+}
+
+.tal-intro.titular{
+  font-family: var(--serif);
+  font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.75rem);
+  font-weight:600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--tinta);
+  margin-bottom: 0.75rem;
+}
+
+.tal-intro-bajada {
+  font-family: var(--texto);
+  font-size: clamp(1rem, 0.95rem + 0.2vm, 1.1rem);
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--tinta-suave);
+  margin: 0;
+}
