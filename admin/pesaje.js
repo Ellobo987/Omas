@@ -306,11 +306,11 @@
     }).join("") + '<button type="button" class="tecla" data-accion="tecla" data-tecla="borrar" aria-label="Borrar">' + ICONO.borrar + "</button></div>";
     return html;
   }
-  function botonFoto(){
+  function botonFoto(aviso){
     var d = estado.d;
     return '<div class="foto"><label class="btn-foto">' + ICONO.camara + (d.foto ? "Cambiar foto" : "Foto del visor de la balanza") +
       '<input type="file" accept="image/*" capture="environment" class="oculto-visual" data-foto></label>' +
-      (d.foto ? '<img src="' + d.foto + '" alt="Foto del visor de la balanza">' : '<span class="nota-chica">Obligatoria para seguir: queda de respaldo</span>') + "</div>";
+      (d.foto ? '<img src="' + d.foto + '" alt="Foto del visor de la balanza">' : '<span class="nota-chica">' + (aviso || "Obligatoria para seguir: queda de respaldo") + "</span>") + "</div>";
   }
   function teclear(tecla){
     var c = estado.d.campos[estado.d.activo], v = c.bruto;
@@ -500,24 +500,27 @@
     return "Número de remito correcto.";
   }
 
-  function totalPesadas(){ return estado.d.pesadas.reduce(function(s, p){ return s + p; }, 0); }
+  // Cada pesada guarda su propia foto del visor: si se pesa de a partes, cada parte queda respaldada
+  function totalPesadas(){ return estado.d.pesadas.reduce(function(s, p){ return s + p.kg; }, 0); }
   PASOS.pesadas = function(){
     var d = estado.d, n = neto(d.campos.pesada), total = totalPesadas(), remito = num(d.kgRemito);
+    var puedeSumar = n > 0 && !!d.foto;
     var html = '<h1 class="titulo">Pesada ' + (d.pesadas.length + 1) + "</h1>" +
       '<p class="bajada">Si no entra todo junto en la balanza, pesá de a partes y sumalas.</p>' +
-      visor([["pesada", "Peso en la balanza"]]) + botonFoto() +
-      '<button type="button" class="btn-linea" data-accion="sumarPesada"' + (n > 0 ? "" : " disabled") + ">Sumar esta pesada" + (n > 0 ? " (" + kg(n) + ")" : "") + "</button>";
+      visor([["pesada", "Peso en la balanza"]]) + botonFoto("Obligatoria para sumar cada pesada: queda de respaldo") +
+      '<button type="button" class="btn-linea" data-accion="sumarPesada"' + (puedeSumar ? "" : " disabled") + ">Sumar esta pesada" + (n > 0 ? " (" + kg(n) + ")" : "") + "</button>";
     if(d.pesadas.length){
       var dif = Math.round((total - remito) * 100) / 100, bien = Math.abs(dif) / remito <= TOLERANCIA;
       html += '<div class="balance mt-3">' + d.pesadas.map(function(p, i){
-        return '<div class="balance-fila"><span>Pesada ' + (i + 1) + ' <button type="button" class="enlace py-0 ms-2" data-accion="quitarPesada" data-i="' + i + '" aria-label="Quitar pesada ' + (i + 1) + '">quitar</button></span><span>' + kg(p) + "</span></div>";
+        return '<div class="balance-fila"><span class="balance-pesada"><img class="balance-foto" src="' + p.foto + '" alt="Foto de la pesada ' + (i + 1) + '">Pesada ' + (i + 1) +
+          ' <button type="button" class="enlace py-0 ms-2" data-accion="quitarPesada" data-i="' + i + '" aria-label="Quitar pesada ' + (i + 1) + '">quitar</button></span><span>' + kg(p.kg) + "</span></div>";
       }).join("") + "<hr>" +
         '<div class="balance-fila total"><span>Total en balanza</span><span>' + kg(total) + "</span></div>" +
         '<div class="balance-fila"><span>Dice el remito</span><span>' + kg(remito) + "</span></div>" +
         '<div class="balance-estado ' + (bien ? "bien" : "ojo") + '">' + (bien ? ICONO.bien + "Coincide con el remito" :
           ICONO.ojo + (dif < 0 ? "Faltan " + kg(-dif) + " respecto del remito" : "Hay " + kg(dif) + " más que en el remito")) + "</div></div>";
     }
-    return { html: html, boton: { texto: "Clasificar en fardos", habilitado: d.pesadas.length > 0 && !!d.foto } };
+    return { html: html, boton: { texto: "Clasificar en fardos", habilitado: d.pesadas.length > 0 } };
   };
 
   function restante(){
@@ -752,9 +755,13 @@
       case "borrarFirma": d.firmado = false; render(false); break;
       case "empresa": d.empresa = el.dataset.nombre; render(false); break;
       case "sumarPesada":
-        d.pesadas.push(neto(d.campos.pesada)); d.campos.pesada.bruto = "";
+        if(!d.foto) break; // el botón ya está deshabilitado: es solo por las dudas
+        // La foto pasa a la pesada y la próxima arranca sin foto
+        d.pesadas.push({ kg: neto(d.campos.pesada), foto: d.foto }); d.campos.pesada.bruto = ""; d.foto = null;
         avisar("Pesada " + d.pesadas.length + " sumada"); render(false); break;
-      case "quitarPesada": d.pesadas.splice(+el.dataset.i, 1); render(false); break;
+      case "quitarPesada":
+        URL.revokeObjectURL(d.pesadas[+el.dataset.i].foto);
+        d.pesadas.splice(+el.dataset.i, 1); render(false); break;
       case "destino": d.destino = el.dataset.destino; render(false); break;
       case "todoLoQueQueda": d.kgFardo = cifra(restante()).replace(/\./g, ""); render(false); break;
       case "agregarFardo": agregarFardo(); break;

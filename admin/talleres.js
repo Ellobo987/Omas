@@ -157,8 +157,7 @@
     return '<p class="bajada">Quiénes se anotaron desde la página Talleres del sitio.</p>' +
       '<label class="etiqueta-campo" for="filtro-taller">Taller</label>' +
       '<select class="entrada" id="filtro-taller">' + opciones + "</select>" +
-      '<div class="taller-lista">' + grupos + "</div>" +
-      '<p class="nota-chica mt-3">Prototipo: las personas son inventadas, más las que se anoten desde el sitio en esta misma pestaña.</p>';
+      '<div class="taller-lista">' + grupos + "</div>";
   }
 
   function render(){
