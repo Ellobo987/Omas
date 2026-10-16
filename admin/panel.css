@@ -38,7 +38,6 @@ button.menu-item.activo{background:color-mix(in srgb,var(--vino) 10%,var(--super
 .submenu-item{display:block;padding:8px 12px;margin-bottom:2px;border-radius:10px;color:var(--tinta-suave);text-decoration:none;font-size:14.5px}
 .submenu-item:hover{background:var(--rosa);color:var(--tinta)}
 .submenu-item[aria-current="page"]{color:var(--acento-texto);font-weight:600;background:color-mix(in srgb,var(--vino) 6%,var(--superficie))}
-.pronto{margin-left:auto;padding:1px 7px;border-radius:999px;background:var(--azulgris-suave);font-size:10.5px;font-weight:600;letter-spacing:.02em;color:var(--tinta-suave)}
 
 .lateral-usuario{display:flex;align-items:center;gap:10px;margin-top:auto;padding:12px 8px 4px;border-top:1px solid var(--linea)}
 .lateral-usuario-texto{flex:1;min-width:0;line-height:1.25}
@@ -207,3 +206,129 @@ button.menu-item.activo{background:color-mix(in srgb,var(--vino) 10%,var(--super
 .previa-titulo{font-family:var(--serif);font-size:1.3rem;line-height:1.1}
 .previa-horario{font-size:14px;font-weight:600}
 .previa-boton{align-self:flex-start;margin-top:6px;padding:6px 12px;border-radius:999px;background:#fff;color:var(--vino);font-size:13px;font-weight:700}
+
+/* ===== Usuarios: cuentas del sistema (usuarios.js) ===== */
+.pag-usuarios .app{max-width:720px}
+.usuario-crear{margin-bottom:20px}
+.usuario-nueva{margin-bottom:20px}
+.usuario-nueva .tarjeta-titulo{margin-bottom:14px}
+/* Activas / De baja, una al lado de la otra */
+.pestanas-fila{flex-direction:row;max-width:none}
+.pestanas-fila .pestana{flex:1;min-height:48px;border:0;background:none;font:inherit;font-weight:600;font-size:1rem}
+.pestanas-fila .pestana[aria-current="page"]{background:var(--superficie)}
+.usuario-lista{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.usuario-cabeza{display:flex;align-items:center;gap:12px}
+.usuario-datos{display:flex;flex-direction:column;min-width:0;flex:1}
+.usuario-datos strong{font-weight:600;overflow-wrap:anywhere}
+.rol-chip{flex:none;padding:4px 10px;border-radius:999px;background:var(--azulgris-suave);font-size:12.5px;font-weight:600}
+.usuario-card.de-baja .usuario-cabeza{opacity:.6}
+.usuario-card.de-baja .avatar{background:var(--tinta-suave)}
+.usuario-boton{margin-top:14px;height:46px}
+.usuario-form{margin-top:16px;padding-top:16px;border-top:1px dashed var(--linea)}
+/* Rol: opciones grandes para tocar, con lo que puede hacer cada uno */
+.roles-lista{display:grid;gap:8px}
+@media (min-width:560px){.roles-lista{grid-template-columns:1fr 1fr}}
+.rol-opcion{display:flex;flex-direction:column;gap:2px;margin:0;padding:12px 14px;border:1px solid var(--linea);border-radius:14px;background:var(--superficie);cursor:pointer}
+.rol-opcion strong{font-weight:600}
+.rol-opcion span{font-size:13px;color:var(--tinta-suave)}
+.chip-check:checked+.rol-opcion{border-color:var(--vino);box-shadow:inset 0 0 0 1px var(--vino);background:color-mix(in srgb,var(--vino) 8%,var(--superficie))}
+.chip-check:focus-visible+.rol-opcion{outline:3px solid color-mix(in srgb,var(--vino) 55%,transparent);outline-offset:2px}
+.usuario-extra{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:16px;padding-top:14px;border-top:1px dashed var(--linea)}
+.usuario-extra .btn-linea{height:46px}
+.enlace-peligro{color:var(--atraso)}
+.confirmar-baja{width:100%;padding:14px;border-radius:14px;background:var(--atraso-suave);text-align:center}
+.btn-peligro{width:100%;height:48px;border:0;border-radius:14px;background:var(--bordo);color:#fff;font:inherit;font-weight:600}
+/* Clave temporal: se muestra una sola vez, grande para dictarla */
+.clave-caja{margin:0 0 20px;padding:18px;border:2px solid var(--vino);border-radius:18px;background:var(--superficie)}
+.clave-caja:focus{outline:none}
+.clave-caja h2{margin:0 0 8px;font-size:1.1rem;font-weight:600}
+.clave-numero{margin:4px 0 10px;padding:12px;border-radius:12px;background:var(--azulgris-suave);font-family:ui-monospace,Consolas,monospace;font-size:1.6rem;font-weight:700;letter-spacing:.06em;text-align:center;user-select:all}
+.clave-botones{display:grid;gap:8px;margin-top:12px}
+
+/* ===== Talleres (CRUD): alta, galería de fotos y bajas ===== */
+.taller-crear,.taller-nuevo{margin-bottom:20px}
+.taller-nuevo .tarjeta-titulo{margin-bottom:14px}
+.taller-card-tipo{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--acento-texto)}
+.taller-estado.de-baja{background:var(--tinta-suave);color:var(--superficie)}
+.taller-card.de-baja .taller-card-foto img{filter:grayscale(1);opacity:.6}
+/* Foto: se elige tocando una de la galería */
+.fotos-galeria{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px}
+.foto-opcion{display:block;margin:0;aspect-ratio:1;border-radius:12px;overflow:hidden;border:3px solid transparent;cursor:pointer}
+.foto-opcion img{width:100%;height:100%;object-fit:cover;display:block}
+.chip-check:checked+.foto-opcion{border-color:var(--vino)}
+.chip-check:focus-visible+.foto-opcion{outline:3px solid color-mix(in srgb,var(--vino) 55%,transparent);outline-offset:2px}
+
+/* ===== Taller textil: pedidos (textil.js) ===== */
+.pag-textil .app{max-width:760px}
+.pestanas-tres .pestana{flex:1;justify-content:center;gap:6px;min-height:48px;padding:10px 8px;font-size:.95rem;text-align:center}
+.pedidos-lista{display:grid;gap:14px}
+.bot-caja .pildora{background:var(--superficie)}
+.pedido-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.canal{display:inline-flex;align-items:center;gap:6px;padding:3px 10px 3px 8px;border-radius:999px;font-size:12.5px;font-weight:700;background:var(--azulgris-suave)}
+.canal svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.canal-whatsapp{background:var(--ok-suave);color:var(--ok)}
+.canal-gmail{background:var(--atraso-suave);color:var(--atraso)}
+.pedido-cliente{margin:0 0 10px;font-family:var(--serif);font-weight:400;font-size:1.4rem;line-height:1.2}
+.pedido-datos{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;margin:0 0 12px}
+.pedido-datos div{min-width:0}
+.pedido-datos dt{font-size:12px;font-weight:600;color:var(--tinta-suave)}
+.pedido-datos dd{margin:0;font-weight:600;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pedido-mensaje{margin:0 0 14px;font-size:14px}
+.pedido-mensaje summary{cursor:pointer;color:var(--acento-texto);font-weight:600}
+.pedido-mensaje p{margin:8px 0 0;padding:10px 12px;border-radius:12px;background:var(--azulgris-suave);white-space:pre-line}
+.pedido-acciones{display:grid;gap:8px}
+.pedido-acciones-dos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pedido-acciones-dos .btn-linea{height:48px}
+.texto-peligro{color:var(--atraso)}
+.pedido-form{display:grid;gap:4px}
+.pedido-form .btn-peligro{margin-top:8px}
+.pedido-detalle{margin-top:14px;padding-top:4px;border-top:1px dashed var(--linea)}
+.pedido-sub{margin:18px 0 8px;font-size:1rem;font-weight:700}
+.pedido-lista{list-style:none;margin:0 0 10px;padding:0}
+.pedido-lista li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed var(--linea)}
+.pedido-lista li:last-child{border-bottom:0}
+.reparto{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:12px}
+.reparto-cabeza{display:flex;justify-content:space-between;gap:10px;margin-bottom:6px;font-size:14.5px;font-variant-numeric:tabular-nums}
+.fardos-lista{display:grid;gap:8px}
+.fardo-opcion{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0;padding:10px 14px;border:1px solid var(--linea);border-radius:12px;cursor:pointer;font-size:14px}
+.chip-check:checked+.fardo-opcion{border-color:var(--vino);box-shadow:inset 0 0 0 1px var(--vino)}
+.chip-check:focus-visible+.fardo-opcion{outline:3px solid color-mix(in srgb,var(--vino) 55%,transparent);outline-offset:2px}
+/* Campo + botón en un renglón */
+.form-linea{display:flex;gap:8px;align-items:stretch}
+.form-linea .entrada{margin:0;flex:1;min-width:0}
+.form-linea .btn-linea{width:auto;height:auto;padding:0 16px;white-space:nowrap}
+.pedido-card.cerrado .pedido-cliente{font-size:1.15rem;margin-bottom:4px}
+.tarea-accion{text-decoration:none}
+
+/* ===== Stock del depósito (stock.js) ===== */
+.pag-stock .app{max-width:640px}
+/* Un renglón por sección; se despliega de a una */
+.stock-lista{display:grid;gap:8px}
+.stock-grupo{border:1px solid var(--linea);border-radius:16px;background:var(--superficie);overflow:hidden}
+.stock-grupo.pendiente{border-color:transparent;background:var(--alerta-suave)}
+.stock-fila{display:flex;align-items:center;gap:12px;width:100%;min-height:60px;padding:10px 14px 10px 16px;border:0;background:none;color:inherit;font:inherit;text-align:left}
+.stock-fila-texto{flex:1;min-width:0}
+.stock-fila-texto strong{display:block;font-weight:600}
+.stock-fila-texto small{font-size:13px;color:var(--tinta-suave)}
+.stock-fila-kg{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.stock-flecha{flex:none;width:18px;height:18px;fill:none;stroke:var(--tinta-suave);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s ease}
+.stock-fila[aria-expanded="true"] .stock-flecha{transform:rotate(90deg)}
+.stock-fardos{list-style:none;margin:0;padding:0 8px 8px}
+.fardo-fila{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:8px 8px 8px 10px;border:0;border-top:1px dashed var(--linea);background:none;color:inherit;font:inherit;text-align:left}
+.stock-fardos li:first-child .fardo-fila{border-top:0}
+.fardo-fila:hover{background:color-mix(in srgb,var(--vino) 6%,transparent);border-radius:10px}
+.fardo-fila .etiqueta-codigo{flex:none;font-size:.95rem}
+.fardo-fila-texto{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;font-size:13px;color:var(--tinta-suave)}
+.fardo-fila-kg{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.fardo-fila .stock-flecha{width:16px;height:16px}
+/* Lo recién movido, con Deshacer */
+.stock-ultimo{display:grid;gap:8px}
+.stock-ultimo .etiqueta-codigo{display:inline-block;white-space:nowrap;font-size:1.15rem}
+.stock-ultimo-botones{display:flex;align-items:center;gap:16px}
+.stock-ultimo-botones .pildora{background:var(--superficie);min-height:40px}
+/* Hoja del fardo */
+.fardo-kg{margin:0 0 2px;font-size:1.5rem;font-weight:700;font-variant-numeric:tabular-nums}
+.mover-form{margin-top:8px;padding-top:12px;border-top:1px dashed var(--linea)}
+.chip-check:checked+.pildora-descarte{background:var(--bordo);border-color:var(--bordo)}
+.fardo-historial li{font-size:14px}
+.fardo-historial time{flex:none;font-size:12.5px;color:var(--tinta-suave);font-variant-numeric:tabular-nums}

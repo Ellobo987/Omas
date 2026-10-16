@@ -1,6 +1,6 @@
 /* ===== SGI-OMAS · Panel de administración (Inicio) =====
    Responde tres preguntas, en este orden: qué hay que resolver hoy, cómo van los pedidos
-   y cómo va el mes. Los gráficos y tablas completas van en Rendimiento y Reportes.
+   y cómo va el mes. El detalle de cada cosa está en su módulo (Depósito y pesajes, Taller textil).
    PROTOTIPO: datos de ejemplo; en el sistema real vienen de la API. */
 (function(){
   "use strict";
@@ -57,7 +57,7 @@
       if(faltan > 0 && n <= 3) tareas.push({ nivel: "atento", etiqueta: "Vence pronto", icono: CAJA,
         titulo: p.cliente + " necesita " + cant(faltan, p.unidad) + " más " + cuando(p.vence),
         detalle: "Ya se entregaron " + num(p.entregado) + " de " + cant(p.cantidad, p.unidad) + " · " + p.producto + ".",
-        accion: "Ver pedido" });
+        accion: "Ver pedido", enlace: "textil.html#curso" });
     });
     DIFERENCIAS.forEach(function(d){
       tareas.push({ nivel: "atento", etiqueta: "Revisar peso", icono: BALANZA,
@@ -74,7 +74,8 @@
     lista.innerHTML = tareas.map(function(t){
       return '<li class="tarea ' + t.nivel + '"><span class="tarea-icono">' + t.icono + "</span>" +
         '<span class="tarea-texto"><span class="tarea-etiqueta">' + t.etiqueta + "</span><strong>" + esc(t.titulo) + "</strong><small>" + esc(t.detalle) + "</small></span>" +
-        '<button type="button" class="tarea-accion" data-pronto>' + t.accion + "</button></li>";
+        (t.enlace ? '<a class="tarea-accion" href="' + t.enlace + '">' + t.accion + "</a>"
+          : '<button type="button" class="tarea-accion" data-pronto>' + t.accion + "</button>") + "</li>";
     }).join("");
     return tareas.length;
   }
@@ -113,8 +114,7 @@
         '<div class="mes-dato"><span class="mes-nombre">Se transformaron</span><span class="mes-valor">' + num(MES.transformados) + "<small>kg</small></span>" +
           '<span class="mes-frase">' + comparar(MES.transformados, ant.transformados, ant.nombre) + "</span></div>" +
       "</div>" +
-      '<p class="mes-lotes">Ahora hay <b>' + plural(LOTES_ABIERTOS, "lote", "lotes") + "</b> en casa de " + plural(COSTURERAS_CON_LOTES, "costurera", "costureras") + ".</p>" +
-      '<button type="button" class="enlace-chico" data-pronto>Ver rendimiento completo →</button>';
+      '<p class="mes-lotes">Ahora hay <b>' + plural(LOTES_ABIERTOS, "lote", "lotes") + "</b> en casa de " + plural(COSTURERAS_CON_LOTES, "costurera", "costureras") + ".</p>";
   }
 
   /* ===== Actividad en vivo: lo que se pesa en pesaje.html aparece acá sin recargar ===== */

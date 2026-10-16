@@ -316,3 +316,21 @@ textarea.entrada{min-height:84px;resize:vertical}
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+/* ===== Donación de a una pregunta por pantalla (pesaje.js) ===== */
+/* Foto del visor: un botón grande que ocupa el ancho; después muestra la foto */
+.foto-grande{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:200px;margin:4px 0 10px;
+  border:2px dashed var(--linea);border-radius:18px;background:var(--superficie);color:var(--acento-texto);font-weight:600;cursor:pointer;overflow:hidden}
+.foto-grande svg{width:48px;height:48px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.foto-grande img{width:100%;max-height:320px;object-fit:contain}
+.foto-grande:focus-within{outline:3px solid color-mix(in srgb,var(--vino) 55%,transparent);outline-offset:2px}
+/* Destinos: una fila por destino con sus kilos */
+.destinos{display:grid;gap:8px}
+.destino-fila{display:grid;grid-template-columns:minmax(0,1fr) 84px auto auto;align-items:center;gap:8px;padding:8px 10px 8px 14px;border:1px solid var(--linea);border-radius:14px;background:var(--superficie)}
+.destino-fila label{display:flex;align-items:center;gap:8px;margin:0;min-width:0}
+.destino-fila .entrada{margin:0;padding:10px;text-align:right;font-variant-numeric:tabular-nums}
+.destino-kg{font-size:13px;color:var(--tinta-suave)}
+.destino-fila .pildora{padding:7px 10px;font-size:13px}
+
+/* Opción del inicio de Depósito que lleva a otra pantalla (Stock) */
+a.opcion{text-decoration:none}

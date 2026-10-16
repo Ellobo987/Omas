@@ -12,7 +12,7 @@
   /* ===== Datos de ejemplo (en el sistema real vienen de la API) ===== */
   var PERSONAS = [
     { id: "laura", nombre: "Laura", rol: "Coordinadora", aprueba: true },
-    { id: "sandra", nombre: "Sandra", rol: "Supervisión", aprueba: true },
+    { id: "sandra", nombre: "Sandra", rol: "Administración", aprueba: true },
     { id: "florencia", nombre: "Florencia", rol: "Depósito", aprueba: false }
   ];
   var COSTURERAS = [
@@ -40,25 +40,15 @@
     { codigo: "T-0233", costurera: 5, material: "Tela para trapos", kg: 14.1, retiro: dia(-5), vence: dia(2) },
     { codigo: "D-0115", costurera: 7, material: "Uniformes para desmarcar", kg: 9.3, retiro: dia(-10), vence: dia(-1) }
   ];
-  // Fardos clasificados que están en el depósito, listos para entregar
-  var DEPOSITO = [
-    { codigo: "T-0240", material: "Tela para trapos", kg: 64.5, ubicacion: "Estante A2" },
-    { codigo: "D-0120", material: "Uniformes para desmarcar", kg: 38.0, ubicacion: "Estante B1" },
-    { codigo: "B-0051", material: "Lienzo para bolsas", kg: 22.3, ubicacion: "Estante C3" },
-    { codigo: "X-0017", material: "Textil para desbastado", kg: 90.0, ubicacion: "Piso, sector D" }
-  ];
+  // Fardos clasificados que están en el depósito, listos para entregar. Los comparte con el Taller textil
+  // (api.js): lo que el taller se lleva para un pedido se descuenta acá, y al revés.
+  var DEPOSITO = OmasApi.depositoPrueba();
+  function guardarDeposito(){ OmasApi.guardarDepositoPrueba(DEPOSITO); }
   var DONANTES = ["Naranja X", "Holcim", "Conci", "Hiper Libertad", "Otra empresa"];
-  // Los destinos son las preguntas de la coordinación: cuántos kg fueron a feria, a trapos, a desbastado y al taller
-  var DESTINOS = [
-    { id: "feria", nombre: "Feria", letra: "F", material: "Prendas para feria" },
-    { id: "desmarcado", nombre: "Desmarcado", letra: "D", material: "Uniformes para desmarcar" },
-    { id: "trapos", nombre: "Trapos", letra: "T", material: "Tela para trapos" },
-    // Merchandising con los propios uniformes de la empresa ("Vuelta de Rosca")
-    { id: "taller", nombre: "Taller textil", letra: "M", material: "Uniformes para merchandising" },
-    { id: "desbastado", nombre: "Desbastado", letra: "X", material: "Textil para desbastado" },
-    { id: "descarte", nombre: "Descarte", letra: "Z", material: "Descarte" }
-  ];
-  var proximoCodigo = { F: 88, D: 121, T: 241, M: 34, B: 52, X: 18, Z: 9 };
+  // Los destinos son las preguntas de la coordinación: cuántos kg fueron a feria, a trapos, a desbastado y al taller.
+  // Son las mismas secciones del Stock del depósito (api.js). "Sin clasificar" es para separarlo más tarde.
+  var DESTINOS = OmasApi.SECCIONES_DEPOSITO;
+  var SIN_CLASIFICAR = "Sin clasificar";
   // Tara: lo que se descuenta porque no es tela (se carga una vez en la configuración)
   var TARAS = [
     { id: "no", nombre: "Sin tara", kg: 0 },
@@ -89,7 +79,7 @@
     var n = ids.map(function(id){ return primerNombre(costurera(id).nombre); });
     return n.length > 1 ? n.slice(0, -1).join(", ") + " y " + n[n.length - 1] : n[0];
   }
-  function nuevoCodigo(letra){ return letra + "-" + String(proximoCodigo[letra]++).padStart(4, "0"); }
+  function nuevoCodigo(letra){ return OmasApi.codigoNuevoPrueba(letra); }
 
   function chipVence(fecha){
     var n = diasHasta(fecha);
@@ -110,7 +100,8 @@
     camion: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 6.5h11v10h-11zM13.5 10h4l3 3.2v3.3h-7"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>',
     sale: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 9h13l-1.2 11H6.7z"/><path d="M9 9a3 3 0 0 1 6 0"/><path d="M12 17.5v-5.5M9.8 14.2L12 12l2.2 2.2"/></svg>',
     vuelve: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 9h13l-1.2 11H6.7z"/><path d="M9 9a3 3 0 0 1 6 0"/><path d="M9.3 14.6l2 2 3.5-3.8"/></svg>',
-    reloj: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>'
+    reloj: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    caja: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 8L12 4l8.5 4v8.5L12 20.5l-8.5-4z"/><path d="M3.5 8L12 12l8.5-4M12 12v8.5"/></svg>'
   };
 
   /* ===== Pesajes guardados en este navegador ===== */
@@ -128,7 +119,8 @@
   var FLUJOS = {
     devuelve: { titulo: "Devuelve una costurera", pasos: [["quien", "Quién"], ["lote", "Lote"], ["pesar", "Peso"], ["calidad", "Calidad"], ["confirmar", "Guardar"]] },
     retira: { titulo: "Retira una costurera", pasos: [["quien", "Quién"], ["fardo", "Material"], ["pesarRetiro", "Peso"], ["fecha", "Devolución"], ["firma", "Firma"]] },
-    donacion: { titulo: "Entró una donación", pasos: [["empresa", "Empresa"], ["pesadas", "Pesadas"], ["clasificar", "Fardos"]] }
+    // Una pregunta por pantalla: empresa → remito → pesar (de a partes) → repartir en destinos
+    donacion: { titulo: "Entró una donación", pasos: [["empresa", "Empresa"], ["remito", "Remito"], ["pesadas", "Pesar"], ["clasificar", "Destinos"]] }
   };
 
   function empezar(flujo){
@@ -139,8 +131,10 @@
       foto: null, calidad: { logos: null, prolijo: null }, nota: "", confirmoRaro: false };
     if(flujo === "retira") estado.d = { costureras: [], fardo: null, activo: "retiro",
       campos: { retiro: { bruto: "", tara: "no" } }, dias: 7, fecha: null, firmado: false };
+    // etapa: en qué parte de la pesada está (qué puso en la balanza → cuánto marca → foto → ¿hay más?)
+    // reparto: los kilos que van a cada destino, tal como se escriben ({ feria: "40,5", ... })
     if(flujo === "donacion") estado.d = { empresa: null, remito: "", kgRemito: "", activo: "pesada",
-      campos: { pesada: { bruto: "", tara: "pallet" } }, pesadas: [], fardos: [], destino: "feria", kgFardo: "", foto: null };
+      campos: { pesada: { bruto: "", tara: "no" } }, pesadas: [], etapa: "tara", reparto: {}, foto: null };
     render();
   }
   function salir(){ estado.flujo = null; estado.listo = null; render(); }
@@ -190,6 +184,12 @@
     html += opcion("donacion", ICONO.camion, "Entró una donación", "Fardos que trae una empresa") +
       opcion("retira", ICONO.sale, "Retira una costurera", "Material que sale para trabajar") +
       opcion("devuelve", ICONO.vuelve, "Devuelve una costurera", "Trabajo terminado y retazos");
+    // Lo que quedó sin clasificar se separa desde el Stock
+    var sinClasificar = DEPOSITO.filter(function(f){ return f.kg > 0 && f.material === SIN_CLASIFICAR; });
+    var kgSin = sinClasificar.reduce(function(s, f){ return s + f.kg; }, 0);
+    html += '<a class="opcion" href="stock.html">' + ICONO.caja + "<div><strong>Stock del depósito</strong><span>" +
+      (sinClasificar.length ? (sinClasificar.length === 1 ? "1 fardo" : sinClasificar.length + " fardos") + " sin clasificar (" + kg(kgSin) + ")" : "Qué hay en cada sección y mover fardos") +
+      "</span></div></a>";
     html += '<hr class="puntada"><h2 class="seccion">Hoy en el depósito</h2>';
     if(hoy.length){
       html += '<ul class="historial">' + hoy.map(function(r){
@@ -284,8 +284,9 @@
   };
 
   /* Visor con uno o dos campos, taras y teclado numérico.
-     "debajo": una línea opcional entre el visor y el teclado (el resultado de la cuenta) */
-  function visor(campos, debajo){
+     "debajo": una línea opcional entre el visor y el teclado (el resultado de la cuenta).
+     "sinTaras": cuando la tara ya se eligió en la pantalla anterior (donación). */
+  function visor(campos, debajo, sinTaras){
     var d = estado.d;
     var html = '<div class="visor' + (campos.length === 1 ? " uno" : "") + '">' + campos.map(function(par){
       var c = d.campos[par[0]], activo = d.activo === par[0], t = tara(c.tara);
@@ -297,7 +298,7 @@
     }).join("") + "</div>";
     var actual = d.campos[d.activo];
     if(debajo) html += '<div class="visor-estado">' + debajo + "</div>";
-    html += '<div class="taras desliza" role="group" aria-label="Tara">' + TARAS.map(function(t){
+    if(!sinTaras) html += '<div class="taras desliza" role="group" aria-label="Tara">' + TARAS.map(function(t){
       return '<button type="button" class="pildora' + (actual.tara === t.id ? " activa" : "") + '" data-accion="tara" data-tara="' + t.id + '">' +
         t.nombre + (t.kg ? " <small>−" + t.kg.toLocaleString("es-AR") + " kg</small>" : "") + "</button>";
     }).join("") + "</div>";
@@ -409,8 +410,9 @@
   /* ----- Retiro ----- */
   PASOS.fardo = function(){
     var d = estado.d;
+    // Lo que todavía no se separó no se le da a una costurera
     var html = '<h1 class="titulo">¿Qué se lleva?</h1><p class="bajada">Fardos clasificados que hay en el depósito.</p>' +
-      DEPOSITO.filter(function(f){ return f.kg > 0; }).map(function(f){
+      DEPOSITO.filter(function(f){ return f.kg > 0 && f.material !== SIN_CLASIFICAR; }).map(function(f){
         return '<button type="button" class="etiqueta' + (d.fardo === f.codigo ? " elegida" : "") + '" data-accion="fardo" data-codigo="' + f.codigo + '">' +
           '<span class="etiqueta-codigo">' + f.codigo + "</span><strong>" + esc(f.material) + "</strong>" +
           "<span>" + kg(f.kg) + " disponibles · " + esc(f.ubicacion) + "</span></button>";
@@ -459,6 +461,7 @@
   };
 
   /* ----- Donación ----- */
+  // Se toca la empresa y pasa sola a la pantalla siguiente
   PASOS.empresa = function(){
     var d = estado.d;
     var html = '<h1 class="titulo">¿De qué empresa?</h1>' + DONANTES.map(function(e){
@@ -466,15 +469,21 @@
       return '<button type="button" class="fila' + (elegida ? " elegida" : "") + '" data-accion="empresa" data-nombre="' + esc(e) + '" aria-pressed="' + elegida + '">' +
         '<span class="avatar suave">' + esc(e.charAt(0)) + '</span><span class="fila-texto"><strong>' + esc(e) + "</strong></span>" +
         (elegida ? ICONO.tilde : "") + "</button>";
-    }).join("") +
-      '<hr class="puntada">' +
+    }).join("");
+    return { html: html, boton: { texto: "Continuar", habilitado: !!d.empresa } };
+  };
+
+  PASOS.remito = function(){
+    var d = estado.d;
+    var html = '<h1 class="titulo">El remito de ' + esc(d.empresa) + "</h1>" +
+      '<p class="bajada">Copiá los datos del papel que trae el camión.</p>' +
       '<label class="etiqueta-campo" for="remito">Número de remito</label>' +
       '<input class="entrada mb-1" id="remito" inputmode="numeric" maxlength="14" data-dato="remito" aria-describedby="remito-ayuda"' +
         (d.remito && !remitoValido(d.remito) ? ' aria-invalid="true"' : "") + ' value="' + esc(d.remito) + '">' +
       '<p class="nota-chica mb-3" id="remito-ayuda" aria-live="polite">' + ayudaRemito(d.remito) + "</p>" +
       '<label class="etiqueta-campo" for="kgRemito">Kilos que dice el remito</label>' +
       '<input class="entrada" id="kgRemito" inputmode="decimal" data-dato="kgRemito" placeholder="Ej.: 250" value="' + esc(d.kgRemito) + '">';
-    return { html: html, boton: { texto: "Empezar a pesar", habilitado: !!d.empresa && remitoValido(d.remito) && num(d.kgRemito) > 0 } };
+    return { html: html, boton: { texto: "Empezar a pesar", habilitado: remitoValido(d.remito) && num(d.kgRemito) > 0 } };
   };
 
   /* El remito tiene 13 números y un guion. Contamos los números para avisar si faltan o sobran,
@@ -500,62 +509,81 @@
     return "Número de remito correcto.";
   }
 
-  // Cada pesada guarda su propia foto del visor: si se pesa de a partes, cada parte queda respaldada
+  /* Pesar, de a una cosa por pantalla. Si no entra todo junto en la balanza, se repite:
+     ¿qué pusiste en la balanza? → ¿cuánto marca? → foto del visor → ¿hay más para pesar?
+     Cada pesada guarda su propia foto: si se pesa de a partes, cada parte queda respaldada. */
   function totalPesadas(){ return estado.d.pesadas.reduce(function(s, p){ return s + p.kg; }, 0); }
+  function cuentaRemito(){
+    var d = estado.d, total = totalPesadas(), remito = num(d.kgRemito);
+    var dif = Math.round((total - remito) * 100) / 100, bien = Math.abs(dif) / remito <= TOLERANCIA;
+    return '<div class="balance mt-3">' + d.pesadas.map(function(p, i){
+      return '<div class="balance-fila"><span class="balance-pesada"><img class="balance-foto" src="' + p.foto + '" alt="Foto de la pesada ' + (i + 1) + '">Pesada ' + (i + 1) +
+        ' <button type="button" class="enlace py-0 ms-2" data-accion="quitarPesada" data-i="' + i + '" aria-label="Quitar pesada ' + (i + 1) + '">quitar</button></span><span>' + kg(p.kg) + "</span></div>";
+    }).join("") + "<hr>" +
+      '<div class="balance-fila total"><span>Total pesado</span><span>' + kg(total) + "</span></div>" +
+      '<div class="balance-fila"><span>Dice el remito</span><span>' + kg(remito) + "</span></div>" +
+      '<div class="balance-estado ' + (bien ? "bien" : "ojo") + '">' + (bien ? ICONO.bien + "Coincide con el remito" :
+        ICONO.ojo + (dif < 0 ? "Faltan " + kg(-dif) + " respecto del remito" : "Hay " + kg(dif) + " más que en el remito")) + "</div></div>";
+  }
   PASOS.pesadas = function(){
-    var d = estado.d, n = neto(d.campos.pesada), total = totalPesadas(), remito = num(d.kgRemito);
-    var puedeSumar = n > 0 && !!d.foto;
-    var html = '<h1 class="titulo">Pesada ' + (d.pesadas.length + 1) + "</h1>" +
-      '<p class="bajada">Si no entra todo junto en la balanza, pesá de a partes y sumalas.</p>' +
-      visor([["pesada", "Peso en la balanza"]]) + botonFoto("Obligatoria para sumar cada pesada: queda de respaldo") +
-      '<button type="button" class="btn-linea" data-accion="sumarPesada"' + (puedeSumar ? "" : " disabled") + ">Sumar esta pesada" + (n > 0 ? " (" + kg(n) + ")" : "") + "</button>";
-    if(d.pesadas.length){
-      var dif = Math.round((total - remito) * 100) / 100, bien = Math.abs(dif) / remito <= TOLERANCIA;
-      html += '<div class="balance mt-3">' + d.pesadas.map(function(p, i){
-        return '<div class="balance-fila"><span class="balance-pesada"><img class="balance-foto" src="' + p.foto + '" alt="Foto de la pesada ' + (i + 1) + '">Pesada ' + (i + 1) +
-          ' <button type="button" class="enlace py-0 ms-2" data-accion="quitarPesada" data-i="' + i + '" aria-label="Quitar pesada ' + (i + 1) + '">quitar</button></span><span>' + kg(p.kg) + "</span></div>";
-      }).join("") + "<hr>" +
-        '<div class="balance-fila total"><span>Total en balanza</span><span>' + kg(total) + "</span></div>" +
-        '<div class="balance-fila"><span>Dice el remito</span><span>' + kg(remito) + "</span></div>" +
-        '<div class="balance-estado ' + (bien ? "bien" : "ojo") + '">' + (bien ? ICONO.bien + "Coincide con el remito" :
-          ICONO.ojo + (dif < 0 ? "Faltan " + kg(-dif) + " respecto del remito" : "Hay " + kg(dif) + " más que en el remito")) + "</div></div>";
+    var d = estado.d, n = neto(d.campos.pesada), parte = d.pesadas.length + 1, t = tara(d.campos.pesada.tara);
+    var titulo = d.pesadas.length || d.etapa === "mas" ? " (parte " + parte + ")" : "";
+    if(d.etapa === "tara"){
+      return { html: '<h1 class="titulo">¿Qué pusiste en la balanza?' + titulo + "</h1>" +
+        '<p class="bajada">Así le descontamos lo que no es ropa.</p>' +
+        TARAS.map(function(x){
+          return '<button type="button" class="fila" data-accion="taraElegida" data-tara="' + x.id + '"><span class="fila-texto"><strong>' +
+            (x.id === "no" ? "Solo la ropa" : x.nombre) + "</strong><span>" + (x.kg ? "Se descuentan " + x.kg.toLocaleString("es-AR") + " kg" : "No se descuenta nada") + "</span></span></button>";
+        }).join(""), boton: null };
     }
-    return { html: html, boton: { texto: "Clasificar en fardos", habilitado: d.pesadas.length > 0 } };
+    if(d.etapa === "peso"){
+      var aviso = t.kg ? "Le descontamos " + t.kg.toLocaleString("es-AR") + " kg " + (t.id === "bolsa" ? "de la bolsa" : "del " + t.nombre.toLowerCase()) + "." : "";
+      return { html: '<h1 class="titulo">¿Cuánto marca la balanza?' + titulo + "</h1>" +
+        (aviso ? '<p class="bajada">' + aviso + "</p>" : "") + visor([["pesada", "Peso en la balanza"]], null, true),
+        boton: { texto: n > 0 ? "Continuar con " + kg(n) : "Continuar", habilitado: n > 0, accion: "aFoto" } };
+    }
+    if(d.etapa === "foto"){
+      return { html: '<h1 class="titulo">Sacale una foto al visor</h1>' +
+        '<p class="bajada">Que se vean bien los números (' + kg(num(d.campos.pesada.bruto)) + "). Queda de respaldo.</p>" +
+        '<label class="foto-grande">' + (d.foto ? '<img src="' + d.foto + '" alt="Foto del visor de la balanza">' : ICONO.camara + "<span>Tocá para sacar la foto</span>") +
+        '<input type="file" accept="image/*" capture="environment" class="oculto-visual" data-foto></label>' +
+        (d.foto ? '<p class="nota-chica text-center">Tocá la foto para sacarla de nuevo.</p>' : ""),
+        boton: { texto: "Sumar esta pesada", habilitado: !!d.foto, accion: "sumarPesada" } };
+    }
+    // etapa "mas": lo pesado hasta ahora, comparado con el remito
+    return { html: '<h1 class="titulo">¿Hay más para pesar?</h1>' +
+      '<p class="bajada">Si no entró todo junto, pesá la otra parte.</p>' + cuentaRemito() +
+      '<button type="button" class="btn-linea mt-3" data-accion="otraPesada">Sí, pesar otra parte</button>',
+      boton: { texto: "No, ya está todo", habilitado: d.pesadas.length > 0 } };
   };
 
+  /* Destinos: una fila por destino con sus kilos. Lo que no se reparte se ve abajo.
+     Al guardar, cada destino con kilos se vuelve un fardo con su código (letra del destino + número). */
   function restante(){
-    var usado = estado.d.fardos.reduce(function(s, f){ return s + f.kg; }, 0);
+    var d = estado.d, usado = DESTINOS.reduce(function(s, x){ return s + num(d.reparto[x.id]); }, 0);
     return Math.round((totalPesadas() - usado) * 100) / 100;
   }
-  PASOS.clasificar = function(){
-    var d = estado.d, falta = restante();
-    var html = '<h1 class="titulo">Separá en fardos</h1>' +
-      '<p class="bajada">Entraron ' + kg(totalPesadas()) + ". Elegí el destino de cada fardo.</p>" +
-      '<div class="taras">' + DESTINOS.map(function(x){
-        return '<button type="button" class="pildora' + (d.destino === x.id ? " activa" : "") + '" data-accion="destino" data-destino="' + x.id + '">' + x.nombre + "</button>";
-      }).join("") + "</div>" +
-      '<label class="etiqueta-campo mt-2" for="kgFardo">Kilos del fardo</label>' +
-      '<div class="fila-entrada"><input class="entrada" id="kgFardo" inputmode="decimal" data-dato="kgFardo" placeholder="Ej.: 40,5" value="' + esc(d.kgFardo) + '">' +
-      '<button type="button" class="pildora" data-accion="todoLoQueQueda"' + (falta > 0 ? "" : " disabled") + ">Todo lo que queda</button></div>" +
-      '<button type="button" class="btn-linea mt-3" data-accion="agregarFardo">Agregar fardo</button>';
-    html += '<div class="info-caja mt-3">' + (Math.abs(falta) < 0.05 ? "<strong>Todo clasificado.</strong>" :
-      falta > 0 ? "Faltan clasificar <strong>" + kg(falta) + "</strong>." : "Te pasaste por <strong>" + kg(-falta) + "</strong>. Revisá los fardos.") + "</div>";
-    if(d.fardos.length){
-      html += '<h2 class="seccion">Fardos</h2>' + d.fardos.map(function(f, i){
-        return '<div class="etiqueta"><span class="etiqueta-codigo">' + f.codigo + "</span><strong>" + esc(f.destino) + " · " + kg(f.kg) + "</strong>" +
-          '<button type="button" class="enlace quitar py-0" data-accion="quitarFardo" data-i="' + i + '">quitar</button></div>';
-      }).join("");
-    }
-    return { html: html, boton: { texto: "Guardar donación", habilitado: d.fardos.length > 0 && Math.abs(falta) < 0.05, accion: "guardar" } };
-  };
-  function agregarFardo(){
-    var d = estado.d, k = Math.round(num(d.kgFardo) * 100) / 100;
-    if(k <= 0){ avisar("Poné los kilos del fardo"); return; }
-    var destino = DESTINOS.filter(function(x){ return x.id === d.destino; })[0];
-    d.fardos.push({ codigo: nuevoCodigo(destino.letra), destino: destino.nombre, material: destino.material, kg: k });
-    d.kgFardo = "";
-    render(false);
+  function textoRestante(){
+    var falta = restante();
+    // El tilde va dentro de .balance-estado, que es la clase que le da tamaño y color al ícono
+    return Math.abs(falta) < 0.05 ? '<span class="balance-estado bien m-0">' + ICONO.bien + "Todo repartido.</span>"
+      : falta > 0 ? "Falta repartir <strong>" + kg(falta) + "</strong>." : "Te pasaste por <strong>" + kg(-falta) + "</strong>. Revisá los kilos.";
   }
+  PASOS.clasificar = function(){
+    var d = estado.d;
+    var html = '<h1 class="titulo">¿A dónde va cada parte?</h1>' +
+      '<p class="bajada">Entraron ' + kg(totalPesadas()) + ". Poné los kilos de cada destino.</p>" +
+      // Si no hay tiempo de separarlo ahora: lo que falta va a "Sin clasificar" y se clasifica desde el Stock
+      '<button type="button" class="btn-linea mb-3" data-accion="resto" data-destino="sinClasificar">Clasificar después</button>' +
+      '<div class="destinos">' + DESTINOS.map(function(x){
+        return '<div class="destino-fila"><label for="dest-' + x.id + '"><strong>' + x.nombre + "</strong></label>" +
+          '<input class="entrada" id="dest-' + x.id + '" inputmode="decimal" data-reparto="' + x.id + '" placeholder="0" value="' + esc(d.reparto[x.id] || "") + '">' +
+          '<span class="destino-kg">kg</span>' +
+          '<button type="button" class="pildora" data-accion="resto" data-destino="' + x.id + '">El resto</button></div>';
+      }).join("") + "</div>" +
+      '<div class="info-caja mt-3" id="restante" aria-live="polite">' + textoRestante() + "</div>";
+    return { html: html, boton: { texto: "Guardar donación", habilitado: Math.abs(restante()) < 0.05, accion: "guardar" } };
+  };
 
   /* ===== Guardar ===== */
   function guardar(){
@@ -590,8 +618,14 @@
     }
 
     if(estado.flujo === "donacion"){
-      var agregados = d.fardos.filter(function(x){ return x.destino !== "Descarte"; }).map(function(x){
-        var fardo = { codigo: x.codigo, material: x.material, kg: x.kg, ubicacion: "Sin ubicar" };
+      // Cada destino con kilos se vuelve un fardo con su código
+      d.fardos = DESTINOS.filter(function(x){ return num(d.reparto[x.id]) > 0; }).map(function(x){
+        return { codigo: nuevoCodigo(x.letra), destino: x.nombre, material: x.material, kg: Math.round(num(d.reparto[x.id]) * 100) / 100, sale: !!x.sale };
+      });
+      // Lo que va a Descarte no entra al depósito; lo demás aparece en el Stock con su historial
+      var agregados = d.fardos.filter(function(x){ return !x.sale; }).map(function(x){
+        var fardo = { codigo: x.codigo, material: x.material, kg: x.kg, ubicacion: "Sin ubicar", entro: iso(HOY), empresa: d.empresa,
+          historial: [{ fecha: registro.hora, texto: "Entró en la donación de " + d.empresa, por: p.nombre }] };
         DEPOSITO.push(fardo); return fardo;
       });
       restaurar = function(){ agregados.forEach(function(x){ DEPOSITO.splice(DEPOSITO.indexOf(x), 1); }); };
@@ -599,7 +633,7 @@
       registro.kg = totalPesadas(); registro.fardos = d.fardos.slice(); registro.empresa = d.empresa;
     }
 
-    registros.push(registro); escribir();
+    registros.push(registro); escribir(); guardarDeposito();
     estado.listo = registro; estado.flujo = null;
     deshacer = { id: registro.id, restaurar: restaurar, segundos: 10, reloj: null };
     render();
@@ -631,7 +665,9 @@
         '<p class="listo-texto">entraron de ' + esc(r.empresa) + ". Escribí estos códigos en las etiquetas de los fardos:</p>" +
         r.fardos.map(function(f){
           return '<div class="etiqueta"><span class="etiqueta-codigo grande">' + f.codigo + "</span><strong>" + esc(f.destino) + " · " + kg(f.kg) + "</strong></div>";
-        }).join("");
+        }).join("") +
+        (r.fardos.some(function(f){ return f.material === SIN_CLASIFICAR; })
+          ? '<p class="nota-chica mt-2">Lo que quedó sin clasificar lo separás después desde <a href="stock.html">Stock del depósito</a>.</p>' : "");
     }
     var otra = { devuelve: "Registrar otra devolución", retira: "Registrar otro retiro", donacion: "Registrar otra donación" }[r.tipo];
     html += '<div class="listo-botones">' +
@@ -724,7 +760,14 @@
         var quien = d.costureras[0];
         empezar("retira"); estado.d.costureras = [quien]; estado.paso = 1; render();
         break;
-      case "volver": if(estado.paso > 0){ estado.paso--; render(); } else salir(); break;
+      case "volver":
+        // Dentro de "Pesar" de la donación, Atrás vuelve a la etapa anterior de la pesada
+        if(estado.flujo === "donacion" && pasoActual() === "pesadas"){
+          var anterior = { peso: "tara", foto: "peso", tara: d.pesadas.length ? "mas" : null, mas: null }[d.etapa];
+          if(anterior){ d.etapa = anterior; render(); break; }
+        }
+        if(estado.paso > 0){ estado.paso--; render(); } else salir();
+        break;
       case "cancelar": salir(); break;
       case "inicio": terminarDeshacer(); salir(); break;
       case "siguiente": avanzar(); break;
@@ -753,22 +796,32 @@
       case "fardo": d.fardo = el.dataset.codigo; d.campos.retiro.bruto = ""; render(false); setTimeout(avanzar, 180); break;
       case "dias": d.dias = +el.dataset.dias; d.fecha = null; render(false); break;
       case "borrarFirma": d.firmado = false; render(false); break;
-      case "empresa": d.empresa = el.dataset.nombre; render(false); break;
+      case "empresa": d.empresa = el.dataset.nombre; render(false); setTimeout(avanzar, 180); break;
+      // Pesar la donación, de a una cosa por pantalla
+      case "taraElegida": d.campos.pesada.tara = el.dataset.tara; d.etapa = "peso"; render(); break;
+      case "aFoto": if(neto(d.campos.pesada) > 0){ d.etapa = "foto"; render(); } break;
       case "sumarPesada":
         if(!d.foto) break; // el botón ya está deshabilitado: es solo por las dudas
         // La foto pasa a la pesada y la próxima arranca sin foto
         d.pesadas.push({ kg: neto(d.campos.pesada), foto: d.foto }); d.campos.pesada.bruto = ""; d.foto = null;
-        avisar("Pesada " + d.pesadas.length + " sumada"); render(false); break;
+        d.etapa = "mas"; avisar("Pesada " + d.pesadas.length + " sumada"); render(); break;
+      case "otraPesada": d.campos.pesada.tara = "no"; d.etapa = "tara"; render(); break;
       case "quitarPesada":
         URL.revokeObjectURL(d.pesadas[+el.dataset.i].foto);
-        d.pesadas.splice(+el.dataset.i, 1); render(false); break;
-      case "destino": d.destino = el.dataset.destino; render(false); break;
-      case "todoLoQueQueda": d.kgFardo = cifra(restante()).replace(/\./g, ""); render(false); break;
-      case "agregarFardo": agregarFardo(); break;
-      case "quitarFardo": d.fardos.splice(+el.dataset.i, 1); render(false); break;
+        d.pesadas.splice(+el.dataset.i, 1);
+        if(!d.pesadas.length) d.etapa = "tara";
+        render(false); break;
+      // Destinos: "El resto" le pone a esa fila todo lo que falta repartir
+      case "resto":
+        var falta = restante() + num(d.reparto[el.dataset.destino]);
+        if(falta <= 0) break;
+        d.reparto[el.dataset.destino] = cifra(falta).replace(/\./g, "");
+        render(false);
+        var campoResto = document.getElementById("dest-" + el.dataset.destino); if(campoResto) campoResto.focus();
+        break;
       case "deshacer":
         if(!deshacer) break;
-        deshacer.restaurar();
+        deshacer.restaurar(); guardarDeposito();
         var id2 = deshacer.id;
         registros = registros.filter(function(r){ return r.id !== id2; }); escribir();
         terminarDeshacer(); estado.listo = null; render();
@@ -785,6 +838,12 @@
       return;
     }
     if(el.dataset.dato){ estado.d[el.dataset.dato] = el.value; refrescarBoton(); }
+    // Kilos de cada destino: se actualiza lo que falta repartir sin redibujar
+    if(el.dataset.reparto){
+      estado.d.reparto[el.dataset.reparto] = el.value;
+      document.getElementById("restante").innerHTML = textoRestante();
+      refrescarBoton();
+    }
     // El aviso del remito se actualiza en su lugar, sin redibujar la pantalla
     if(el.id === "remito"){
       var mal = el.value && !remitoValido(el.value);
@@ -904,7 +963,7 @@
   OmasApi.exigirSesion().then(function(u){
     OmasMenu.iniciar(u);
     var p = PERSONAS.filter(function(x){ return x.id === u.id; })[0];
-    if(!p){ p = { id: u.id, nombre: u.nombre, rol: u.rol, aprueba: u.rol === "Coordinadora" || u.rol === "Supervisión" }; PERSONAS.push(p); }
+    if(!p){ p = { id: u.id, nombre: u.nombre, rol: u.rol, aprueba: ["Administración", "Coordinadora", "Supervisión"].indexOf(u.rol) >= 0 }; PERSONAS.push(p); }
     estado.persona = p;
     render();
   });
