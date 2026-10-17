@@ -1,4 +1,4 @@
-# API LasOmas (.NET 8) + panel de administración - imagen para Render
+# API LasOmas (.NET 8) + sitio público + panel de administración - imagen para Render
 # Contexto de build: la RAÍZ del repositorio (necesita api/, admin/ e img/)
 #   docker build -f api/Dockerfile -t omas-api .
 
@@ -25,9 +25,12 @@ ENV ASPNETCORE_URLS=http://+:8080 \
 
 COPY --from=build /app/publish .
 
-# Panel de administración: la API lo sirve en /admin y /img (mismo sitio que la API, para la cookie)
+# Sitio público (en /) y panel de administración (en /admin): la API los sirve en el mismo dominio
+COPY ["PARTE VISUAL DE OMAS/", "/app/panel/PARTE VISUAL DE OMAS/"]
 COPY admin/ /app/panel/admin/
 COPY img/ /app/panel/img/
+COPY css/ /app/panel/css/
+COPY js/ /app/panel/js/
 
 # Usuario sin privilegios que ya trae la imagen oficial de .NET 8
 USER app

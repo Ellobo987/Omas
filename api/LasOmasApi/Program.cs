@@ -88,12 +88,23 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// La API también sirve el panel (carpetas admin e img), así el panel y la API están en el mismo
-// sitio y la cookie de sesión (SameSite=Strict) viaja sola. En desarrollo se toman del repositorio;
-// en el contenedor de Docker vienen copiadas en la carpeta que indica Panel:Raiz.
+// La API también sirve el sitio público y el panel, así todo está en el mismo dominio y la cookie
+// de sesión (SameSite=Strict) viaja sola. En desarrollo los archivos se toman del repositorio;
+// en el contenedor de Docker vienen copiados en la carpeta que indica Panel:Raiz.
+//   /            → sitio público (carpeta "PARTE VISUAL DE OMAS", arranca en index.html)
+//   /admin       → panel de administración
+//   /css /js /img → recursos compartidos (las páginas los piden como ../css, ../js, ../img)
 var raiz = builder.Configuration["Panel:Raiz"]
     ?? Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", ".."));
-foreach (var carpeta in new[] { "admin", "img" })
+
+var sitioPublico = Path.Combine(raiz, "PARTE VISUAL DE OMAS");
+if (Directory.Exists(sitioPublico))
+{
+    var archivosSitio = new PhysicalFileProvider(sitioPublico);
+    app.UseDefaultFiles(new DefaultFilesOptions { FileProvider = archivosSitio });
+    app.UseStaticFiles(new StaticFileOptions { FileProvider = archivosSitio });
+}
+foreach (var carpeta in new[] { "admin", "img", "css", "js" })
 {
     var ruta = Path.Combine(raiz, carpeta);
     if (!Directory.Exists(ruta)) continue;
@@ -103,7 +114,7 @@ foreach (var carpeta in new[] { "admin", "img" })
         RequestPath = "/" + carpeta
     });
 }
-app.MapGet("/", () => Results.Redirect("/admin/ingresar.html")).ExcludeFromDescription();
+app.MapGet("/admin", () => Results.Redirect("/admin/ingresar.html")).ExcludeFromDescription();
 
 app.UseHttpsRedirection();
 app.UseCors("PoliticaCors");

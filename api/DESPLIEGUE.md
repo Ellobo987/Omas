@@ -1,6 +1,6 @@
 # Despliegue de la API LasOmas en Render
 
-La API es .NET 8 y Render no trae `dotnet` en sus entornos nativos: se despliega como **contenedor Docker** con el `Dockerfile` de esta carpeta. El contexto del build es la raíz del repositorio, porque la imagen también lleva el panel (`admin/` e `img/`), que la API sirve en `/admin`.
+La API es .NET 8 y Render no trae `dotnet` en sus entornos nativos: se despliega como **contenedor Docker** con el `Dockerfile` de esta carpeta. El contexto del build es la raíz del repositorio, porque la imagen también lleva el sitio público (servido en `/`) y el panel (servido en `/admin`).
 
 ## 1. Base de datos (SQL Server)
 
@@ -47,7 +47,7 @@ El doble guion bajo (`__`) reemplaza a los `:` de `appsettings.json`, así no ha
 ## 3. Probar
 
 - `https://TU-SERVICIO.onrender.com/salud` → `{"estado":"ok"}` (la API levantó).
-- `https://TU-SERVICIO.onrender.com/` → redirige al panel (`/admin/ingresar.html`).
+- `https://TU-SERVICIO.onrender.com/` → sitio público (`index.html`); el panel está en `/admin`.
 - `POST /api/auth/...` → si responde 500, casi siempre es la cadena de conexión o el firewall de la base: revisar los *Logs* del servicio.
 
 ## Probar el contenedor en una máquina local

@@ -3,6 +3,9 @@
 !api/LasOmasApi/
 !admin/
 !img/
+!css/
+!js/
+!PARTE VISUAL DE OMAS/
 
 api/LasOmasApi/bin/
 api/LasOmasApi/obj/
