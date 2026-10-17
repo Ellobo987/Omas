@@ -5,6 +5,7 @@ using LasOmasApi.Repositories;
 using LasOmasApi.Seguridad;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -68,7 +69,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Detrás de un proxy (Render): el HTTPS termina en el proxy y llega como HTTP al contenedor.
+// Con esto la API respeta X-Forwarded-Proto/For y sabe que el pedido original fue HTTPS.
+builder.Services.Configure<ForwardedHeadersOptions>(opciones =>
+{
+    opciones.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    opciones.KnownNetworks.Clear();
+    opciones.KnownProxies.Clear();
+});
+
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 if (app.Environment.IsDevelopment())
 {
@@ -94,5 +106,8 @@ app.UseCors("PoliticaCors");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+// Para el health check de Render: responde 200 sin tocar la base de datos
+app.MapGet("/salud", () => Results.Ok(new { estado = "ok" })).AllowAnonymous().ExcludeFromDescription();
 
 app.Run();
