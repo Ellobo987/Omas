@@ -4,8 +4,9 @@
      "Sin clasificar" va primero y arranca abierta: es lo que hay que hacer.
    · Al tocar un fardo sube una hoja con su detalle, para moverlo y ver su historial.
      Entero conserva el código (no hay que cambiar la etiqueta); una parte sale como fardo nuevo con su código.
-     A Descarte, esos kilos salen del depósito. Cada movimiento queda en el historial y se puede deshacer.
-   Todo pasa por OmasApi (api.js): listarFardos, moverFardo y deshacerMovimiento. */
+     A Descarte, esos kilos salen del depósito. Lo movido entero se puede deshacer.
+   Todo pasa por OmasApi (api.js): listarFardos, moverFardo y deshacerMovimiento. Con la API los fardos son
+   los bultos de la base (tabla Bulto); el historial y la ubicación solo existen en el modo prototipo. */
 (function(){
   "use strict";
 
@@ -62,7 +63,8 @@
     else texto = esc(r.origen.codigo) + " pasó entero a " + esc(r.destino) + ". Sigue con el mismo código.";
     return '<div class="info-caja stock-ultimo" id="ultimo" tabindex="-1">' +
       '<p class="mb-0">' + texto + (r.nuevo ? ' <span class="etiqueta-codigo">' + esc(r.nuevo.codigo) + "</span>" : "") + "</p>" +
-      '<div class="stock-ultimo-botones"><button type="button" class="pildora" data-accion="deshacer">Deshacer</button>' +
+      // Lo separado en una parte no se puede deshacer con la API (la base no junta bultos)
+      '<div class="stock-ultimo-botones">' + (r.movimiento ? '<button type="button" class="pildora" data-accion="deshacer">Deshacer</button>' : "") +
       '<button type="button" class="enlace" data-accion="cerrarUltimo">Listo</button></div></div>';
   }
 
@@ -104,7 +106,7 @@
       '<div class="pedido-top mb-1"><span class="etiqueta-codigo grande" id="hoja-titulo">' + esc(f.codigo) + "</span>" +
         '<span class="chip ' + (f.material === SIN_CLASIFICAR ? "chip-alerta" : "chip-neutro") + '">' + esc(s.nombre) + "</span></div>" +
       '<p class="fardo-kg">' + kg(f.kg) + "</p>" +
-      '<p class="nota-chica">De ' + esc(f.empresa) + " · entró " + textoDias(dias) + " · " + esc(f.ubicacion) + "</p>" +
+      '<p class="nota-chica">De ' + esc(f.empresa) + " · entró " + textoDias(dias) + " · " + esc(f.ubicacion || "remito " + f.remito) + "</p>" +
       '<form class="pedido-form mover-form" novalidate>' +
         '<fieldset><legend class="etiqueta-campo">' + (f.material === SIN_CLASIFICAR ? "¿A dónde va?" : "¿A dónde lo movés?") + '</legend><div class="chips-panel">' +
         opciones.map(function(x){
@@ -122,10 +124,11 @@
         '<p class="taller-error" data-error role="alert" hidden></p>' +
         '<button type="submit" class="btn-grande mt-3">Mover</button>' +
         '<button type="button" class="enlace w-100" data-cerrar>Cancelar</button></form>' +
-      '<details class="pedido-mensaje fardo-historial mt-2 mb-0"><summary>Historial (' + f.historial.length + ")</summary>" +
+      // El historial solo existe en el prototipo: la base no guarda los movimientos (no hay tabla en el modelo)
+      (f.historial ? '<details class="pedido-mensaje fardo-historial mt-2 mb-0"><summary>Historial (' + f.historial.length + ")</summary>" +
         '<ul class="pedido-lista mt-2">' + f.historial.slice().reverse().map(function(h){
           return "<li><span>" + esc(h.texto) + '<small class="d-block nota-chica">' + esc(h.por) + "</small></span><time>" + esc(fechaHora(h.fecha)) + "</time></li>";
-        }).join("") + "</ul></details></div>";
+        }).join("") + "</ul></details>" : "") + "</div>";
   }
   function abrirHoja(codigo){
     elegido = codigo; dibujarHoja(); hoja.hidden = false;

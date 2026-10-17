@@ -42,9 +42,13 @@
   ];
   // Fardos clasificados que están en el depósito, listos para entregar. Los comparte con el Taller textil
   // (api.js): lo que el taller se lleva para un pedido se descuenta acá, y al revés.
-  var DEPOSITO = OmasApi.depositoPrueba();
-  function guardarDeposito(){ OmasApi.guardarDepositoPrueba(DEPOSITO); }
-  var DONANTES = ["Naranja X", "Holcim", "Conci", "Hiper Libertad", "Otra empresa"];
+  // Con la API, los fardos son los bultos de la base y se cargan al entrar (ver el final del archivo)
+  var CON_API = OmasApi.usaApi("deposito");
+  var DEPOSITO = CON_API ? [] : OmasApi.depositoPrueba();
+  function guardarDeposito(){ if(!CON_API) OmasApi.guardarDepositoPrueba(DEPOSITO); }
+  async function recargarDeposito(){ if(CON_API) DEPOSITO = await OmasApi.listarFardos(); }
+  // Las empresas donantes: tabla EmpresaDonante (se cargan en la pantalla Empresas donantes)
+  var EMPRESAS = [];
   // Los destinos son las preguntas de la coordinación: cuántos kg fueron a feria, a trapos, a desbastado y al taller.
   // Son las mismas secciones del Stock del depósito (api.js). "Sin clasificar" es para separarlo más tarde.
   var DESTINOS = OmasApi.SECCIONES_DEPOSITO;
@@ -133,7 +137,7 @@
       campos: { retiro: { bruto: "", tara: "no" } }, dias: 7, fecha: null, firmado: false };
     // etapa: en qué parte de la pesada está (qué puso en la balanza → cuánto marca → foto → ¿hay más?)
     // reparto: los kilos que van a cada destino, tal como se escriben ({ feria: "40,5", ... })
-    if(flujo === "donacion") estado.d = { empresa: null, remito: "", kgRemito: "", activo: "pesada",
+    if(flujo === "donacion") estado.d = { idEmpresa: null, empresa: null, remito: "", kgRemito: "", activo: "pesada",
       campos: { pesada: { bruto: "", tara: "no" } }, pesadas: [], etapa: "tara", reparto: {}, foto: null };
     render();
   }
@@ -199,7 +203,8 @@
     } else {
       html += '<p class="vacio">Todavía no hay pesajes hoy.</p>';
     }
-    html += '<p class="nota-chica mt-4">Prototipo con datos inventados. Los pesajes se guardan solo en este navegador.</p></div>';
+    html += '<p class="nota-chica mt-4">' + (CON_API ? "Las donaciones y los retiros se guardan en el sistema. Las costureras y sus devoluciones todavía son de ejemplo."
+      : "Prototipo con datos inventados. Los pesajes se guardan solo en este navegador.") + "</p></div>";
     return html;
   }
   function opcion(flujo, icono, titulo, texto){
@@ -415,8 +420,8 @@
       DEPOSITO.filter(function(f){ return f.kg > 0 && f.material !== SIN_CLASIFICAR; }).map(function(f){
         return '<button type="button" class="etiqueta' + (d.fardo === f.codigo ? " elegida" : "") + '" data-accion="fardo" data-codigo="' + f.codigo + '">' +
           '<span class="etiqueta-codigo">' + f.codigo + "</span><strong>" + esc(f.material) + "</strong>" +
-          "<span>" + kg(f.kg) + " disponibles · " + esc(f.ubicacion) + "</span></button>";
-      }).join("");
+          "<span>" + kg(f.kg) + " disponibles · " + esc(f.ubicacion || "de " + f.empresa) + "</span></button>";
+      }).join("") || '<p class="vacio">No hay material clasificado en el depósito.</p>';
     return { html: html, boton: { texto: "Continuar", habilitado: !!d.fardo } };
   };
   function fardoElegido(){ var d = estado.d; return DEPOSITO.filter(function(f){ return f.codigo === d.fardo; })[0]; }
@@ -464,12 +469,14 @@
   // Se toca la empresa y pasa sola a la pantalla siguiente
   PASOS.empresa = function(){
     var d = estado.d;
-    var html = '<h1 class="titulo">¿De qué empresa?</h1>' + DONANTES.map(function(e){
-      var elegida = d.empresa === e;
-      return '<button type="button" class="fila' + (elegida ? " elegida" : "") + '" data-accion="empresa" data-nombre="' + esc(e) + '" aria-pressed="' + elegida + '">' +
-        '<span class="avatar suave">' + esc(e.charAt(0)) + '</span><span class="fila-texto"><strong>' + esc(e) + "</strong></span>" +
+    var html = '<h1 class="titulo">¿De qué empresa?</h1>' + EMPRESAS.map(function(e){
+      var elegida = d.idEmpresa === e.id;
+      return '<button type="button" class="fila' + (elegida ? " elegida" : "") + '" data-accion="empresa" data-id="' + e.id + '" aria-pressed="' + elegida + '">' +
+        '<span class="avatar suave">' + esc(e.razonSocial.charAt(0)) + '</span><span class="fila-texto"><strong>' + esc(e.razonSocial) + "</strong></span>" +
         (elegida ? ICONO.tilde : "") + "</button>";
-    }).join("");
+    }).join("") +
+      // Si la empresa es nueva, se carga primero en Empresas donantes
+      '<p class="nota-chica mt-2">¿No está la empresa? <a href="empresas.html">Cargala en Empresas donantes</a>.</p>';
     return { html: html, boton: { texto: "Continuar", habilitado: !!d.empresa } };
   };
 
@@ -585,10 +592,28 @@
     return { html: html, boton: { texto: "Guardar donación", habilitado: Math.abs(restante()) < 0.05, accion: "guardar" } };
   };
 
-  /* ===== Guardar ===== */
-  function guardar(){
+  /* ===== Guardar =====
+     Con la API, la donación y el retiro se guardan en la base: si falla (sin internet, remito repetido)
+     no se guarda nada y se avisa. Lo que va a la base no se puede deshacer desde acá.
+     La devolución sigue simulada: los lotes de las costureras no tienen tablas en el modelo. */
+  async function guardar(boton){
     var d = estado.d, p = estado.persona, registro = { id: Date.now(), tipo: estado.flujo, hora: new Date().toISOString(), por: p.nombre, sincronizado: false };
     var restaurar;
+    var vaALaBase = CON_API && estado.flujo !== "devuelve";
+    if(vaALaBase){
+      if(boton){ boton.disabled = true; boton.textContent = "Guardando…"; }
+      try { await guardarEnLaBase(d, registro); }
+      catch(err){
+        if(boton){ boton.disabled = false; boton.textContent = estado.flujo === "donacion" ? "Guardar donación" : "Guardar retiro"; }
+        avisar(err.message || "No se pudo guardar. Probá de nuevo.");
+        return;
+      }
+      registro.sincronizado = true;
+      registros.push(registro); escribir();
+      estado.listo = registro; estado.flujo = null; deshacer = null;
+      render();
+      return;
+    }
 
     if(estado.flujo === "devuelve"){
       var lote = LOTES.filter(function(l){ return l.codigo === d.lote; })[0];
@@ -638,6 +663,28 @@
     deshacer = { id: registro.id, restaurar: restaurar, segundos: 10, reloj: null };
     render();
   }
+  // Donación: la empresa, el remito y un bulto por cada destino con kilos (POST /api/donaciones).
+  // Retiro: el bulto queda "Retirado" en la base; el lote de la costurera se anota acá (no tiene tabla).
+  async function guardarEnLaBase(d, registro){
+    if(estado.flujo === "donacion"){
+      var reparto = {};
+      DESTINOS.forEach(function(x){ reparto[x.id] = Math.round(num(d.reparto[x.id]) * 100) / 100; });
+      d.fardos = await OmasApi.registrarDonacion(d.idEmpresa, d.remito, reparto);
+      registro.texto = d.empresa + ": " + kg(totalPesadas()) + " en " + d.fardos.length + (d.fardos.length === 1 ? " bulto" : " bultos");
+      registro.kg = totalPesadas(); registro.fardos = d.fardos.slice(); registro.empresa = d.empresa;
+    } else {
+      var f = fardoElegido(), n = neto(d.campos.retiro);
+      var r = await OmasApi.retirarFardo(f.codigo, n);
+      var nuevo = { codigo: r.codigo, costurera: d.costureras[0], material: f.material, kg: n, retiro: HOY, vence: fechaDevolucion() };
+      LOTES.push(nuevo);
+      registro.texto = costurera(d.costureras[0]).nombre + " retiró " + kg(n) + " (" + nuevo.codigo + ")";
+      registro.kg = n; registro.lote = nuevo.codigo; registro.material = f.material; registro.vence = nuevo.vence.toISOString();
+      registro.costureras = d.costureras.slice();
+    }
+    // Lo que hay en el depósito cambió: se vuelve a leer de la base
+    try { await recargarDeposito(); } catch(e){}
+  }
+
   function terminarDeshacer(){
     if(deshacer && deshacer.reloj) clearInterval(deshacer.reloj);
     deshacer = null;
@@ -792,11 +839,13 @@
       case "tecla": teclear(el.dataset.tecla); render(false); break;
       case "confirmarRaro": d.confirmoRaro = true; render(false); break;
       case "calidad": d.calidad[el.dataset.q] = el.dataset.v === "si"; render(false); break;
-      case "guardar": guardar(); break;
+      case "guardar": guardar(el); break;
       case "fardo": d.fardo = el.dataset.codigo; d.campos.retiro.bruto = ""; render(false); setTimeout(avanzar, 180); break;
       case "dias": d.dias = +el.dataset.dias; d.fecha = null; render(false); break;
       case "borrarFirma": d.firmado = false; render(false); break;
-      case "empresa": d.empresa = el.dataset.nombre; render(false); setTimeout(avanzar, 180); break;
+      case "empresa":
+        var empresa = EMPRESAS.filter(function(x){ return String(x.id) === el.dataset.id; })[0];
+        d.idEmpresa = empresa.id; d.empresa = empresa.razonSocial; render(false); setTimeout(avanzar, 180); break;
       // Pesar la donación, de a una cosa por pantalla
       case "taraElegida": d.campos.pesada.tara = el.dataset.tara; d.etapa = "peso"; render(); break;
       case "aFoto": if(neto(d.campos.pesada) > 0){ d.etapa = "foto"; render(); } break;
@@ -960,11 +1009,20 @@
   }
 
   // Solo se entra con sesión iniciada. Quien ingresó es quien pesa, hasta que cambie con su PIN.
-  OmasApi.exigirSesion().then(function(u){
+  OmasApi.exigirSesion().then(async function(u){
     OmasMenu.iniciar(u);
-    var p = PERSONAS.filter(function(x){ return x.id === u.id; })[0];
+    // Con la API el id es el número de la base: se reconoce por el nombre a las cuentas de ejemplo
+    var p = PERSONAS.filter(function(x){ return x.id === u.id || (CON_API && x.nombre === u.nombre); })[0];
     if(!p){ p = { id: u.id, nombre: u.nombre, rol: u.rol, aprueba: ["Administración", "Coordinadora", "Supervisión"].indexOf(u.rol) >= 0 }; PERSONAS.push(p); }
     estado.persona = p;
+    // Empresas y bultos del depósito (con la API, de la base)
+    try {
+      EMPRESAS = await OmasApi.listarEmpresas();
+      await recargarDeposito();
+    } catch(err){
+      app.innerHTML = '<h1 class="titulo">Depósito</h1><p class="aviso-caja">' + esc(err.message || "No se pudo conectar con el sistema.") + "</p>";
+      return;
+    }
     render();
   });
 })();

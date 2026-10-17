@@ -1,73 +1,37 @@
 /* ===== SGI-OMAS · Cliente de la API =====
-   Todas las pantallas del panel hablan con la API (ASP.NET Core en .NET 8 + EF Database First + SQL Server)
-   solo a través de este archivo. Cuando la API esté lista, alcanza con poner
-   modoPrototipo en false: las pantallas no cambian.
+   Todas las pantallas del panel hablan con la API (api/LasOmasApi: ASP.NET Core .NET 8 + EF Database First
+   + SQL Server, base LasOmas) solo a través de este archivo.
 
-   Contrato que tiene que cumplir la API (lo usan las pantallas):
-     POST /api/auth/login   { usuario, clave }
-                            200 { id, nombre, rol } y deja la cookie de sesión (HttpOnly, Secure, SameSite=Strict).
-                            La cookie NO es persistente: se borra al cerrar el navegador. No hay "recordarme".
-                            401 usuario o contraseña incorrectos · 423 cuenta bloqueada por intentos
-     POST /api/auth/logout  204, borra la cookie
-     GET  /api/auth/yo      200 { id, nombre, rol } si hay sesión · 401 si no
+   El panel se abre desde la misma API (https://localhost:7122/admin/...): así la cookie de sesión viaja sola.
 
-     Talleres (CRUD) · crear, editar y dar de baja: Administración, Coordinadora y Supervisión (403 para Depósito)
-     GET    /api/talleres               200 [{ id, nombre, tipo, img, desc, cuando, activo }]
-                                        PÚBLICO (sin sesión): solo los activos. Lo usa la página Talleres del sitio.
-     GET    /api/talleres?todos=true    200 también los dados de baja (panel, con sesión)
-     POST   /api/talleres               { nombre, tipo, img, desc, cuando } → 201 el taller creado
-     PUT    /api/talleres/{id}          { nombre, tipo, img, desc, cuando } → 200 el taller actualizado
-     DELETE /api/talleres/{id}          204 baja LÓGICA (activo = false): deja de verse en el sitio,
-                                        pero sus inscripciones quedan guardadas
-     PUT    /api/talleres/{id}/alta     204 lo vuelve a mostrar
-       tipo = "oficios" | "digital" | "bienestar" · img = una foto de la galería (TALLERES_FOTOS)
-       cuando = { modo: "semanal",    dias: [1, 3], desde: "14:00", hasta: "17:00" }  (1 = lunes … 6 = sábado)
-              | { modo: "puntual",    fecha: "2026-11-15", desde: "09:00", hasta: "13:00" }
-              | { modo: "aConfirmar" }
-       Se guarda como datos, no como texto: el texto ("Lun y Mié · 14 a 17 h") lo arma textoFecha().
-       La API tiene que validar lo mismo que el panel: al menos un día, fecha no pasada, hasta > desde.
-     POST /api/inscripciones  { tallerId, nombre, dni, telefono }
-                            201 PÚBLICO (sin sesión): el formulario de inscripción del sitio.
-                            Al guardarla, la API dispara el bot de WhatsApp que le confirma la
-                            inscripción al teléfono que dejó (por eso el panel no tiene botón de WhatsApp).
-     GET  /api/inscripciones  200 [{ id, tallerId, nombre, dni, telefono, fecha }]
-                            Administración, Coordinadora y Supervisión (403 para Depósito): son datos personales.
+   QUÉ VA A LA BASE Y QUÉ NO
+   El modelo de la base (corregido por el profesor) tiene Usuario, Rol, EmpresaDonante, IngresoDonacion,
+   Bulto, CategoriaTela y Estado. Eso va a la API: sesión, usuarios, empresas, donaciones y stock.
+   Talleres, inscripciones, pedidos del Taller textil y los lotes de las costureras NO tienen tablas:
+   siguen simulados en el navegador (sessionStorage) hasta que el modelo los incluya (ver MODULOS_CON_API).
 
-     Usuarios (CRUD) · solo el rol Administración (403 para el resto):
-     GET    /api/usuarios               200 [{ id, nombre, usuario, rol, activo, alta }]
-     POST   /api/usuarios               { nombre, usuario, rol } → 201 { usuario, claveTemporal }
-                                        409 si el nombre de usuario ya existe
-     PUT    /api/usuarios/{id}          { nombre, rol } → 200 la usuaria actualizada
-     POST   /api/usuarios/{id}/clave    200 { claveTemporal }: se olvidó la clave y se le da una nueva
-     DELETE /api/usuarios/{id}          204 baja LÓGICA (activo = false): no se borra, así queda
-                                        registrado quién hizo cada pesaje. No puede darse de baja a sí misma.
-     PUT    /api/usuarios/{id}/alta     204 la vuelve a activar
-     La clave se guarda con hash en la base, nunca en texto. La temporal se muestra una sola vez.
+   Contrato de la API (lo que usan las pantallas):
+     POST /api/auth/login   { usuario (el email), clave } → 200 { id, nombre, rol } y deja la cookie de sesión
+                            (HttpOnly, Secure, SameSite=Strict, no persistente) · 401 datos incorrectos · 423 bloqueada
+     POST /api/auth/logout  204 · GET /api/auth/yo → 200 { id, nombre, rol } · 401 sin sesión
 
-     Depósito · fardos y stock (los comparten Depósito, Stock del depósito y Taller textil):
-     GET    /api/fardos?material=...    200 [{ codigo, material, kg, ubicacion, entro, empresa, historial[] }] solo los que tienen kg
-       historial = [{ fecha, texto, por }] (tabla MovimientoFardo) · material "Sin clasificar" = pesado pero no separado
-     POST   /api/fardos/{codigo}/mover  { destino, kg } → 200 { movimiento, origen, nuevo?, kg, destino }
-       Todo el fardo: conserva el código y cambia de sección. Una parte: sale un fardo nuevo con su código.
-       A "descarte": esos kg salen del depósito. No más kg de los que tiene el fardo.
-     DELETE /api/fardos/movimientos/{id} 204 deshace un movimiento recién hecho
-     Los códigos de los fardos (letra de la sección + número) los da la API, así no se repiten.
+     Usuarios (CRUD, solo Administración):
+     GET  /api/usuarios → [{ id, nombre, apellido, email, telefono, rol, activo }]
+     POST /api/usuarios { nombre, apellido, email, telefono?, rol } → 201 { usuario, claveTemporal } · 409 email repetido
+     PUT  /api/usuarios/{id} { nombre, apellido, telefono?, rol } · POST /api/usuarios/{id}/clave → { claveTemporal }
+     DELETE /api/usuarios/{id} 204 baja lógica (Activo_SN = 0) · PUT /api/usuarios/{id}/alta 204
 
-     Taller textil · pedidos (proceso):
-     GET    /api/pedidos                200 [{ id, numero, canal, recibido, cliente, producto, medida, cantidad, entrega,
-                                               ordenCompra, mensaje, estado, consulta?, motivo?, material[], reparto[], entregas[] }]
-       canal = "whatsapp" | "gmail" | "web" · estado = "nuevo" | "masDatos" | "aceptado" | "rechazado"
-       Los pedidos los CREA el bot (WhatsApp / Gmail) o el formulario del sitio, no una persona:
-     POST   /api/pedidos/entrantes      { canal, cliente, producto, medida, cantidad, entrega, mensaje } → 201 (usa el bot)
-     POST   /api/pedidos/{id}/respuesta { accion: "aceptar" | "rechazar" | "masDatos", texto } → 200 · solo Administración
-     POST   /api/pedidos/{id}/material  { fardo, kg } → 200 · descuenta los kg del fardo del depósito
-     POST   /api/pedidos/{id}/reparto   { operaria, cantidad } → 200 · no más de lo que falta repartir
-     POST   /api/pedidos/{id}/terminadas { operaria, cantidad } → 200 · no más de lo que tiene asignado
-     POST   /api/pedidos/{id}/entregas  { cantidad, remito } → 200 · no más de lo terminado y no entregado
-     Material, reparto y entregas: Administración, Coordinadora y Supervisión (403 para Depósito).
+     Empresas donantes (CRUD): GET/POST /api/empresas · GET/PUT/DELETE /api/empresas/{id}
+       { razonSocial, cuit (11 números), telefono?, email? } · 409 CUIT repetido o empresa con donaciones
+
+     Donaciones (proceso): POST /api/donaciones { idEmpresa, numeroRemito, bultos: [{ pesoKg, idCategoria, color?, descartado? }] }
+       → 201 la donación con sus bultos · 409 remito repetido para esa empresa · GET /api/donaciones
+     Stock: GET /api/bultos (los que están "En depósito") · GET /api/bultos/{id} · GET /api/stock
+       PUT /api/bultos/{id}/categoria { idCategoria } (mover entero) · POST /api/bultos/{id}/dividir { pesoKg, idCategoria }
+       PUT /api/bultos/{id}/estado { idEstado } (Retirado / Descartado / En depósito)
+     Catálogos: GET /api/categorias · GET /api/estados · GET /api/roles
 
    No hay registro público: las cuentas las crea Administración desde la pantalla Usuarios.
-
    Este archivo lo carga también talleres.html del sitio público, solo para leer los talleres. */
 window.OmasApi = (function(){
   "use strict";
@@ -75,9 +39,12 @@ window.OmasApi = (function(){
   var CONFIG = {
     // La API se publica en el mismo dominio que el panel, así la cookie de sesión viaja sola
     base: "/api",
-    // true mientras no exista la API: simula las respuestas con usuarios de prueba
-    modoPrototipo: true
+    // true: todo simulado en el navegador, sin API (para mostrar el prototipo sin prender nada)
+    modoPrototipo: false
   };
+  // Los módulos que tienen tablas en la base. El resto queda simulado aunque modoPrototipo sea false.
+  var MODULOS_CON_API = ["sesion", "usuarios", "deposito"];
+  function usaApi(modulo){ return !CONFIG.modoPrototipo && MODULOS_CON_API.indexOf(modulo) >= 0; }
 
   function ErrorApi(tipo, mensaje){ this.tipo = tipo; this.message = mensaje; }
   ErrorApi.prototype = Object.create(Error.prototype);
@@ -99,12 +66,29 @@ window.OmasApi = (function(){
     } catch(e){
       throw new ErrorApi("sin-conexion", MENSAJES.sinConexion);
     }
-    if(respuesta.status === 401) throw new ErrorApi("credenciales", MENSAJES.credenciales);
+    if(respuesta.status === 401) throw new ErrorApi("credenciales", ruta === "/auth/login" ? MENSAJES.credenciales : "Tu sesión se cerró. Volvé a ingresar.");
     if(respuesta.status === 423) throw new ErrorApi("bloqueada", MENSAJES.bloqueada);
     if(respuesta.status === 403) throw new ErrorApi("permiso", "No tenés permiso para hacer esto.");
-    if(respuesta.status === 409) throw new ErrorApi("repetido", "Ya existe un registro con esos datos.");
-    if(!respuesta.ok) throw new ErrorApi("servidor", MENSAJES.servidor);
+    if(!respuesta.ok){
+      // La API explica qué pasó: { mensaje } o, si un dato está mal, { errors: { Campo: ["…"] } }
+      var texto = await mensajeDeError(respuesta);
+      if(respuesta.status === 409) throw new ErrorApi("repetido", texto || "Ya existe un registro con esos datos.");
+      if(respuesta.status === 400 || respuesta.status === 404) throw new ErrorApi("datos", texto || "Revisá los datos.");
+      throw new ErrorApi("servidor", MENSAJES.servidor);
+    }
     return respuesta.status === 204 ? null : respuesta.json();
+  }
+  async function mensajeDeError(respuesta){
+    try {
+      var cuerpo = await respuesta.json();
+      if(cuerpo.mensaje) return cuerpo.mensaje;
+      if(cuerpo.errors){
+        // El primer error de validación que esté escrito en castellano (los de .NET vienen en inglés)
+        var todos = Object.keys(cuerpo.errors).reduce(function(l, k){ return l.concat(cuerpo.errors[k]); }, []);
+        return todos.filter(function(t){ return !/^The |could not be converted/.test(t); })[0] || "";
+      }
+    } catch(e){}
+    return "";
   }
 
   /* ----- Simulación para el prototipo (se borra cuando exista la API) ----- */
@@ -113,10 +97,10 @@ window.OmasApi = (function(){
      PROTOTIPO: la clave queda en texto solo acá; la API real guarda un hash. */
   var CLAVE_PRUEBA = "omas2026";
   var USUARIOS_EJEMPLO = [
-    { id: "laura", nombre: "Laura", usuario: "laura", rol: "Coordinadora", activo: true, alta: "2025-03-10", clave: CLAVE_PRUEBA },
-    { id: "sandra", nombre: "Sandra", usuario: "sandra", rol: "Administración", activo: true, alta: "2025-03-10", clave: CLAVE_PRUEBA },
-    { id: "florencia", nombre: "Florencia", usuario: "florencia", rol: "Depósito", activo: true, alta: "2025-04-02", clave: CLAVE_PRUEBA },
-    { id: "ejemplo-baja", nombre: "Usuaria de ejemplo", usuario: "ejemplo", rol: "Depósito", activo: false, alta: "2025-05-20", clave: CLAVE_PRUEBA }
+    { id: "laura", nombre: "Laura", usuario: "laura@lasomas.test", rol: "Coordinadora", activo: true, alta: "2025-03-10", clave: CLAVE_PRUEBA },
+    { id: "sandra", nombre: "Sandra", usuario: "sandra@lasomas.test", rol: "Administración", activo: true, alta: "2025-03-10", clave: CLAVE_PRUEBA },
+    { id: "florencia", nombre: "Florencia", usuario: "florencia@lasomas.test", rol: "Depósito", activo: true, alta: "2025-04-02", clave: CLAVE_PRUEBA },
+    { id: "ejemplo-baja", nombre: "Usuaria de ejemplo", usuario: "ejemplo@lasomas.test", rol: "Depósito", activo: false, alta: "2025-05-20", clave: CLAVE_PRUEBA }
   ];
   var CLAVE_USUARIOS = "omas-usuarios-prueba";
   var MAX_INTENTOS = 5;
@@ -152,19 +136,25 @@ window.OmasApi = (function(){
 
   /* ----- Sesión ----- */
   // Copia del nombre y el rol solo para mostrarlos; quien decide si hay sesión es la cookie de la API
-  function recordarUsuario(u){ try { sessionStorage.setItem("omas-usuario", JSON.stringify(u)); } catch(e){} }
+  // El id se guarda siempre como texto: la API lo manda como número y las pantallas lo comparan como texto
+  function recordarUsuario(u){
+    u.id = String(u.id);
+    try { sessionStorage.setItem("omas-usuario", JSON.stringify(u)); } catch(e){}
+    return u;
+  }
+  // Quién ingresó, para los módulos que todavía se simulan (talleres, pedidos): sirve en los dos modos
+  function sesionGuardada(){ return guardado("omas-sesion-prueba") || guardado("omas-usuario"); }
 
   async function iniciarSesion(usuario, clave){
-    var u = CONFIG.modoPrototipo
-      ? await loginPrueba(usuario, clave)
-      : await pedir("/auth/login", { method: "POST", body: JSON.stringify({ usuario: usuario, clave: clave }) });
-    recordarUsuario(u);
-    return u;
+    var u = usaApi("sesion")
+      ? await pedir("/auth/login", { method: "POST", body: JSON.stringify({ usuario: usuario, clave: clave }) })
+      : await loginPrueba(usuario, clave);
+    return recordarUsuario(u);
   }
 
   async function usuarioActual(){
-    if(CONFIG.modoPrototipo) return guardado("omas-sesion-prueba");
-    try { var u = await pedir("/auth/yo", { method: "GET" }); recordarUsuario(u); return u; }
+    if(!usaApi("sesion")) return sesionGuardada();
+    try { return recordarUsuario(await pedir("/auth/yo", { method: "GET" })); }
     catch(e){ if(e.tipo === "credenciales") return null; throw e; }
   }
 
@@ -175,7 +165,7 @@ window.OmasApi = (function(){
       sessionStorage.removeItem("omas-sesion-prueba");
       localStorage.removeItem("omas-sesion-prueba"); // por si quedó de una versión anterior
     } catch(e){}
-    if(!CONFIG.modoPrototipo){ try { await pedir("/auth/logout", { method: "POST" }); } catch(e){} }
+    if(usaApi("sesion")){ try { await pedir("/auth/logout", { method: "POST" }); } catch(e){} }
     if(!opciones || opciones.redirigir !== false) location.href = "ingresar.html";
   }
 
@@ -221,13 +211,13 @@ window.OmasApi = (function(){
   // Sin opciones: solo los activos (lo que ve el sitio). Con { todos: true }: también los de baja (panel).
   async function listarTalleres(opciones){
     var todos = !!(opciones && opciones.todos);
-    if(!CONFIG.modoPrototipo) return pedir("/talleres" + (todos ? "?todos=true" : ""), { method: "GET" });
+    if(usaApi("talleres")) return pedir("/talleres" + (todos ? "?todos=true" : ""), { method: "GET" });
     return talleresPrueba().filter(function(t){ return todos || t.activo; });
   }
 
   async function puedeEditarTalleres(){
     await esperar(400);
-    var u = guardado("omas-sesion-prueba");
+    var u = sesionGuardada();
     if(!u || u.rol === "Depósito") throw new ErrorApi("permiso", "Solo la coordinación, la supervisión y Administración pueden cambiar los talleres.");
   }
   function datosTaller(d){
@@ -236,7 +226,7 @@ window.OmasApi = (function(){
 
   async function crearTaller(datos){
     var nuevo = datosTaller(datos);
-    if(!CONFIG.modoPrototipo) return pedir("/talleres", { method: "POST", body: JSON.stringify(nuevo) });
+    if(usaApi("talleres")) return pedir("/talleres", { method: "POST", body: JSON.stringify(nuevo) });
     await puedeEditarTalleres();
     var lista = talleresPrueba();
     var taller = Object.assign({ id: "t" + Date.now(), activo: true }, nuevo);
@@ -246,7 +236,7 @@ window.OmasApi = (function(){
 
   async function actualizarTaller(id, datos){
     var cambios = datosTaller(datos);
-    if(!CONFIG.modoPrototipo) return pedir("/talleres/" + encodeURIComponent(id), { method: "PUT", body: JSON.stringify(cambios) });
+    if(usaApi("talleres")) return pedir("/talleres/" + encodeURIComponent(id), { method: "PUT", body: JSON.stringify(cambios) });
     await puedeEditarTalleres();
     var lista = talleresPrueba(), t = lista.filter(function(x){ return x.id === id; })[0];
     if(!t) throw new ErrorApi("servidor", "No encontramos ese taller.");
@@ -256,7 +246,7 @@ window.OmasApi = (function(){
 
   // activo = false → baja lógica (deja de verse en el sitio) · activo = true → vuelve a mostrarse
   async function cambiarAltaTaller(id, activo){
-    if(!CONFIG.modoPrototipo){
+    if(usaApi("talleres")){
       return pedir("/talleres/" + encodeURIComponent(id) + (activo ? "/alta" : ""), { method: activo ? "PUT" : "DELETE" });
     }
     await puedeEditarTalleres();
@@ -316,7 +306,7 @@ window.OmasApi = (function(){
 
   async function inscribirTaller(datos){
     var inscripcion = { tallerId: datos.tallerId, nombre: datos.nombre.trim(), dni: datos.dni.replace(/\D/g, ""), telefono: datos.telefono.trim() };
-    if(!CONFIG.modoPrototipo) return pedir("/inscripciones", { method: "POST", body: JSON.stringify(inscripcion) });
+    if(usaApi("talleres")) return pedir("/inscripciones", { method: "POST", body: JSON.stringify(inscripcion) });
     await esperar(400);
     var nuevas = guardado(CLAVE_INSCRIPCIONES) || [];
     inscripcion.id = "n" + Date.now();
@@ -327,8 +317,8 @@ window.OmasApi = (function(){
   }
 
   async function listarInscripciones(){
-    if(!CONFIG.modoPrototipo) return pedir("/inscripciones", { method: "GET" });
-    var u = guardado("omas-sesion-prueba");
+    if(usaApi("talleres")) return pedir("/inscripciones", { method: "GET" });
+    var u = sesionGuardada();
     if(!u || u.rol === "Depósito") throw new ErrorApi("servidor", "Solo la coordinación y la supervisión pueden ver las inscripciones.");
     return INSCRIPCIONES_EJEMPLO.concat(guardado(CLAVE_INSCRIPCIONES) || []);
   }
@@ -339,16 +329,17 @@ window.OmasApi = (function(){
      PROTOTIPO: se leen y se guardan sin esperar (pesaje.js funciona sin internet y es síncrono). */
   // Secciones del depósito. La letra va adelante del código del fardo (T-0241 = trapos).
   // "Sin clasificar": la donación se pesó pero todavía no se separó. "Descarte": sale del depósito.
+  // "categoria": cómo se llama en la tabla CategoriaTela. Descarte no es una categoría: es el estado "Descartado".
   var SECCIONES_DEPOSITO = [
-    { id: "feria", nombre: "Feria", letra: "F", material: "Prendas para feria" },
-    { id: "desmarcado", nombre: "Desmarcado", letra: "D", material: "Uniformes para desmarcar" },
-    { id: "trapos", nombre: "Trapos", letra: "T", material: "Tela para trapos" },
-    { id: "lienzo", nombre: "Lienzo para bolsas", letra: "B", material: "Lienzo para bolsas" },
+    { id: "feria", nombre: "Feria", letra: "F", material: "Prendas para feria", categoria: "Feria" },
+    { id: "desmarcado", nombre: "Desmarcado", letra: "D", material: "Uniformes para desmarcar", categoria: "Desmarcado" },
+    { id: "trapos", nombre: "Trapos", letra: "T", material: "Tela para trapos", categoria: "Trapos" },
+    { id: "lienzo", nombre: "Lienzo para bolsas", letra: "B", material: "Lienzo para bolsas", categoria: "Lienzo para bolsas" },
     // Merchandising con los propios uniformes de la empresa ("Vuelta de Rosca")
-    { id: "taller", nombre: "Taller textil", letra: "M", material: "Uniformes para merchandising" },
-    { id: "desbastado", nombre: "Desbastado", letra: "X", material: "Textil para desbastado" },
+    { id: "taller", nombre: "Taller textil", letra: "M", material: "Uniformes para merchandising", categoria: "Merchandising" },
+    { id: "desbastado", nombre: "Desbastado", letra: "X", material: "Textil para desbastado", categoria: "Desbastado" },
     { id: "descarte", nombre: "Descarte", letra: "Z", material: "Descarte", sale: true },
-    { id: "sinClasificar", nombre: "Sin clasificar", letra: "S", material: "Sin clasificar" }
+    { id: "sinClasificar", nombre: "Sin clasificar", letra: "S", material: "Sin clasificar", categoria: "Sin clasificar" }
   ];
   function seccionDe(material){ return SECCIONES_DEPOSITO.filter(function(s){ return s.material === material; })[0]; }
   function diaIso(desplazamiento){
@@ -379,8 +370,40 @@ window.OmasApi = (function(){
     return codigo;
   }
 
+  /* ----- Depósito con la API: los "fardos" de las pantallas son los Bulto de la base -----
+     Las pantallas siguen trabajando con { codigo, material, kg, entro, empresa }: acá se traduce.
+     El código del bulto es su número en la base (#0007). Ubicación e historial no están en el modelo. */
+  var catalogo = null;
+  async function catalogos(){
+    if(!catalogo){
+      var r = await Promise.all([pedir("/categorias", { method: "GET" }), pedir("/estados", { method: "GET" })]);
+      catalogo = { categorias: r[0], estados: r[1] };
+    }
+    return catalogo;
+  }
+  async function idCategoria(seccion){
+    var c = (await catalogos()).categorias.filter(function(x){ return x.nombre === seccion.categoria; })[0];
+    if(!c) throw new ErrorApi("datos", "Falta la categoría " + seccion.categoria + " en la base: correr lasomas.sql.");
+    return c.id;
+  }
+  async function idEstado(nombre){
+    var e = (await catalogos()).estados.filter(function(x){ return x.nombre === nombre; })[0];
+    if(!e) throw new ErrorApi("datos", "Falta el estado " + nombre + " en la base: correr lasomas.sql.");
+    return e.id;
+  }
+  function codigoBulto(id){ return "#" + String(id).padStart(4, "0"); }
+  function idBulto(codigo){ return +String(codigo).replace(/\D/g, ""); }
+  function fardoDeBulto(b){
+    var s = SECCIONES_DEPOSITO.filter(function(x){ return x.categoria === b.categoria; })[0];
+    return { id: b.id, codigo: codigoBulto(b.id), material: s ? s.material : b.categoria, kg: +b.pesoKg, color: b.color,
+      entro: b.fechaIngreso.slice(0, 10), empresa: b.empresa, remito: b.numeroRemito, estado: b.estado, ubicacion: null, historial: null };
+  }
+
   async function listarFardos(material){
-    if(!CONFIG.modoPrototipo) return pedir("/fardos" + (material ? "?material=" + encodeURIComponent(material) : ""), { method: "GET" });
+    if(usaApi("deposito")){
+      var bultos = (await pedir("/bultos", { method: "GET" })).map(fardoDeBulto);
+      return bultos.filter(function(f){ return !material || f.material === material; });
+    }
     await esperar(200);
     return depositoPrueba().filter(function(f){ return f.kg > 0 && (!material || f.material === material); });
   }
@@ -393,9 +416,9 @@ window.OmasApi = (function(){
   function redondear(n){ return Math.round(n * 100) / 100; }
   function kgTexto(n){ return n.toLocaleString("es-AR", { maximumFractionDigits: 2 }) + " kg"; }
   async function moverFardo(codigo, destino, kg){
-    if(!CONFIG.modoPrototipo) return pedir("/fardos/" + encodeURIComponent(codigo) + "/mover", { method: "POST", body: JSON.stringify({ destino: destino, kg: kg }) });
+    if(usaApi("deposito")) return moverBulto(codigo, destino, kg);
     await esperar(250);
-    var u = guardado("omas-sesion-prueba");
+    var u = sesionGuardada();
     if(!u) throw new ErrorApi("credenciales", "Tu sesión se cerró. Volvé a ingresar.");
     var deposito = depositoPrueba(), f = deposito.filter(function(x){ return x.codigo === codigo; })[0];
     var hacia = SECCIONES_DEPOSITO.filter(function(s){ return s.id === destino; })[0];
@@ -429,7 +452,7 @@ window.OmasApi = (function(){
   }
   // Deshace un movimiento recién hecho: el fardo vuelve como estaba y el nuevo (si salió uno) se borra
   async function deshacerMovimiento(id){
-    if(!CONFIG.modoPrototipo) return pedir("/fardos/movimientos/" + encodeURIComponent(id), { method: "DELETE" });
+    if(usaApi("deposito")) return deshacerBulto(id);
     await esperar(200);
     var mov = movimientos[id];
     if(!mov) throw new ErrorApi("servidor", "Ese movimiento ya no se puede deshacer.");
@@ -444,6 +467,127 @@ window.OmasApi = (function(){
     guardarDepositoPrueba(deposito);
     delete movimientos[id];
     return null;
+  }
+
+  /* Mover con la API. Entero: se cambia la categoría (o el estado, si va a Descarte) y conserva el número.
+     Una parte: la API la separa en un bulto nuevo de la misma donación. Se puede deshacer lo que se movió
+     entero (vuelve como estaba); una parte separada no, porque la base no junta bultos. */
+  async function moverBulto(codigo, destino, kg){
+    var id = idBulto(codigo), hacia = SECCIONES_DEPOSITO.filter(function(s){ return s.id === destino; })[0];
+    if(!hacia) throw new ErrorApi("datos", "Elegí a qué sección va.");
+    var antes = await pedir("/bultos/" + id, { method: "GET" }), peso = +antes.pesoKg;
+    kg = redondear(kg);
+    if(!(kg > 0)) throw new ErrorApi("datos", "Poné cuántos kilos movés.");
+    if(kg > peso + 0.05) throw new ErrorApi("datos", "El bulto " + codigo + " tiene " + kgTexto(peso) + ": no se puede mover más que eso.");
+    var todo = kg >= peso - 0.05, nuevo = null, mov = null;
+    if(todo && hacia.sale){
+      await pedir("/bultos/" + id + "/estado", { method: "PUT", body: JSON.stringify({ idEstado: await idEstado("Descartado") }) });
+      mov = { id: "m" + Date.now(), bulto: id, idEstado: antes.idEstado };
+      kg = peso;
+    } else if(todo){
+      if(antes.categoria === hacia.categoria) throw new ErrorApi("datos", "El bulto ya está en " + hacia.nombre + ".");
+      await pedir("/bultos/" + id + "/categoria", { method: "PUT", body: JSON.stringify({ idCategoria: await idCategoria(hacia) }) });
+      mov = { id: "m" + Date.now(), bulto: id, idCategoria: antes.idCategoria };
+      kg = peso;
+    } else {
+      // A Descarte una parte: se separa en la misma categoría y lo separado queda "Descartado"
+      var r = await pedir("/bultos/" + id + "/dividir", { method: "POST",
+        body: JSON.stringify({ pesoKg: kg, idCategoria: hacia.sale ? antes.idCategoria : await idCategoria(hacia) }) });
+      if(hacia.sale) await pedir("/bultos/" + r.nuevo.id + "/estado", { method: "PUT", body: JSON.stringify({ idEstado: await idEstado("Descartado") }) });
+      else nuevo = fardoDeBulto(r.nuevo);
+    }
+    if(mov) movimientos[mov.id] = mov;
+    var origen = fardoDeBulto(await pedir("/bultos/" + id, { method: "GET" }));
+    if(todo && hacia.sale) origen.kg = 0;
+    return { movimiento: mov ? mov.id : null, origen: origen, nuevo: nuevo, kg: kg, destino: hacia.nombre };
+  }
+  async function deshacerBulto(idMovimiento){
+    var mov = movimientos[idMovimiento];
+    if(!mov) throw new ErrorApi("datos", "Ese movimiento ya no se puede deshacer.");
+    if(mov.idEstado) await pedir("/bultos/" + mov.bulto + "/estado", { method: "PUT", body: JSON.stringify({ idEstado: mov.idEstado }) });
+    else await pedir("/bultos/" + mov.bulto + "/categoria", { method: "PUT", body: JSON.stringify({ idCategoria: mov.idCategoria }) });
+    delete movimientos[idMovimiento];
+    return null;
+  }
+
+  /* Sale material del depósito: lo lleva una costurera (retiro) o el Taller textil para un pedido.
+     Con la API el bulto queda "Retirado"; si se lleva una parte, se separa y lo separado queda "Retirado". */
+  async function retirarFardo(codigo, kg){
+    if(!usaApi("deposito")){
+      var deposito = depositoPrueba(), f = deposito.filter(function(x){ return x.codigo === codigo; })[0];
+      if(!f) throw new ErrorApi("datos", "Ese fardo ya no está en el depósito.");
+      if(kg > f.kg + 0.05) throw new ErrorApi("datos", "El fardo " + codigo + " tiene " + kgTexto(f.kg) + ": no alcanza.");
+      f.kg = redondear(f.kg - kg); guardarDepositoPrueba(deposito);
+      return { codigo: codigo, kg: kg };
+    }
+    var id = idBulto(codigo), b = await pedir("/bultos/" + id, { method: "GET" }), peso = +b.pesoKg;
+    if(b.estado !== "En depósito") throw new ErrorApi("datos", "El bulto " + codigo + " ya no está en el depósito.");
+    if(kg > peso + 0.05) throw new ErrorApi("datos", "El bulto " + codigo + " tiene " + kgTexto(peso) + ": no alcanza.");
+    var retirado = id;
+    if(kg < peso - 0.05){
+      var r = await pedir("/bultos/" + id + "/dividir", { method: "POST", body: JSON.stringify({ pesoKg: redondear(kg), idCategoria: b.idCategoria }) });
+      retirado = r.nuevo.id;
+    }
+    await pedir("/bultos/" + retirado + "/estado", { method: "PUT", body: JSON.stringify({ idEstado: await idEstado("Retirado") }) });
+    return { codigo: codigoBulto(retirado), kg: kg };
+  }
+
+  /* ----- Empresas donantes (CRUD) ----- */
+  var EMPRESAS_EJEMPLO = [
+    { id: 1, razonSocial: "Empresa Ejemplo Uno S.A.", cuit: "30000000017", telefono: "3510000001", email: "donaciones@ejemplo-uno.test", donaciones: 1 },
+    { id: 2, razonSocial: "Empresa Ejemplo Dos S.R.L.", cuit: "30000000025", telefono: null, email: "contacto@ejemplo-dos.test", donaciones: 0 }
+  ];
+  var CLAVE_EMPRESAS = "omas-empresas-prueba";
+  function empresasPrueba(){ return guardado(CLAVE_EMPRESAS) || JSON.parse(JSON.stringify(EMPRESAS_EJEMPLO)); }
+  function guardarEmpresasPrueba(lista){ try { sessionStorage.setItem(CLAVE_EMPRESAS, JSON.stringify(lista)); } catch(e){} }
+  function datosEmpresa(d){
+    return { razonSocial: d.razonSocial.trim(), cuit: d.cuit.replace(/\D/g, ""), telefono: (d.telefono || "").trim() || null, email: (d.email || "").trim() || null };
+  }
+
+  async function listarEmpresas(){
+    if(usaApi("deposito")) return pedir("/empresas", { method: "GET" });
+    await esperar(200);
+    return empresasPrueba().sort(function(a, b){ return a.razonSocial.localeCompare(b.razonSocial, "es"); });
+  }
+  async function crearEmpresa(datos){
+    var nueva = datosEmpresa(datos);
+    if(usaApi("deposito")) return pedir("/empresas", { method: "POST", body: JSON.stringify(nueva) });
+    var lista = empresasPrueba();
+    if(lista.some(function(e){ return e.cuit === nueva.cuit; })) throw new ErrorApi("repetido", "Ya hay una empresa con ese CUIT.");
+    var empresa = Object.assign({ id: Date.now(), donaciones: 0 }, nueva);
+    lista.push(empresa); guardarEmpresasPrueba(lista);
+    return empresa;
+  }
+  async function actualizarEmpresa(id, datos){
+    var cambios = datosEmpresa(datos);
+    if(usaApi("deposito")) return pedir("/empresas/" + encodeURIComponent(id), { method: "PUT", body: JSON.stringify(cambios) });
+    var lista = empresasPrueba(), e = lista.filter(function(x){ return x.id === id; })[0];
+    if(lista.some(function(x){ return x.cuit === cambios.cuit && x.id !== id; })) throw new ErrorApi("repetido", "Ya hay otra empresa con ese CUIT.");
+    Object.assign(e, cambios); guardarEmpresasPrueba(lista);
+    return e;
+  }
+  async function eliminarEmpresa(id){
+    if(usaApi("deposito")) return pedir("/empresas/" + encodeURIComponent(id), { method: "DELETE" });
+    var lista = empresasPrueba(), e = lista.filter(function(x){ return x.id === id; })[0];
+    if(e && e.donaciones) throw new ErrorApi("repetido", "La empresa tiene donaciones registradas: no se puede borrar.");
+    guardarEmpresasPrueba(lista.filter(function(x){ return x.id !== id; }));
+    return null;
+  }
+
+  /* ----- Donaciones (el proceso) -----
+     reparto = { idSeccion: kg }: cada sección con kilos es un bulto. Descarte se guarda como un bulto
+     "Sin clasificar" en estado "Descartado" (así se sabe cuánto se descartó). Devuelve los bultos creados. */
+  async function registrarDonacion(idEmpresa, numeroRemito, reparto){
+    var secciones = SECCIONES_DEPOSITO.filter(function(s){ return reparto[s.id] > 0; });
+    var sinClasificar = SECCIONES_DEPOSITO.filter(function(s){ return s.id === "sinClasificar"; })[0];
+    var bultos = [];
+    for(var i = 0; i < secciones.length; i++){
+      var s = secciones[i];
+      bultos.push({ pesoKg: redondear(reparto[s.id]), idCategoria: await idCategoria(s.sale ? sinClasificar : s), descartado: !!s.sale });
+    }
+    var d = await pedir("/donaciones", { method: "POST", body: JSON.stringify({ idEmpresa: idEmpresa, numeroRemito: numeroRemito, bultos: bultos }) });
+    // Mismo orden que se mandó: así cada bulto se sabe de qué sección es
+    return d.bultos.map(function(b, i){ return { codigo: codigoBulto(b.id), destino: secciones[i].nombre, material: secciones[i].material, kg: +b.pesoKg, sale: !!secciones[i].sale }; });
   }
 
   /* ----- Taller textil: pedidos de clientes -----
@@ -492,7 +636,7 @@ window.OmasApi = (function(){
   // Quién puede qué: aceptar o rechazar es de Administración; organizar la producción, de la coordinación
   async function rolPedidos(roles, texto){
     await esperar(300);
-    var u = guardado("omas-sesion-prueba");
+    var u = sesionGuardada();
     if(!u || roles.indexOf(u.rol) < 0) throw new ErrorApi("permiso", texto);
     return u;
   }
@@ -505,12 +649,12 @@ window.OmasApi = (function(){
   function sumar(lista, campo){ return (lista || []).reduce(function(s, x){ return s + x[campo]; }, 0); }
 
   async function listarPedidos(){
-    if(!CONFIG.modoPrototipo) return pedir("/pedidos", { method: "GET" });
+    if(usaApi("pedidos")) return pedir("/pedidos", { method: "GET" });
     await esperar(250);
     return pedidosPrueba();
   }
   async function listarOperariasTaller(){
-    if(!CONFIG.modoPrototipo) return pedir("/operarias?unidad=taller", { method: "GET" });
+    if(usaApi("pedidos")) return pedir("/operarias?unidad=taller", { method: "GET" });
     return OPERARIAS_TALLER.slice();
   }
 
@@ -532,7 +676,7 @@ window.OmasApi = (function(){
 
   // accion: "aceptar" | "rechazar" (con motivo) | "masDatos" (con la pregunta para el cliente)
   async function responderPedido(id, accion, texto){
-    if(!CONFIG.modoPrototipo) return pedir("/pedidos/" + encodeURIComponent(id) + "/respuesta", { method: "POST", body: JSON.stringify({ accion: accion, texto: texto || "" }) });
+    if(usaApi("pedidos")) return pedir("/pedidos/" + encodeURIComponent(id) + "/respuesta", { method: "POST", body: JSON.stringify({ accion: accion, texto: texto || "" }) });
     await rolPedidos(["Administración"], "Solo Administración acepta o rechaza los pedidos.");
     var lista = pedidosPrueba(), p = pedidoDe(lista, id);
     if(accion === "aceptar"){ p.estado = "aceptado"; p.material = []; p.reparto = []; p.entregas = []; }
@@ -544,19 +688,17 @@ window.OmasApi = (function(){
 
   // El taller le pide lienzo al depósito: se descuenta del fardo
   async function pedirMaterial(id, fardo, kg){
-    if(!CONFIG.modoPrototipo) return pedir("/pedidos/" + encodeURIComponent(id) + "/material", { method: "POST", body: JSON.stringify({ fardo: fardo, kg: kg }) });
+    if(usaApi("pedidos")) return pedir("/pedidos/" + encodeURIComponent(id) + "/material", { method: "POST", body: JSON.stringify({ fardo: fardo, kg: kg }) });
     await rolPedidos(ORGANIZAN, "Solo la coordinación pide material al depósito.");
-    var deposito = depositoPrueba(), f = deposito.filter(function(x){ return x.codigo === fardo; })[0];
-    if(!f) throw new ErrorApi("servidor", "Ese fardo ya no está en el depósito.");
-    if(kg > f.kg + 0.05) throw new ErrorApi("servidor", "El fardo " + fardo + " tiene " + f.kg.toLocaleString("es-AR") + " kg: no alcanza.");
-    f.kg = Math.round((f.kg - kg) * 100) / 100; guardarDepositoPrueba(deposito);
+    // El pedido se simula, pero el lienzo sale del depósito de verdad (con la API, el bulto queda "Retirado")
+    var r = await retirarFardo(fardo, kg);
     var lista = pedidosPrueba(), p = pedidoDe(lista, id);
-    p.material.push({ fardo: fardo, kg: kg }); guardarPedidosPrueba(lista);
+    p.material.push({ fardo: r.codigo, kg: kg }); guardarPedidosPrueba(lista);
     return p;
   }
 
   async function asignarTrabajo(id, operaria, cantidad){
-    if(!CONFIG.modoPrototipo) return pedir("/pedidos/" + encodeURIComponent(id) + "/reparto", { method: "POST", body: JSON.stringify({ operaria: operaria, cantidad: cantidad }) });
+    if(usaApi("pedidos")) return pedir("/pedidos/" + encodeURIComponent(id) + "/reparto", { method: "POST", body: JSON.stringify({ operaria: operaria, cantidad: cantidad }) });
     await rolPedidos(ORGANIZAN, "Solo la coordinación reparte el trabajo.");
     var lista = pedidosPrueba(), p = pedidoDe(lista, id);
     var libres = p.cantidad - sumar(p.reparto, "asignadas");
@@ -568,7 +710,7 @@ window.OmasApi = (function(){
   }
 
   async function registrarTerminadas(id, operaria, cantidad){
-    if(!CONFIG.modoPrototipo) return pedir("/pedidos/" + encodeURIComponent(id) + "/terminadas", { method: "POST", body: JSON.stringify({ operaria: operaria, cantidad: cantidad }) });
+    if(usaApi("pedidos")) return pedir("/pedidos/" + encodeURIComponent(id) + "/terminadas", { method: "POST", body: JSON.stringify({ operaria: operaria, cantidad: cantidad }) });
     await rolPedidos(ORGANIZAN, "Solo la coordinación registra lo terminado.");
     var lista = pedidosPrueba(), p = pedidoDe(lista, id), r = p.reparto.filter(function(x){ return x.operaria === operaria; })[0];
     if(!r) throw new ErrorApi("servidor", "Esa operaria no tiene bolsas de este pedido.");
@@ -578,7 +720,7 @@ window.OmasApi = (function(){
   }
 
   async function registrarEntrega(id, cantidad, remito){
-    if(!CONFIG.modoPrototipo) return pedir("/pedidos/" + encodeURIComponent(id) + "/entregas", { method: "POST", body: JSON.stringify({ cantidad: cantidad, remito: remito }) });
+    if(usaApi("pedidos")) return pedir("/pedidos/" + encodeURIComponent(id) + "/entregas", { method: "POST", body: JSON.stringify({ cantidad: cantidad, remito: remito }) });
     await rolPedidos(ORGANIZAN, "Solo la coordinación registra las entregas.");
     var lista = pedidosPrueba(), p = pedidoDe(lista, id);
     var listas = sumar(p.reparto, "terminadas") - sumar(p.entregas, "cantidad");
@@ -594,7 +736,7 @@ window.OmasApi = (function(){
 
   async function soloAdministracion(){
     await esperar(350);
-    var u = guardado("omas-sesion-prueba");
+    var u = sesionGuardada();
     if(!u || u.rol !== "Administración") throw new ErrorApi("servidor", "Solo Administración puede manejar las cuentas.");
     return u;
   }
@@ -611,15 +753,31 @@ window.OmasApi = (function(){
     return u;
   }
 
+  /* Con la API: la base guarda Nombre y Apellido por separado y se entra con el Email.
+     La pantalla trabaja con { nombre (completo), usuario (el email) }: acá se traduce. */
+  function cuentaDeApi(u){
+    return { id: String(u.id), nombre: (u.nombre + " " + u.apellido).trim(), usuario: u.email, telefono: u.telefono, rol: u.rol, activo: u.activo, alta: null };
+  }
+  // "María Eva López" → nombre "María Eva", apellido "López" (el apellido es la última palabra)
+  function separarNombre(completo){
+    var partes = completo.trim().split(/\s+/);
+    if(partes.length < 2) throw new ErrorApi("datos", "Escribí el nombre y el apellido.");
+    return { nombre: partes.slice(0, -1).join(" "), apellido: partes[partes.length - 1] };
+  }
+
   async function listarUsuarios(){
-    if(!CONFIG.modoPrototipo) return pedir("/usuarios", { method: "GET" });
+    if(usaApi("usuarios")) return (await pedir("/usuarios", { method: "GET" })).map(cuentaDeApi);
     await soloAdministracion();
     return usuariosPrueba().map(publico);
   }
 
   async function crearUsuario(datos){
     var nueva = { nombre: datos.nombre.trim(), usuario: datos.usuario.trim().toLowerCase(), rol: datos.rol };
-    if(!CONFIG.modoPrototipo) return pedir("/usuarios", { method: "POST", body: JSON.stringify(nueva) });
+    if(usaApi("usuarios")){
+      var partes = separarNombre(nueva.nombre);
+      var r = await pedir("/usuarios", { method: "POST", body: JSON.stringify({ nombre: partes.nombre, apellido: partes.apellido, email: nueva.usuario, rol: nueva.rol }) });
+      return { usuario: cuentaDeApi(r.usuario), claveTemporal: r.claveTemporal };
+    }
     await soloAdministracion();
     var lista = usuariosPrueba();
     if(lista.some(function(x){ return x.usuario === nueva.usuario; })) throw new ErrorApi("repetido", "Ya hay una cuenta con ese usuario. Probá con otro.");
@@ -631,7 +789,12 @@ window.OmasApi = (function(){
 
   async function actualizarUsuario(id, datos){
     var cambios = { nombre: datos.nombre.trim(), rol: datos.rol };
-    if(!CONFIG.modoPrototipo) return pedir("/usuarios/" + encodeURIComponent(id), { method: "PUT", body: JSON.stringify(cambios) });
+    if(usaApi("usuarios")){
+      // El teléfono no está en la pantalla: se manda el que ya tenía, así no se borra
+      var actual = await pedir("/usuarios/" + encodeURIComponent(id), { method: "GET" }), n = separarNombre(cambios.nombre);
+      return cuentaDeApi(await pedir("/usuarios/" + encodeURIComponent(id), { method: "PUT",
+        body: JSON.stringify({ nombre: n.nombre, apellido: n.apellido, telefono: actual.telefono, rol: cambios.rol }) }));
+    }
     var yo = await soloAdministracion();
     if(id === yo.id && cambios.rol !== "Administración") throw new ErrorApi("servidor", "No podés sacarte el rol de Administración a vos misma.");
     var lista = usuariosPrueba(), u = buscarCuenta(lista, id);
@@ -640,7 +803,7 @@ window.OmasApi = (function(){
   }
 
   async function restablecerClave(id){
-    if(!CONFIG.modoPrototipo) return pedir("/usuarios/" + encodeURIComponent(id) + "/clave", { method: "POST" });
+    if(usaApi("usuarios")) return pedir("/usuarios/" + encodeURIComponent(id) + "/clave", { method: "POST" });
     await soloAdministracion();
     var lista = usuariosPrueba(), u = buscarCuenta(lista, id);
     u.clave = claveTemporal(); guardarUsuariosPrueba(lista);
@@ -649,7 +812,7 @@ window.OmasApi = (function(){
 
   // activa = false → baja lógica · activa = true → la vuelve a activar
   async function cambiarAltaUsuario(id, activa){
-    if(!CONFIG.modoPrototipo){
+    if(usaApi("usuarios")){
       return pedir("/usuarios/" + encodeURIComponent(id) + (activa ? "/alta" : ""), { method: activa ? "PUT" : "DELETE" });
     }
     var yo = await soloAdministracion();
@@ -665,6 +828,13 @@ window.OmasApi = (function(){
     depositoPrueba: depositoPrueba,
     guardarDepositoPrueba: guardarDepositoPrueba,
     listarFardos: listarFardos,
+    retirarFardo: retirarFardo,
+    registrarDonacion: registrarDonacion,
+    listarEmpresas: listarEmpresas,
+    crearEmpresa: crearEmpresa,
+    actualizarEmpresa: actualizarEmpresa,
+    eliminarEmpresa: eliminarEmpresa,
+    usaApi: usaApi,
     SECCIONES_DEPOSITO: SECCIONES_DEPOSITO,
     codigoNuevoPrueba: codigoNuevoPrueba,
     moverFardo: moverFardo,

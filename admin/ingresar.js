@@ -69,7 +69,7 @@
   }
   function validar(){
     var bien = true;
-    if(!usuario.value.trim()){ marcar(usuario, "Escribí tu usuario o email."); bien = false; } else marcar(usuario);
+    if(!usuario.value.trim()){ marcar(usuario, "Escribí tu email."); bien = false; } else marcar(usuario);
     if(!clave.value){ marcar(clave, "Escribí tu contraseña."); bien = false; } else marcar(clave);
     return bien;
   }

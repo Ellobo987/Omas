@@ -1,11 +1,10 @@
 /* ===== SGI-OMAS · Usuarios (CRUD) =====
    Administración (Sandra) maneja las cuentas para entrar al sistema:
-   · Alta: nombre, usuario y rol. El sistema genera una clave temporal que se muestra una sola vez.
+   · Alta: nombre y apellido, email y rol. El sistema genera una clave temporal que se muestra una sola vez.
    · Consulta: lista con buscador, separada en "Activas" y "De baja".
    · Modificación: nombre y rol. Si alguien se olvida la clave, se le da una nueva.
    · Baja: lógica. La cuenta no se borra (queda registrado quién hizo cada pesaje), solo deja de poder entrar.
-   Todo pasa por OmasApi (api.js). Para cargar lo menos posible: el usuario se arma solo
-   con el nombre y el rol se elige tocando. */
+   Todo pasa por OmasApi (api.js), que lo guarda en la base (tabla Usuario). Se entra con el email\n   y el rol se elige tocando. */
 (function(){
   "use strict";
 
@@ -28,11 +27,8 @@
     avisoReloj = setTimeout(function(){ avisoEl.classList.remove("ver"); }, 2400);
   }
   function fechaLarga(iso){ var p = iso.split("-"); return new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString("es-AR", { day: "numeric", month: "long", year: "numeric" }); }
-  // "María Eva López" → "maria" (sin tildes, en minúsculas): una propuesta que se puede cambiar
-  function sugerirUsuario(nombre){
-    return (nombre.trim().split(/\s+/)[0] || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9.]/g, "");
-  }
-  var USUARIO_VALIDO = /^[a-z0-9.]{3,20}$/;
+  // Cada persona entra con su email
+  var EMAIL_VALIDO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   /* ----- Formulario (sirve para alta y para edición) ----- */
   function opcionesRol(id, elegido){
@@ -50,11 +46,11 @@
       '<label class="etiqueta-campo" for="nombre-' + id + '">Nombre y apellido</label>' +
       '<input class="entrada" id="nombre-' + id + '" name="nombre" autocomplete="off" maxlength="80" value="' + (nueva ? "" : esc(u.nombre)) + '">';
     if(nueva){
-      html += '<label class="etiqueta-campo" for="usuario-' + id + '">Usuario para entrar</label>' +
-        '<input class="entrada mb-1" id="usuario-' + id + '" name="usuario" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="20" aria-describedby="usuario-ayuda">' +
-        '<p class="nota-chica mb-3" id="usuario-ayuda">Se arma solo con el nombre. Solo minúsculas, números y punto.</p>';
+      html += '<label class="etiqueta-campo" for="usuario-' + id + '">Email para entrar</label>' +
+        '<input class="entrada mb-1" id="usuario-' + id + '" name="usuario" type="email" inputmode="email" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="254" aria-describedby="usuario-ayuda">' +
+        '<p class="nota-chica mb-3" id="usuario-ayuda">Con este email entra al sistema. Después no se puede cambiar.</p>';
     } else {
-      html += '<p class="nota-chica mb-3">Usuario: <strong>' + esc(u.usuario) + "</strong> (no se puede cambiar)</p>";
+      html += '<p class="nota-chica mb-3">Email: <strong>' + esc(u.usuario) + "</strong> (no se puede cambiar)</p>";
     }
     html += opcionesRol(id, nueva ? "Depósito" : u.rol) +
       '<p class="taller-error" data-error role="alert" hidden></p>' +
@@ -82,7 +78,7 @@
     return '<li class="tarjeta usuario-card' + (u.activo ? "" : " de-baja") + '">' +
       '<div class="usuario-cabeza"><span class="avatar">' + esc(u.nombre.charAt(0)) + "</span>" +
         '<div class="usuario-datos"><strong>' + esc(u.nombre) + (u.id === yo.id ? ' <span class="nota-chica">(vos)</span>' : "") + "</strong>" +
-        '<span class="nota-chica">' + esc(u.usuario) + " · desde el " + esc(fechaLarga(u.alta)) + "</span></div>" +
+        '<span class="nota-chica">' + esc(u.usuario) + (u.alta ? " · desde el " + esc(fechaLarga(u.alta)) : "") + "</span></div>" +
         '<span class="rol-chip">' + esc(u.rol) + "</span></div>" +
       (editando ? formulario(u)
         : u.activo ? '<button type="button" class="btn-linea usuario-boton" data-accion="editar" data-id="' + esc(u.id) + '">Editar</button>'
@@ -94,7 +90,7 @@
     if(!claveMostrada) return "";
     return '<section class="clave-caja" aria-labelledby="clave-titulo" tabindex="-1" id="clave-caja">' +
       '<h2 id="clave-titulo">' + esc(claveMostrada.titulo) + "</h2>" +
-      '<p class="mb-2">Para entrar: usuario <strong>' + esc(claveMostrada.usuario) + "</strong> y esta clave:</p>" +
+      '<p class="mb-2">Para entrar: <strong>' + esc(claveMostrada.usuario) + "</strong> y esta clave:</p>" +
       '<p class="clave-numero" id="clave-numero">' + esc(claveMostrada.clave) + "</p>" +
       '<p class="nota-chica">Pasásela en persona o por WhatsApp. <strong>Se muestra una sola vez</strong>: anotala antes de cerrar este aviso.</p>' +
       '<div class="clave-botones"><button type="button" class="btn-linea" data-accion="copiar">Copiar clave</button>' +
@@ -109,13 +105,13 @@
     }).sort(function(a, b){ return a.nombre.localeCompare(b.nombre, "es"); });
 
     app.innerHTML = '<h1 class="titulo">Usuarios</h1>' +
-      '<p class="bajada">Las cuentas para entrar al sistema. Cada persona entra con su usuario y su clave.</p>' +
+      '<p class="bajada">Las cuentas para entrar al sistema. Cada persona entra con su email y su clave.</p>' +
       cajaClave() +
       (abierto === "nueva"
         ? '<section class="tarjeta usuario-nueva" aria-labelledby="nueva-titulo"><h2 class="tarjeta-titulo" id="nueva-titulo">Nueva cuenta</h2>' + formulario(null) + "</section>"
         : '<button type="button" class="btn-grande usuario-crear" data-accion="nueva">+ Nueva cuenta</button>') +
       '<label class="etiqueta-campo" for="buscar">Buscar</label>' +
-      '<input class="entrada" id="buscar" type="search" placeholder="Nombre o usuario" autocomplete="off" value="' + esc(busqueda) + '">' +
+      '<input class="entrada" id="buscar" type="search" placeholder="Nombre o email" autocomplete="off" value="' + esc(busqueda) + '">' +
       '<nav class="pestanas pestanas-fila" aria-label="Estado de las cuentas">' +
         '<button type="button" class="pestana" data-accion="filtro" data-filtro="activas"' + (filtro === "activas" ? ' aria-current="page"' : "") + '>Activas <span class="pestana-num">' + activas.length + "</span></button>" +
         '<button type="button" class="pestana" data-accion="filtro" data-filtro="baja"' + (filtro === "baja" ? ' aria-current="page"' : "") + '>De baja <span class="pestana-num">' + baja.length + "</span></button></nav>" +
@@ -188,9 +184,6 @@
     var form = e.target.closest(".usuario-form");
     if(!form) return;
     form.querySelector("[data-error]").hidden = true;
-    var campoUsuario = form.elements.usuario;
-    if(e.target.name === "usuario") campoUsuario.dataset.tocado = "1";
-    if(e.target.name === "nombre" && campoUsuario && !campoUsuario.dataset.tocado) campoUsuario.value = sugerirUsuario(e.target.value);
   });
 
   app.addEventListener("keydown", function(e){
@@ -206,10 +199,11 @@
     if(!form) return;
     e.preventDefault();
     var nombre = form.elements.nombre.value.trim(), rol = form.elements.rol.value, nueva = !form.dataset.id;
-    if(nombre.length < 3) return mostrarError(form, "Escribí el nombre y el apellido.", form.elements.nombre);
+    // La base guarda nombre y apellido por separado: hacen falta las dos cosas
+    if(nombre.split(/\s+/).length < 2) return mostrarError(form, "Escribí el nombre y el apellido.", form.elements.nombre);
     if(!rol) return mostrarError(form, "Elegí un rol.", form.querySelector('input[name="rol"]'));
     var usuario = nueva ? form.elements.usuario.value.trim().toLowerCase() : null;
-    if(nueva && !USUARIO_VALIDO.test(usuario)) return mostrarError(form, "El usuario tiene que tener entre 3 y 20 letras minúsculas, números o puntos.", form.elements.usuario);
+    if(nueva && !EMAIL_VALIDO.test(usuario)) return mostrarError(form, "Escribí un email válido, por ejemplo ana@lasomas.org.", form.elements.usuario);
 
     var boton = form.querySelector('[type="submit"]'), textoBoton = boton.textContent;
     boton.disabled = true; boton.textContent = "Guardando…";

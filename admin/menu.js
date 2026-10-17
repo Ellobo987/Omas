@@ -20,7 +20,8 @@ window.OmasMenu = (function(){
     // Una opción con "pagina" lleva a otra pantalla del módulo; con "hash", a una sección de la misma
     { nombre: "Depósito y pesajes", icono: "deposito", pagina: "pesaje.html", sub: [
       { nombre: "Pesajes", pagina: "pesaje.html" },
-      { nombre: "Stock del depósito", pagina: "stock.html" }
+      { nombre: "Stock del depósito", pagina: "stock.html" },
+      { nombre: "Empresas donantes", pagina: "empresas.html" }
     ] },
     { nombre: "Taller textil", icono: "produccion", pagina: "textil.html", sub: [
       { nombre: "Bandeja de pedidos", hash: "#bandeja" },

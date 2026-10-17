@@ -56,11 +56,11 @@
 
       <!-- No se guarda ningún dato: cada vez se escriben el usuario y la contraseña -->
       <form id="form-ingreso" novalidate autocomplete="off">
-        <div class="revela" style="--orden:2"><label class="ingreso-etiqueta" for="usuario">Usuario o email</label></div>
+        <div class="revela" style="--orden:2"><label class="ingreso-etiqueta" for="usuario">Email</label></div>
         <div class="revela ancho" style="--orden:3">
           <div class="brillo">
-            <input class="ingreso-entrada" id="usuario" name="usuario" autocomplete="off" autocapitalize="none" spellcheck="false" required
-              placeholder="Ej.: laura" aria-describedby="error-usuario">
+            <input class="ingreso-entrada" id="usuario" name="usuario" type="email" inputmode="email" autocomplete="off" autocapitalize="none" spellcheck="false" required
+              placeholder="Ej.: laura@lasomas.test" aria-describedby="error-usuario">
           </div>
           <p class="ingreso-error" id="error-usuario" aria-live="polite"></p>
         </div>
