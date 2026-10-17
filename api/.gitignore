@@ -1,0 +1,5 @@
+# Lo que genera Visual Studio / dotnet al compilar: no se sube
+bin/
+obj/
+.vs/
+*.user

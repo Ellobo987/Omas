@@ -1,0 +1,40 @@
+# Pedidos de prueba para Visual Studio / VS Code (botón "Send Request").
+# Primero el login: deja la cookie de sesión y los demás pedidos la usan.
+@base = https://localhost:7122
+
+POST {{base}}/api/auth/login
+Content-Type: application/json
+
+{ "usuario": "sandra@lasomas.test", "clave": "omas2026" }
+
+###
+GET {{base}}/api/auth/yo
+
+###
+GET {{base}}/api/usuarios
+
+###
+GET {{base}}/api/empresas
+
+###
+GET {{base}}/api/categorias
+
+###
+# El proceso: una donación con sus bultos (el remito tiene 13 números y un guion)
+POST {{base}}/api/donaciones
+Content-Type: application/json
+
+{
+  "idEmpresa": 1,
+  "numeroRemito": "00001-00000002",
+  "bultos": [
+    { "pesoKg": 12.5, "idCategoria": 4, "color": "Azul" },
+    { "pesoKg": 30, "idCategoria": 1 }
+  ]
+}
+
+###
+GET {{base}}/api/stock
+
+###
+POST {{base}}/api/auth/logout
