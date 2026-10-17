@@ -1,0 +1,11 @@
+# La imagen solo necesita la API y el panel: todo lo demás queda afuera
+*
+!api/LasOmasApi/
+!admin/
+!img/
+
+api/LasOmasApi/bin/
+api/LasOmasApi/obj/
+api/LasOmasApi/.vs/
+api/LasOmasApi/*.user
+api/LasOmasApi/appsettings.Development.json

@@ -86,20 +86,24 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-
-    // En desarrollo la API también sirve el panel (carpetas admin e img del repositorio),
-    // así el panel y la API están en el mismo sitio y la cookie de sesión viaja sola.
-    var raiz = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", ".."));
-    foreach (var carpeta in new[] { "admin", "img" })
-    {
-        app.UseStaticFiles(new StaticFileOptions
-        {
-            FileProvider = new PhysicalFileProvider(Path.Combine(raiz, carpeta)),
-            RequestPath = "/" + carpeta
-        });
-    }
-    app.MapGet("/", () => Results.Redirect("/admin/ingresar.html")).ExcludeFromDescription();
 }
+
+// La API también sirve el panel (carpetas admin e img), así el panel y la API están en el mismo
+// sitio y la cookie de sesión (SameSite=Strict) viaja sola. En desarrollo se toman del repositorio;
+// en el contenedor de Docker vienen copiadas en la carpeta que indica Panel:Raiz.
+var raiz = builder.Configuration["Panel:Raiz"]
+    ?? Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", ".."));
+foreach (var carpeta in new[] { "admin", "img" })
+{
+    var ruta = Path.Combine(raiz, carpeta);
+    if (!Directory.Exists(ruta)) continue;
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(ruta),
+        RequestPath = "/" + carpeta
+    });
+}
+app.MapGet("/", () => Results.Redirect("/admin/ingresar.html")).ExcludeFromDescription();
 
 app.UseHttpsRedirection();
 app.UseCors("PoliticaCors");

@@ -1,6 +1,6 @@
 # Despliegue de la API LasOmas en Render
 
-La API es .NET 8 y Render no trae `dotnet` en sus entornos nativos: se despliega como **contenedor Docker** con el `Dockerfile` de esta carpeta.
+La API es .NET 8 y Render no trae `dotnet` en sus entornos nativos: se despliega como **contenedor Docker** con el `Dockerfile` de esta carpeta. El contexto del build es la raíz del repositorio, porque la imagen también lleva el panel (`admin/` e `img/`), que la API sirve en `/admin`.
 
 ## 1. Base de datos (SQL Server)
 
@@ -8,7 +8,7 @@ Render **no ofrece SQL Server**: la base tiene que estar en otro servicio y la A
 
 La API es **Database First**: no tiene migraciones de Entity Framework. Las tablas y los datos iniciales salen únicamente de `base-de-datos/lasomas.sql`, que se puede correr varias veces sin perder nada.
 
-Crear la base con el nombre **`LasOmas`** (el script hace `USE LasOmas`) y correr el script conectándose directo a esa base:
+Si la base se puede llamar **`LasOmas`**, correr `lasomas.sql` conectado a ella. Si el hosting le pone otro nombre (MonsterASP, por ejemplo, la llama `db12345`), usar **`base-de-datos/lasomas-hosting.sql`**: es el mismo script sin `CREATE DATABASE` ni `USE`. En MonsterASP se sube desde *Import* en el panel de la base, sin necesidad de SSMS.
 
 ```bash
 # SQL Server con usuario y clave (Azure SQL u otro hosting)
@@ -29,8 +29,9 @@ En el servidor hay que permitir conexiones desde Render (en Azure SQL: *Networki
 |---|---|
 | Language / Runtime | **Docker** |
 | Branch | `main` |
-| Root Directory | `api` |
-| Dockerfile Path | `./Dockerfile` |
+| Root Directory | *(vacío)* |
+| Dockerfile Path | `./api/Dockerfile` |
+| Docker Build Context Directory | `.` |
 | Health Check Path | `/salud` |
 
 Variables de entorno (*Environment*):
@@ -46,12 +47,13 @@ El doble guion bajo (`__`) reemplaza a los `:` de `appsettings.json`, así no ha
 ## 3. Probar
 
 - `https://TU-SERVICIO.onrender.com/salud` → `{"estado":"ok"}` (la API levantó).
+- `https://TU-SERVICIO.onrender.com/` → redirige al panel (`/admin/ingresar.html`).
 - `POST /api/auth/...` → si responde 500, casi siempre es la cadena de conexión o el firewall de la base: revisar los *Logs* del servicio.
 
 ## Probar el contenedor en una máquina local
 
 ```bash
-docker build -t omas-api ./api
+docker build -f api/Dockerfile -t omas-api .
 docker run --rm -p 8080:8080 -e "ConnectionStrings__ConexionOmas=..." omas-api
 # http://localhost:8080/salud
 ```
