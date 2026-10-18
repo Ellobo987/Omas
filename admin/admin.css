@@ -334,3 +334,6 @@ textarea.entrada{min-height:84px;resize:vertical}
 
 /* Opción del inicio de Depósito que lleva a otra pantalla (Stock) */
 a.opcion{text-decoration:none}
+
+/* Enlaces dentro del texto (ej.: "Cargala en Empresas donantes"): con el color del sistema, no el azul del navegador */
+.app p a:not([class]){color:var(--acento-texto);font-weight:600;text-decoration-thickness:1px;text-underline-offset:2px}
