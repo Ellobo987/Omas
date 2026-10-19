@@ -227,10 +227,33 @@
     otro.hidden = m !== "otro";
     otro.required = m === "otro";
     document.getElementById("pd-equiv").textContent = equivalencias[m];
+    actualizarPago(m === "otro" ? otro.value.replace(/\D/g, "") : m, m);
+  }
+  /* El recuadro de pago sigue al monto elegido: el botón dice cuánto, abre el link de ese monto
+     (si Mercado Pago tiene un link con monto fijo) y el monto queda listo para copiar al transferir */
+  function actualizarPago(pesos, opcion){
+    var datos = window.DATOS_PAGO || {}, links = datos.linksPorMonto || {};
+    var texto = pesos ? "$" + Number(pesos).toLocaleString("es-AR") : "";
+    var boton = document.getElementById("pago-mp");
+    if(boton){
+      var fijo = links[opcion];
+      boton.href = fijo || datos.mercadoPago;
+      document.getElementById("pago-mp-texto").textContent = texto ? "Donar " + texto + " con Mercado Pago" : "Donar con Mercado Pago";
+      document.getElementById("pago-mp-nota").textContent = fijo
+        ? "Se abre Mercado Pago con el monto ya cargado. Elegís cómo pagar (dinero en cuenta, tarjeta o débito)."
+        : "Se abre Mercado Pago: escribí " + (texto || "el monto") + " y elegí cómo pagar (dinero en cuenta, tarjeta o débito).";
+    }
+    var fila = document.getElementById("pago-monto-fila");
+    if(fila){
+      var monto = document.getElementById("pago-monto");
+      fila.hidden = !texto; monto.textContent = texto; monto.dataset.valor = pesos || "";
+    }
   }
   modalDonaEl.querySelectorAll('input[name="pd-monto"]').forEach(function(r){
     r.addEventListener("change", actualizarMonto);
   });
+  document.getElementById("pd-otro").addEventListener("input", actualizarMonto);
+  actualizarMonto();
 
   /* Envío de cada formulario de donación */
   var agradecimientos = {
@@ -448,7 +471,8 @@
     b.addEventListener("click", function(){
       var origen = document.querySelector(b.dataset.copiar);
       if(!origen || !navigator.clipboard) return;
-      navigator.clipboard.writeText(origen.textContent.trim()).then(function(){
+      // data-valor: lo que se copia si es distinto de lo que se ve (el monto se copia sin "$" ni puntos)
+      navigator.clipboard.writeText(origen.dataset.valor || origen.textContent.trim()).then(function(){
         var texto = b.textContent;
         b.textContent = "¡Copiado!";
         setTimeout(function(){ b.textContent = texto; }, 1800);

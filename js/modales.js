@@ -12,7 +12,10 @@ var avisoDatos = `<p class="aviso-datos">Usamos estos datos solo para lo que nos
    DEMOSTRACIÓN: por ahora es una cuenta personal de prueba (con su permiso), y por eso
    demo = true muestra el aviso "Datos de prueba". Cambiarla por la de la asociación y poner demo en false. */
 var DATOS_PAGO = {
-  mercadoPago: "https://mpago.la/14mrj1f", // link de pago de Mercado Pago
+  mercadoPago: "https://mpago.la/14mrj1f", // link general: la persona escribe el monto (se usa para "Otro monto")
+  // Links de pago con MONTO FIJO (Mercado Pago → Cobrar → Link de pago): así el monto ya viene cargado.
+  // Si uno queda vacío, para ese monto se usa el link general.
+  linksPorMonto: { "5000": "", "10000": "", "20000": "" },
   alias: "alm4.victoria",
   cvu: "0000003100032051097555",           // CBU o CVU
   titular: "Alma Victoria Soria Nievas",
@@ -30,10 +33,12 @@ function bloquePago(d){
   }
   return `<div class="pago mt-3">` +
     (d.demo ? `<p class="pago-demo">Datos de prueba para la demostración: todavía no es la cuenta de la asociación.</p>` : "") +
-    (d.mercadoPago ? `<a class="btn btn-mp" href="${d.mercadoPago}" target="_blank" rel="noopener">Donar con Mercado Pago
+    // El texto, el link y el monto los actualiza omas.js según el monto elegido (actualizarMonto)
+    (d.mercadoPago ? `<a class="btn btn-mp" id="pago-mp" href="${d.mercadoPago}" target="_blank" rel="noopener"><span id="pago-mp-texto">Donar con Mercado Pago</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
-      <p class="texto-chico mt-2 mb-0">Se abre Mercado Pago y elegís cómo pagar (dinero en cuenta, tarjeta o débito).</p>` : "") +
+      <p class="texto-chico mt-2 mb-0" id="pago-mp-nota">Se abre Mercado Pago y elegís cómo pagar (dinero en cuenta, tarjeta o débito).</p>` : "") +
     (d.alias ? `<p class="pago-o${d.mercadoPago ? "" : " mt-0"}"><strong>${d.mercadoPago ? "O transferí" : "Transferí"}</strong> <span class="texto-chico">desde cualquier banco o billetera, sin comisión</span></p>` +
+      `<div id="pago-monto-fila">` + fila("Monto", "pago-monto", "") + `</div>` +
       fila("Alias", "pago-alias", d.alias) + (d.cvu ? fila("CBU/CVU", "pago-cvu", d.cvu) : "") +
       (d.titular ? `<p class="texto-chico mb-0 mt-1">Titular: ${d.titular}</p>` : "") : "") +
     `</div>`;
