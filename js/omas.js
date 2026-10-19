@@ -174,6 +174,7 @@
     btnVolver.hidden = paso === "1" || paso === "gracias" || estado.historial.length === 0;
     var form = modalDonaEl.querySelector('.paso[data-paso="' + paso + '"]');
     if(form && form.tagName === "FORM") limpiarErrores(form);
+    if(paso === "persona-dinero") dibujarQr();
   }
 
   function abrirDona(destino){
@@ -244,6 +245,12 @@
         ? "Se abre Mercado Pago con el monto ya cargado. Elegís cómo pagar (dinero en cuenta, tarjeta o débito)."
         : "Se abre Mercado Pago: escribí " + (texto || "el monto") + " y elegí cómo pagar (dinero en cuenta, tarjeta o débito).";
     }
+    // Transferencia por la app: el monto no viaja en el link, así que se le recuerda cuánto escribir
+    if(datos.linkTransferencia){
+      var cuanto = texto ? texto : "el monto";
+      document.querySelectorAll(".pago-celu .pago-mp-nota").forEach(function(n){ n.textContent = "Se abre la app de Mercado Pago: escribí " + cuanto + " y confirmá."; });
+      document.querySelectorAll(".pago-compu .pago-mp-nota").forEach(function(n){ n.textContent = "Apuntá la cámara al código: se abre Mercado Pago para transferir. Escribí " + cuanto + " y confirmá."; });
+    }
     var fila = document.getElementById("pago-monto-fila");
     if(fila){
       var monto = document.getElementById("pago-monto");
@@ -255,6 +262,36 @@
   });
   document.getElementById("pd-otro").addEventListener("input", actualizarMonto);
   actualizarMonto();
+
+  /* QR del link de transferencia, para la compu: se escanea con el celular y abre Mercado Pago.
+     La librería se pide recién la primera vez que se abre el paso de dinero (y solo si se ve el QR). */
+  var LIBRERIA_QR = {
+    src: "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js",
+    integrity: "sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA=="
+  };
+  var pedidoQr = null;
+  function cargarLibreriaQr(){
+    if(window.QRCode) return Promise.resolve();
+    if(!pedidoQr) pedidoQr = new Promise(function(listo, fallo){
+      var s = document.createElement("script");
+      s.src = LIBRERIA_QR.src; s.integrity = LIBRERIA_QR.integrity; s.crossOrigin = "anonymous";
+      s.onload = listo; s.onerror = function(){ pedidoQr = null; fallo(); };
+      document.head.appendChild(s);
+    });
+    return pedidoQr;
+  }
+  function dibujarQr(){
+    var caja = document.getElementById("pago-qr"), link = window.DATOS_PAGO && DATOS_PAGO.linkTransferencia;
+    if(!caja || !link || caja.dataset.listo || getComputedStyle(caja.parentElement).display === "none") return;
+    cargarLibreriaQr().then(function(){
+      caja.innerHTML = "";
+      new QRCode(caja, { text: link, width: 168, height: 168, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });
+      caja.dataset.listo = "1";
+    }).catch(function(){
+      // Sin la librería (sin internet): queda el link para abrirlo a mano
+      caja.innerHTML = '<a class="pago-qr-link" href="' + link + '" target="_blank" rel="noopener">Abrir Mercado Pago</a>';
+    });
+  }
 
   /* Checkout Pro: el botón le pide a la API un pago por el monto exacto y abre la página de Mercado Pago.
      (Si para ese monto hay un link fijo cargado, se usa el link y no hace falta la API.) */

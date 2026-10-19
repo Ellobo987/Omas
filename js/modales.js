@@ -12,11 +12,14 @@ var avisoDatos = `<p class="aviso-datos">Usamos estos datos solo para lo que nos
    DEMOSTRACIÓN: por ahora es una cuenta personal de prueba (con su permiso), y por eso
    demo = true muestra el aviso "Datos de prueba". Cambiarla por la de la asociación y poner demo en false. */
 var DATOS_PAGO = {
-  // true: el botón le pide a la API (/api/pagos/donacion) un pago de Mercado Pago por el monto exacto
-  // (Checkout Pro). Necesita el Access Token configurado en la API; si no está, ofrece transferir.
-  checkoutPro: true,
-  // Opcional, si no se usa Checkout Pro: un link de pago de Mercado Pago (la persona escribe el monto)
-  // y links con MONTO FIJO por importe (Mercado Pago → Cobrar → Link de pago).
+  // Link "Transferime con Mercado Pago" (la app → Tu perfil → Compartir datos de la cuenta).
+  // Abre la APP de Mercado Pago para transferir y la persona escribe el monto: en el celular es un
+  // botón; en la compu (donde no hay app) se muestra como QR para escanear con el celular.
+  linkTransferencia: "https://mpago.la/14mrj1f",
+  // true: el botón le pide a la API (/api/pagos/donacion) un pago por el monto exacto (Checkout Pro).
+  // Necesita el Access Token de Mercado Pago configurado en la API. Apagado mientras no haya token.
+  checkoutPro: false,
+  // Opcional: un link de pago de Mercado Pago y links con MONTO FIJO por importe (Cobrar → Link de pago)
   mercadoPago: "",
   linksPorMonto: { "5000": "", "10000": "", "20000": "" },
   alias: "alm4.victoria",
@@ -31,15 +34,25 @@ function bloquePago(d){
     return `<div class="pago-fila"><span class="pago-textos"><span class="pago-dato">${nombre}</span><span class="pago-valor" id="${id}">${valor}</span></span>` +
       `<button type="button" class="pago-copiar" data-copiar="#${id}" aria-label="Copiar ${nombre.toLowerCase()}">Copiar</button></div>`;
   };
-  var conBoton = d.checkoutPro || d.mercadoPago;
+  var conBoton = d.linkTransferencia || d.checkoutPro || d.mercadoPago;
   if(!conBoton && !d.alias){
     return `<div class="pago mt-3"><p class="mb-0 texto-chico">Muy pronto vas a poder donar en línea. Dejanos tus datos y te escribimos para contarte cómo.</p></div>`;
   }
+  var flecha = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>`;
   return `<div class="pago mt-3">` +
     (d.demo ? `<p class="pago-demo">Datos de prueba para la demostración: todavía no es la cuenta de la asociación.</p>` : "") +
-    // El texto, el link y el monto los actualiza omas.js según el monto elegido (actualizarMonto)
-    (conBoton ? `<a class="btn btn-mp" id="pago-mp" href="${d.mercadoPago || "#"}" target="_blank" rel="noopener"><span id="pago-mp-texto">Donar con Mercado Pago</span>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+    // Transferencia por la app: botón en el celular, QR en la compu (lo dibuja omas.js al abrir el paso)
+    (d.linkTransferencia ? `<div class="pago-celu">
+        <a class="btn btn-mp" href="${d.linkTransferencia}" target="_blank" rel="noopener">Transferir con Mercado Pago ${flecha}</a>
+        <p class="texto-chico mt-2 mb-0 pago-mp-nota">Se abre la app de Mercado Pago: escribí el monto y confirmá.</p>
+      </div>
+      <div class="pago-compu">
+        <div class="pago-qr" id="pago-qr" role="img" aria-label="Código QR para transferir con Mercado Pago"></div>
+        <div><p class="mb-1"><strong>Escaneá con el celular</strong></p>
+          <p class="texto-chico mb-0 pago-mp-nota">Apuntá la cámara al código: se abre Mercado Pago para transferir. Escribí el monto y confirmá.</p></div>
+      </div>`
+    // Pago con tarjeta o dinero en cuenta: Checkout Pro o links de pago (el texto y el link los actualiza omas.js)
+    : conBoton ? `<a class="btn btn-mp" id="pago-mp" href="${d.mercadoPago || "#"}" target="_blank" rel="noopener"><span id="pago-mp-texto">Donar con Mercado Pago</span> ${flecha}</a>
       <p class="texto-chico mt-2 mb-0" id="pago-mp-nota">Se abre Mercado Pago y elegís cómo pagar (dinero en cuenta, tarjeta o débito).</p>
       <p class="pago-error" id="pago-error" role="alert" hidden></p>` : "") +
     (d.alias ? `<p class="pago-o${conBoton ? "" : " mt-0"}"><strong>${conBoton ? "O transferí" : "Transferí"}</strong> <span class="texto-chico">desde cualquier banco o billetera, sin comisión</span></p>` +

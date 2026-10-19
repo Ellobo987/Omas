@@ -927,3 +927,9 @@ button.ucard{width:100%;padding:0;border:0;background:none;font:inherit;text-ali
 .aviso-pago.ok{background:#d9efe0;color:#1f5a35}
 .aviso-pago.espera{background:#f6ead0;color:#6b4a0c}
 .aviso-pago.mal{background:var(--rosa-suave);color:var(--bordo)}
+/* Transferir con Mercado Pago: botón en el celular, QR en la compu (donde no hay app) */
+.pago-compu{display:none;align-items:center;gap:18px}
+@media (hover:hover) and (pointer:fine){.pago-celu{display:none}.pago-compu{display:flex}}
+.pago-qr{flex:none;display:grid;place-items:center;width:184px;height:184px;padding:8px;border-radius:12px;background:#fff}
+.pago-qr img,.pago-qr canvas{display:block;width:168px;height:168px}
+.pago-qr-link{color:#1a1a1a;font-weight:700;text-align:center}
