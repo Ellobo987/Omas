@@ -79,6 +79,33 @@ public class AuthController : ControllerBase
         return NoContent();
     }
 
+    // POST api/auth/clave { claveActual, claveNueva } → 204 · 400 si la actual no es correcta · 423 bloqueada
+    // Cada persona cambia la suya (la temporal que le dio Administración, o cuando quiera).
+    [HttpPost("clave")]
+    [Authorize]
+    public async Task<IActionResult> CambiarClave(CambiarClaveDTO datos)
+    {
+        var usuario = await _usuarios.ObtenerPorIdAsync(User.IdUsuario());
+        if (usuario == null) return Unauthorized();
+        // Mismo bloqueo que el ingreso: 5 intentos fallidos y 15 minutos de espera
+        if (_intentos.EstaBloqueado(usuario.Email))
+            return StatusCode(423, new { mensaje = "Por varios intentos fallidos, esperá 15 minutos para volver a probar." });
+        if (_hasher.VerifyHashedPassword(usuario, usuario.ClaveHash, datos.ClaveActual) == PasswordVerificationResult.Failed)
+        {
+            _intentos.SumarFallido(usuario.Email);
+            return BadRequest(new { mensaje = "La contraseña actual no es correcta." });
+        }
+        if (datos.ClaveNueva == datos.ClaveActual)
+            return BadRequest(new { mensaje = "La contraseña nueva tiene que ser distinta de la actual." });
+        if (string.Equals(datos.ClaveNueva, usuario.Email, StringComparison.OrdinalIgnoreCase))
+            return BadRequest(new { mensaje = "La contraseña no puede ser tu email." });
+
+        _intentos.Limpiar(usuario.Email);
+        usuario.ClaveHash = _hasher.HashPassword(usuario, datos.ClaveNueva);
+        await _usuarios.GuardarAsync();
+        return NoContent();
+    }
+
     // GET api/auth/yo → 200 { id, nombre, rol } · 401 sin sesión
     [HttpGet("yo")]
     [Authorize]

@@ -14,6 +14,7 @@
      POST /api/auth/login   { usuario (el email), clave } → 200 { id, nombre, rol } y deja la cookie de sesión
                             (HttpOnly, Secure, SameSite=Strict, no persistente) · 401 datos incorrectos · 423 bloqueada
      POST /api/auth/logout  204 · GET /api/auth/yo → 200 { id, nombre, rol } · 401 sin sesión
+     POST /api/auth/clave   { claveActual, claveNueva (8 o más) } → 204 · 400 actual incorrecta · 423 bloqueada
 
      Usuarios (CRUD, solo Administración):
      GET  /api/usuarios → [{ id, nombre, apellido, email, telefono, rol, activo }]
@@ -167,6 +168,17 @@ window.OmasApi = (function(){
     } catch(e){}
     if(usaApi("sesion")){ try { await pedir("/auth/logout", { method: "POST" }); } catch(e){} }
     if(!opciones || opciones.redirigir !== false) location.href = "ingresar.html";
+  }
+
+  // Cambiar la propia contraseña (POST /api/auth/clave). Error "datos" si la actual no es correcta.
+  async function cambiarClave(actual, nueva){
+    if(usaApi("sesion")) return pedir("/auth/clave", { method: "POST", body: JSON.stringify({ claveActual: actual, claveNueva: nueva }) });
+    await esperar(400);
+    var yo = sesionGuardada(), lista = usuariosPrueba(), cuenta = yo && lista.filter(function(x){ return x.id === yo.id; })[0];
+    if(!cuenta || cuenta.clave !== actual) throw new ErrorApi("datos", "La contraseña actual no es correcta.");
+    if(nueva === actual) throw new ErrorApi("datos", "La contraseña nueva tiene que ser distinta de la actual.");
+    cuenta.clave = nueva; guardarUsuariosPrueba(lista);
+    return null;
   }
 
   // Para las pantallas del panel: si no hay sesión, manda al ingreso y después vuelve acá
@@ -574,6 +586,12 @@ window.OmasApi = (function(){
     return null;
   }
 
+  // Donaciones registradas desde una fecha (para el Inicio): [{ id, numeroRemito, fechaIngreso, empresa, registradaPor, totalKg, cantidadBultos }]
+  async function listarDonaciones(desde){
+    if(!usaApi("deposito")) return [];
+    return pedir("/donaciones" + (desde ? "?desde=" + encodeURIComponent(desde) : ""), { method: "GET" });
+  }
+
   /* ----- Donaciones (el proceso) -----
      reparto = { idSeccion: kg }: cada sección con kilos es un bulto. Descarte se guarda como un bulto
      "Sin clasificar" en estado "Descartado" (así se sabe cuánto se descartó). Devuelve los bultos creados. */
@@ -830,6 +848,7 @@ window.OmasApi = (function(){
     listarFardos: listarFardos,
     retirarFardo: retirarFardo,
     registrarDonacion: registrarDonacion,
+    listarDonaciones: listarDonaciones,
     listarEmpresas: listarEmpresas,
     crearEmpresa: crearEmpresa,
     actualizarEmpresa: actualizarEmpresa,
@@ -853,6 +872,7 @@ window.OmasApi = (function(){
     restablecerClave: restablecerClave,
     cambiarAltaUsuario: cambiarAltaUsuario,
     iniciarSesion: iniciarSesion,
+    cambiarClave: cambiarClave,
     usuarioActual: usuarioActual,
     cerrarSesion: cerrarSesion,
     exigirSesion: exigirSesion,

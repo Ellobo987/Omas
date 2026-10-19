@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mi contraseña · Sistema Las Omas</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#803C47">
+<link rel="icon" type="image/png" href="../img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="admin.css">
+<link rel="stylesheet" href="panel.css">
+</head>
+<body class="pag-panel pag-usuarios">
+<!-- SGI-OMAS · Mi contraseña: cada persona cambia la suya (por ejemplo, la temporal que le dio Administración). -->
+<div class="panel">
+  <!-- Menú lateral: lo arma menu.js (es el mismo en todas las pantallas) -->
+  <aside class="lateral" id="lateral" aria-label="Menú del sistema"></aside>
+  <div class="velo" id="velo" hidden></div>
+
+  <div class="principal">
+    <header class="tope">
+      <button type="button" class="abrir-menu" data-abrir-menu aria-label="Abrir menú" aria-controls="lateral" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <img class="tope-logo" src="../img/logo.png" alt="" width="34" height="40">
+      <div class="tope-textos">
+        <span class="tope-titulo">Mi cuenta</span>
+        <span class="tope-sub">Contraseña</span>
+      </div>
+    </header>
+
+    <main class="app" id="app">
+      <h1 class="titulo">Cambiar mi contraseña</h1>
+      <p class="bajada">Si entraste con la clave temporal que te dio Administración, cambiala por una tuya.</p>
+      <form class="tarjeta clave-form" id="form-clave" novalidate>
+        <label class="etiqueta-campo" for="actual">Contraseña actual</label>
+        <input class="entrada" id="actual" type="password" autocomplete="current-password" required>
+
+        <label class="etiqueta-campo" for="nueva">Contraseña nueva</label>
+        <input class="entrada mb-1" id="nueva" type="password" autocomplete="new-password" minlength="8" required aria-describedby="nueva-ayuda">
+        <p class="nota-chica mb-3" id="nueva-ayuda">Al menos 8 caracteres. Mejor si mezcla letras y números y no la usás en otro lado.</p>
+
+        <label class="etiqueta-campo" for="repetir">Repetí la contraseña nueva</label>
+        <input class="entrada" id="repetir" type="password" autocomplete="new-password" required>
+
+        <label class="clave-mostrar"><input type="checkbox" id="mostrar"> Mostrar las contraseñas</label>
+        <p class="taller-error" id="error" role="alert" hidden></p>
+        <button type="submit" class="btn-grande mt-2">Cambiar contraseña</button>
+      </form>
+    </main>
+  </div>
+</div>
+
+<div class="aviso" id="aviso" role="status" aria-live="polite"></div>
+
+<noscript><p class="app">Esta pantalla necesita JavaScript.</p></noscript>
+<script src="api.js"></script>
+<script src="menu.js"></script>
+<script src="clave.js"></script>
+</body>
+</html>

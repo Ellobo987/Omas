@@ -91,6 +91,9 @@ window.OmasMenu = (function(){
       (administracion ? '<p class="menu-titulo">Administración</p>' + items(ADMINISTRACION, actual, usuario) : "") + "</nav>" +
       '<div class="lateral-usuario"><span class="avatar">' + esc(usuario.nombre.charAt(0)) + "</span>" +
       '<span class="lateral-usuario-texto"><strong>' + esc(usuario.nombre) + "</strong><small>" + esc(usuario.rol) + "</small></span>" +
+      // Cambiar la propia contraseña (la temporal que dio Administración, o cuando quiera)
+      '<a class="salir' + (actual === "clave.html" ? " activo" : "") + '" href="clave.html" aria-label="Cambiar mi contraseña" title="Cambiar mi contraseña">' +
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M15 8l2 2"/></svg></a>' +
       '<button type="button" class="salir" id="salir" aria-label="Cerrar sesión" title="Cerrar sesión">' +
       '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></svg></button></div>';
 

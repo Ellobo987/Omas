@@ -332,3 +332,9 @@ button.menu-item.activo{background:color-mix(in srgb,var(--vino) 10%,var(--super
 .chip-check:checked+.pildora-descarte{background:var(--bordo);border-color:var(--bordo)}
 .fardo-historial li{font-size:14px}
 .fardo-historial time{flex:none;font-size:12.5px;color:var(--tinta-suave);font-variant-numeric:tabular-nums}
+
+/* Botón de la llave (Cambiar mi contraseña) junto a Cerrar sesión, y su pantalla */
+a.salir{text-decoration:none}
+.salir.activo{border-color:var(--vino);color:var(--acento-texto)}
+.clave-form{max-width:480px}
+.clave-mostrar{display:flex;align-items:center;gap:8px;margin:4px 0 6px;font-size:14px;color:var(--tinta-suave)}

@@ -943,6 +943,9 @@
     hoja.innerHTML = html + "</div>";
   }
   botonPersona.addEventListener("click", abrirHoja);
+  // Con la base, cada registro queda a nombre de quien inició sesión: cambiar de persona con el PIN
+  // confundiría (quedaría a nombre de otra). Para cambiar de persona se cierra sesión desde el menú.
+  if(CON_API) botonPersona.hidden = true;
   hoja.addEventListener("click", function(e){
     if(e.target === hoja){ cerrarHoja(); return; }
     if(e.target.closest("[data-salir]")){ OmasApi.cerrarSesion(); return; }
@@ -979,7 +982,9 @@
     var pendientes = registros.filter(function(r){ return !r.sincronizado; }).length;
     if(!navigator.onLine){
       conexion.className = "conexion sin"; conexion.hidden = false;
-      conexion.innerHTML = "<i></i>Sin conexión · " + (pendientes ? (pendientes === 1 ? "1 pesaje guardado" : pendientes + " pesajes guardados") + " en el celular" : "lo que cargues se guarda en el celular");
+      // Con la base no se guarda nada sin internet: hay que esperar a que vuelva para guardar
+      conexion.innerHTML = CON_API ? "<i></i>Sin conexión · Para guardar donaciones y retiros esperá a que vuelva internet"
+        : "<i></i>Sin conexión · " + (pendientes ? (pendientes === 1 ? "1 pesaje guardado" : pendientes + " pesajes guardados") + " en el celular" : "lo que cargues se guarda en el celular");
     } else if(pendientes){
       conexion.className = "conexion sube"; conexion.hidden = false;
       conexion.innerHTML = "<i></i>Subiendo " + (pendientes === 1 ? "1 pesaje" : pendientes + " pesajes") + "…";
