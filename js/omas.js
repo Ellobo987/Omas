@@ -237,9 +237,10 @@
     var boton = document.getElementById("pago-mp");
     if(boton){
       var fijo = links[opcion];
-      boton.href = fijo || datos.mercadoPago;
+      boton.href = fijo || datos.mercadoPago || "#";
       document.getElementById("pago-mp-texto").textContent = texto ? "Donar " + texto + " con Mercado Pago" : "Donar con Mercado Pago";
-      document.getElementById("pago-mp-nota").textContent = fijo
+      document.getElementById("pago-error").hidden = true;
+      document.getElementById("pago-mp-nota").textContent = fijo || datos.checkoutPro
         ? "Se abre Mercado Pago con el monto ya cargado. Elegís cómo pagar (dinero en cuenta, tarjeta o débito)."
         : "Se abre Mercado Pago: escribí " + (texto || "el monto") + " y elegí cómo pagar (dinero en cuenta, tarjeta o débito).";
     }
@@ -254,6 +255,49 @@
   });
   document.getElementById("pd-otro").addEventListener("input", actualizarMonto);
   actualizarMonto();
+
+  /* Checkout Pro: el botón le pide a la API un pago por el monto exacto y abre la página de Mercado Pago.
+     (Si para ese monto hay un link fijo cargado, se usa el link y no hace falta la API.) */
+  var botonMp = document.getElementById("pago-mp");
+  if(botonMp && window.DATOS_PAGO && DATOS_PAGO.checkoutPro) botonMp.addEventListener("click", async function(e){
+    var opcion = modalDonaEl.querySelector('input[name="pd-monto"]:checked').value;
+    if((DATOS_PAGO.linksPorMonto || {})[opcion]) return; // link de monto fijo: lo abre el navegador
+    e.preventDefault();
+    var error = document.getElementById("pago-error"), otro = document.getElementById("pd-otro");
+    var pesos = opcion === "otro" ? otro.value.replace(/\D/g, "") : opcion;
+    function fallo(texto){ error.textContent = texto; error.hidden = false; }
+    if(!pesos || Number(pesos) < 100){ fallo("Escribí el monto que querés donar (desde $100)."); otro.focus(); return; }
+    // La pestaña se abre YA, antes de esperar a la API: si se abre después, el navegador la bloquea
+    var ventana = window.open("about:blank", "_blank");
+    var texto = document.getElementById("pago-mp-texto"), antes = texto.textContent;
+    botonMp.setAttribute("aria-busy", "true"); texto.textContent = "Abriendo Mercado Pago…";
+    try {
+      var r = await fetch("/api/pagos/donacion", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ monto: Number(pesos) }) });
+      var cuerpo = await r.json().catch(function(){ return {}; });
+      if(!r.ok || !cuerpo.urlPago) throw { propio: cuerpo.mensaje || (r.status === 429 ? "Esperá un minuto y probá de nuevo." : "") };
+      if(ventana) ventana.location.href = cuerpo.urlPago; else location.href = cuerpo.urlPago;
+    } catch(err){
+      if(ventana) ventana.close();
+      // Solo nuestros mensajes: los errores del navegador ("Failed to fetch") vienen en inglés
+      fallo((err && err.propio) || "No pudimos abrir Mercado Pago. Podés transferir con los datos de abajo.");
+    } finally {
+      botonMp.removeAttribute("aria-busy"); texto.textContent = antes;
+    }
+  });
+
+  /* Al volver de Mercado Pago, la página Doná recibe ?pago=aprobado | pendiente | rechazado */
+  var resultadoPago = new URLSearchParams(location.search).get("pago");
+  var textosPago = {
+    aprobado: { clase: "ok", texto: "¡Gracias por tu donación! Mercado Pago ya la acreditó." },
+    pendiente: { clase: "espera", texto: "Tu pago quedó pendiente. Cuando Mercado Pago lo acredite, te llega el aviso por email." },
+    rechazado: { clase: "mal", texto: "El pago no se completó. Podés intentarlo de nuevo o transferir con el alias." }
+  };
+  if(textosPago[resultadoPago]){
+    var t = textosPago[resultadoPago], principal = document.querySelector("main") || document.body;
+    principal.insertAdjacentHTML("afterbegin", '<div class="aviso-pago ' + t.clase + '" role="status"><div class="container">' + t.texto + "</div></div>");
+    // Se limpia la dirección para que el aviso no vuelva a salir al recargar
+    history.replaceState(null, "", location.pathname);
+  }
 
   /* Envío de cada formulario de donación */
   var agradecimientos = {

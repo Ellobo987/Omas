@@ -3,6 +3,8 @@ using LasOmasApi.Data;
 using LasOmasApi.Models;
 using LasOmasApi.Repositories;
 using LasOmasApi.Seguridad;
+using LasOmasApi.Servicios;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -26,6 +28,17 @@ builder.Services.AddScoped<ICatalogoRepository, CatalogoRepository>();
 // Seguridad: la clave se guarda con hash (PBKDF2) y se cuentan los intentos fallidos
 builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();
 builder.Services.AddSingleton<ControlIntentos>();
+
+// Donaciones con Mercado Pago (Checkout Pro). El token sale de MercadoPago:AccessToken (variable de entorno o secreto).
+builder.Services.AddHttpClient<MercadoPagoServicio>();
+// El pedido de pago es público: como máximo 10 por minuto desde la misma conexión
+builder.Services.AddRateLimiter(opciones =>
+{
+    opciones.RejectionStatusCode = 429;
+    opciones.AddPolicy("pagos", contexto => RateLimitPartition.GetFixedWindowLimiter(
+        contexto.Connection.RemoteIpAddress?.ToString() ?? "desconocida",
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 10, Window = TimeSpan.FromMinutes(1) }));
+});
 
 // Sesión con cookie: HttpOnly, solo por HTTPS y no persistente (se borra al cerrar el navegador)
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -118,6 +131,7 @@ app.MapGet("/admin", () => Results.Redirect("/admin/ingresar.html")).ExcludeFrom
 
 app.UseHttpsRedirection();
 app.UseCors("PoliticaCors");
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

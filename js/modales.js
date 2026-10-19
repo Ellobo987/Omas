@@ -12,9 +12,12 @@ var avisoDatos = `<p class="aviso-datos">Usamos estos datos solo para lo que nos
    DEMOSTRACIÓN: por ahora es una cuenta personal de prueba (con su permiso), y por eso
    demo = true muestra el aviso "Datos de prueba". Cambiarla por la de la asociación y poner demo en false. */
 var DATOS_PAGO = {
-  mercadoPago: "https://mpago.la/14mrj1f", // link general: la persona escribe el monto (se usa para "Otro monto")
-  // Links de pago con MONTO FIJO (Mercado Pago → Cobrar → Link de pago): así el monto ya viene cargado.
-  // Si uno queda vacío, para ese monto se usa el link general.
+  // true: el botón le pide a la API (/api/pagos/donacion) un pago de Mercado Pago por el monto exacto
+  // (Checkout Pro). Necesita el Access Token configurado en la API; si no está, ofrece transferir.
+  checkoutPro: true,
+  // Opcional, si no se usa Checkout Pro: un link de pago de Mercado Pago (la persona escribe el monto)
+  // y links con MONTO FIJO por importe (Mercado Pago → Cobrar → Link de pago).
+  mercadoPago: "",
   linksPorMonto: { "5000": "", "10000": "", "20000": "" },
   alias: "alm4.victoria",
   cvu: "0000003100032051097555",           // CBU o CVU
@@ -28,16 +31,18 @@ function bloquePago(d){
     return `<div class="pago-fila"><span class="pago-textos"><span class="pago-dato">${nombre}</span><span class="pago-valor" id="${id}">${valor}</span></span>` +
       `<button type="button" class="pago-copiar" data-copiar="#${id}" aria-label="Copiar ${nombre.toLowerCase()}">Copiar</button></div>`;
   };
-  if(!d.mercadoPago && !d.alias){
+  var conBoton = d.checkoutPro || d.mercadoPago;
+  if(!conBoton && !d.alias){
     return `<div class="pago mt-3"><p class="mb-0 texto-chico">Muy pronto vas a poder donar en línea. Dejanos tus datos y te escribimos para contarte cómo.</p></div>`;
   }
   return `<div class="pago mt-3">` +
     (d.demo ? `<p class="pago-demo">Datos de prueba para la demostración: todavía no es la cuenta de la asociación.</p>` : "") +
     // El texto, el link y el monto los actualiza omas.js según el monto elegido (actualizarMonto)
-    (d.mercadoPago ? `<a class="btn btn-mp" id="pago-mp" href="${d.mercadoPago}" target="_blank" rel="noopener"><span id="pago-mp-texto">Donar con Mercado Pago</span>
+    (conBoton ? `<a class="btn btn-mp" id="pago-mp" href="${d.mercadoPago || "#"}" target="_blank" rel="noopener"><span id="pago-mp-texto">Donar con Mercado Pago</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
-      <p class="texto-chico mt-2 mb-0" id="pago-mp-nota">Se abre Mercado Pago y elegís cómo pagar (dinero en cuenta, tarjeta o débito).</p>` : "") +
-    (d.alias ? `<p class="pago-o${d.mercadoPago ? "" : " mt-0"}"><strong>${d.mercadoPago ? "O transferí" : "Transferí"}</strong> <span class="texto-chico">desde cualquier banco o billetera, sin comisión</span></p>` +
+      <p class="texto-chico mt-2 mb-0" id="pago-mp-nota">Se abre Mercado Pago y elegís cómo pagar (dinero en cuenta, tarjeta o débito).</p>
+      <p class="pago-error" id="pago-error" role="alert" hidden></p>` : "") +
+    (d.alias ? `<p class="pago-o${conBoton ? "" : " mt-0"}"><strong>${conBoton ? "O transferí" : "Transferí"}</strong> <span class="texto-chico">desde cualquier banco o billetera, sin comisión</span></p>` +
       `<div id="pago-monto-fila">` + fila("Monto", "pago-monto", "") + `</div>` +
       fila("Alias", "pago-alias", d.alias) + (d.cvu ? fila("CBU/CVU", "pago-cvu", d.cvu) : "") +
       (d.titular ? `<p class="texto-chico mb-0 mt-1">Titular: ${d.titular}</p>` : "") : "") +
