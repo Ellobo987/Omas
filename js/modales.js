@@ -7,6 +7,38 @@
    decir para qué se usan los datos en el momento en que se piden. */
 var avisoDatos = `<p class="aviso-datos">Usamos estos datos solo para lo que nos pedís acá. No los compartimos con nadie. <a href="privacidad.html">Cómo cuidamos tus datos</a></p>`;
 
+/* Datos para donar dinero: va la cuenta de la Asociación Civil.
+   Si están vacíos, el formulario no muestra datos de pago.
+   DEMOSTRACIÓN: por ahora es una cuenta personal de prueba (con su permiso), y por eso
+   demo = true muestra el aviso "Datos de prueba". Cambiarla por la de la asociación y poner demo en false. */
+var DATOS_PAGO = {
+  mercadoPago: "https://mpago.la/14mrj1f", // link de pago de Mercado Pago
+  alias: "alm4.victoria",
+  cvu: "0000003100032051097555",           // CBU o CVU
+  titular: "Alma Victoria Soria Nievas",
+  demo: true
+};
+
+// El recuadro de pago del aporte en dinero: botón de Mercado Pago y, abajo, los datos para transferir
+function bloquePago(d){
+  var fila = function(nombre, id, valor){
+    return `<div class="pago-fila"><span class="pago-textos"><span class="pago-dato">${nombre}</span><span class="pago-valor" id="${id}">${valor}</span></span>` +
+      `<button type="button" class="pago-copiar" data-copiar="#${id}" aria-label="Copiar ${nombre.toLowerCase()}">Copiar</button></div>`;
+  };
+  if(!d.mercadoPago && !d.alias){
+    return `<div class="pago mt-3"><p class="mb-0 texto-chico">Muy pronto vas a poder donar en línea. Dejanos tus datos y te escribimos para contarte cómo.</p></div>`;
+  }
+  return `<div class="pago mt-3">` +
+    (d.demo ? `<p class="pago-demo">Datos de prueba para la demostración: todavía no es la cuenta de la asociación.</p>` : "") +
+    (d.mercadoPago ? `<a class="btn btn-mp" href="${d.mercadoPago}" target="_blank" rel="noopener">Donar con Mercado Pago
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+      <p class="texto-chico mt-2 mb-0">Se abre Mercado Pago y elegís cómo pagar (dinero en cuenta, tarjeta o débito).</p>` : "") +
+    (d.alias ? `<p class="pago-o${d.mercadoPago ? "" : " mt-0"}"><strong>${d.mercadoPago ? "O transferí" : "Transferí"}</strong> <span class="texto-chico">desde cualquier banco o billetera, sin comisión</span></p>` +
+      fila("Alias", "pago-alias", d.alias) + (d.cvu ? fila("CBU/CVU", "pago-cvu", d.cvu) : "") +
+      (d.titular ? `<p class="texto-chico mb-0 mt-1">Titular: ${d.titular}</p>` : "") : "") +
+    `</div>`;
+}
+
 document.body.insertAdjacentHTML("beforeend", `
 <!-- ===== MODAL: DONAR (paso a paso) ===== -->
 <div class="modal fade" id="modal-dona" tabindex="-1" aria-labelledby="dona-titulo" aria-hidden="true">
@@ -62,10 +94,7 @@ document.body.insertAdjacentHTML("beforeend", `
             <div class="col-sm-6"><label class="form-label" for="pd-nombre">Nombre y apellido</label><input class="form-control" id="pd-nombre" required autocomplete="name"></div>
             <div class="col-sm-6"><label class="form-label" for="pd-mail">Email</label><input class="form-control" id="pd-mail" type="email" required autocomplete="email"></div>
           </div>
-          <div class="pago mt-3">
-            <p class="mb-1"><strong>Datos para transferir</strong></p>
-            <p class="mb-0 texto-chico">Alias: LAS.OMAS.DONA · CBU: a completar · Titular: Asociación Civil OMAS</p>
-          </div>
+          ${bloquePago(DATOS_PAGO)}
           ${avisoDatos}
           <button class="btn btn-principal mt-3" type="submit">Confirmar donación</button>
         </form>

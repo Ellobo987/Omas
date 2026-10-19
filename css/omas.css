@@ -567,7 +567,7 @@ body{font-size:16px;line-height:1.6;font-feature-settings:"palt"}
 .ucard-chica .ucard-sub{font-size:11px}
 .ucard-chica .ucard-titulo{font-size:clamp(1.15rem,1rem + .5vw,1.45rem);line-height:1.1}
 .ucard-chica .ucard-boton{margin-top:14px;padding:8px 12px;font-size:13px}
-@media (max-width:575.98px){.ucard-chica .ucard-boton{display:none}}
+@media (max-width:575.98px){.ucard-chica .ucard-boton{margin-top:10px}}
 
 /* Talleres: dato de 150 mujeres junto a la presentación */
 
@@ -906,3 +906,17 @@ button.ucard{width:100%;padding:0;border:0;background:none;font:inherit;text-ali
 .tal-intro-bajada{font-family:var(--texto);font-size:clamp(1rem,.95rem + .2vw,1.1rem);font-weight:400;line-height:1.65;color:var(--tinta-suave);margin:0}
 /* Etiqueta en mayúsculas arriba del título de "Unidades productivas" */
 .nos-texto .etiqueta{text-transform:uppercase;font-size:.85rem;letter-spacing:.08em}
+
+/* ===== Donar dinero: botón de Mercado Pago y datos para transferir (modales.js) ===== */
+.btn-mp{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px 16px;border:0;border-radius:12px;background:#009ee3;color:#fff;font-weight:700}
+.btn-mp:hover,.btn-mp:focus-visible{background:#007eb5;color:#fff}
+.btn-mp svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.pago-o{margin:14px 0 6px;padding-top:12px;border-top:1px dashed var(--linea)}
+.pago-o.mt-0{margin-top:0;padding-top:0;border-top:0}
+.pago-fila{display:flex;align-items:center;gap:8px;padding:6px 0}
+.pago-textos{flex:1;min-width:0;display:flex;flex-direction:column}
+.pago-dato{font-size:12.5px;color:var(--tinta-suave)}
+.pago-valor{font-size:14.5px;font-weight:700;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.pago-copiar{flex:none;padding:5px 12px;border:1.5px solid var(--linea);border-radius:999px;background:var(--superficie);color:var(--tinta);font-size:13px;font-weight:600}
+.pago-copiar:hover{border-color:var(--bordo)}
+.pago-demo{margin:0 0 12px;padding:8px 12px;border-radius:10px;background:var(--superficie);border:1.5px dashed var(--bordo);font-size:13px;font-weight:600}
