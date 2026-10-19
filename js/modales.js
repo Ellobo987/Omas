@@ -16,7 +16,7 @@ var DATOS_PAGO = {
   alias: "alm4.victoria",
   cvu: "0000003100032051097555",           // CBU o CVU
   titular: "Alma Victoria Soria Nievas",
-  demo: true
+  demo: false
 };
 
 // El recuadro de pago del aporte en dinero: botón de Mercado Pago y, abajo, los datos para transferir
