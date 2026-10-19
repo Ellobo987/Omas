@@ -360,13 +360,13 @@ window.OmasApi = (function(){
   }
   function entrada(dias, empresa){ return [{ fecha: diaIso(dias) + "T10:00:00", texto: "Entró en la donación de " + empresa, por: "Florencia" }]; }
   var FARDOS_EJEMPLO = [
-    { codigo: "S-0004", material: "Sin clasificar", kg: 46.0, ubicacion: "Piso, entrada", entro: diaIso(-9), empresa: "Holcim", historial: entrada(-9, "Holcim") },
-    { codigo: "S-0005", material: "Sin clasificar", kg: 27.5, ubicacion: "Piso, entrada", entro: diaIso(-2), empresa: "Conci", historial: entrada(-2, "Conci") },
-    { codigo: "T-0240", material: "Tela para trapos", kg: 64.5, ubicacion: "Estante A2", entro: diaIso(-12), empresa: "Naranja X", historial: entrada(-12, "Naranja X") },
-    { codigo: "D-0120", material: "Uniformes para desmarcar", kg: 38.0, ubicacion: "Estante B1", entro: diaIso(-6), empresa: "Holcim", historial: entrada(-6, "Holcim") },
-    { codigo: "B-0051", material: "Lienzo para bolsas", kg: 22.3, ubicacion: "Estante C3", entro: diaIso(-15), empresa: "Hiper Libertad", historial: entrada(-15, "Hiper Libertad") },
-    { codigo: "B-0049", material: "Lienzo para bolsas", kg: 31.0, ubicacion: "Estante C2", entro: diaIso(-20), empresa: "Conci", historial: entrada(-20, "Conci") },
-    { codigo: "X-0017", material: "Textil para desbastado", kg: 90.0, ubicacion: "Piso, sector D", entro: diaIso(-25), empresa: "Naranja X", historial: entrada(-25, "Naranja X") }
+    { codigo: "S-0004", material: "Sin clasificar", kg: 46.0, entro: diaIso(-9), empresa: "Holcim", historial: entrada(-9, "Holcim") },
+    { codigo: "S-0005", material: "Sin clasificar", kg: 27.5, entro: diaIso(-2), empresa: "Conci", historial: entrada(-2, "Conci") },
+    { codigo: "T-0240", material: "Tela para trapos", kg: 64.5, entro: diaIso(-12), empresa: "Naranja X", historial: entrada(-12, "Naranja X") },
+    { codigo: "D-0120", material: "Uniformes para desmarcar", kg: 38.0, entro: diaIso(-6), empresa: "Holcim", historial: entrada(-6, "Holcim") },
+    { codigo: "B-0051", material: "Lienzo para bolsas", kg: 22.3, entro: diaIso(-15), empresa: "Hiper Libertad", historial: entrada(-15, "Hiper Libertad") },
+    { codigo: "B-0049", material: "Lienzo para bolsas", kg: 31.0, entro: diaIso(-20), empresa: "Conci", historial: entrada(-20, "Conci") },
+    { codigo: "X-0017", material: "Textil para desbastado", kg: 90.0, entro: diaIso(-25), empresa: "Naranja X", historial: entrada(-25, "Naranja X") }
   ];
   var CLAVE_DEPOSITO = "omas-deposito-prueba-2";
   function depositoPrueba(){ return guardado(CLAVE_DEPOSITO) || JSON.parse(JSON.stringify(FARDOS_EJEMPLO)); }
@@ -384,7 +384,7 @@ window.OmasApi = (function(){
 
   /* ----- Depósito con la API: los "fardos" de las pantallas son los Bulto de la base -----
      Las pantallas siguen trabajando con { codigo, material, kg, entro, empresa }: acá se traduce.
-     El código del bulto es su número en la base (#0007). Ubicación e historial no están en el modelo. */
+     El código del bulto es su número en la base (#0007). El historial no está en el modelo. */
   var catalogo = null;
   async function catalogos(){
     if(!catalogo){
@@ -408,7 +408,7 @@ window.OmasApi = (function(){
   function fardoDeBulto(b){
     var s = SECCIONES_DEPOSITO.filter(function(x){ return x.categoria === b.categoria; })[0];
     return { id: b.id, codigo: codigoBulto(b.id), material: s ? s.material : b.categoria, kg: +b.pesoKg, color: b.color,
-      entro: b.fechaIngreso.slice(0, 10), empresa: b.empresa, remito: b.numeroRemito, estado: b.estado, ubicacion: null, historial: null };
+      entro: b.fechaIngreso.slice(0, 10), empresa: b.empresa, remito: b.numeroRemito, estado: b.estado, historial: null };
   }
 
   async function listarFardos(material){
@@ -434,12 +434,12 @@ window.OmasApi = (function(){
     if(!u) throw new ErrorApi("credenciales", "Tu sesión se cerró. Volvé a ingresar.");
     var deposito = depositoPrueba(), f = deposito.filter(function(x){ return x.codigo === codigo; })[0];
     var hacia = SECCIONES_DEPOSITO.filter(function(s){ return s.id === destino; })[0];
-    if(!f || f.kg <= 0) throw new ErrorApi("servidor", "Ese fardo ya no está en el depósito.");
+    if(!f || f.kg <= 0) throw new ErrorApi("servidor", "Ese bulto ya no está en el depósito.");
     if(!hacia) throw new ErrorApi("servidor", "Elegí a qué sección va.");
-    if(hacia.material === f.material) throw new ErrorApi("servidor", "El fardo ya está en " + hacia.nombre + ".");
+    if(hacia.material === f.material) throw new ErrorApi("servidor", "El bulto ya está en " + hacia.nombre + ".");
     kg = redondear(kg);
     if(!(kg > 0)) throw new ErrorApi("servidor", "Poné cuántos kilos movés.");
-    if(kg > f.kg + 0.05) throw new ErrorApi("servidor", "El fardo " + codigo + " tiene " + kgTexto(f.kg) + ": no se puede mover más que eso.");
+    if(kg > f.kg + 0.05) throw new ErrorApi("servidor", "El bulto " + codigo + " tiene " + kgTexto(f.kg) + ": no se puede mover más que eso.");
 
     var ahora = new Date().toISOString(), todo = kg >= f.kg - 0.05, nuevo = null;
     var mov = { id: "m" + Date.now(), codigo: codigo, materialAntes: f.material, kgAntes: f.kg, nuevo: null };
@@ -452,8 +452,8 @@ window.OmasApi = (function(){
     } else {
       f.kg = redondear(f.kg - kg);
       if(!hacia.sale){
-        nuevo = { codigo: codigoNuevoPrueba(hacia.letra), material: hacia.material, kg: kg, ubicacion: f.ubicacion,
-          entro: f.entro, empresa: f.empresa, historial: [{ fecha: ahora, texto: "Salió del fardo " + codigo + " (" + seccionDe(mov.materialAntes).nombre + ")", por: u.nombre }] };
+        nuevo = { codigo: codigoNuevoPrueba(hacia.letra), material: hacia.material, kg: kg, 
+          entro: f.entro, empresa: f.empresa, historial: [{ fecha: ahora, texto: "Salió del bulto " + codigo + " (" + seccionDe(mov.materialAntes).nombre + ")", por: u.nombre }] };
         deposito.push(nuevo); mov.nuevo = nuevo.codigo;
       }
       f.historial.push({ fecha: ahora, texto: "Salieron " + kgTexto(kg) + " a " + hacia.nombre + (nuevo ? " (" + nuevo.codigo + ")" : ""), por: u.nombre });
@@ -527,8 +527,8 @@ window.OmasApi = (function(){
   async function retirarFardo(codigo, kg){
     if(!usaApi("deposito")){
       var deposito = depositoPrueba(), f = deposito.filter(function(x){ return x.codigo === codigo; })[0];
-      if(!f) throw new ErrorApi("datos", "Ese fardo ya no está en el depósito.");
-      if(kg > f.kg + 0.05) throw new ErrorApi("datos", "El fardo " + codigo + " tiene " + kgTexto(f.kg) + ": no alcanza.");
+      if(!f) throw new ErrorApi("datos", "Ese bulto ya no está en el depósito.");
+      if(kg > f.kg + 0.05) throw new ErrorApi("datos", "El bulto " + codigo + " tiene " + kgTexto(f.kg) + ": no alcanza.");
       f.kg = redondear(f.kg - kg); guardarDepositoPrueba(deposito);
       return { codigo: codigo, kg: kg };
     }

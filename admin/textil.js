@@ -136,10 +136,10 @@
     if(!puedeOrganizar) return html;
     if(!fardos) return html + '<p class="nota-chica">Cargando el lienzo del depósito…</p>';
     if(!fardos.length) return html + '<p class="aviso-caja">No hay lienzo en el depósito.</p>';
-    return html + '<form class="pedido-form" data-form="material" data-id="' + p.id + '"><fieldset><legend class="etiqueta-campo">¿De qué fardo?</legend><div class="fardos-lista">' +
+    return html + '<form class="pedido-form" data-form="material" data-id="' + p.id + '"><fieldset><legend class="etiqueta-campo">¿De qué bulto?</legend><div class="fardos-lista">' +
       fardos.map(function(f, i){
         return '<input type="radio" class="chip-check" name="fardo" id="fardo-' + f.codigo + "-" + p.id + '" value="' + esc(f.codigo) + '"' + (i === 0 ? " checked" : "") + ">" +
-          '<label class="fardo-opcion" for="fardo-' + f.codigo + "-" + p.id + '"><span class="etiqueta-codigo">' + esc(f.codigo) + "</span><span>" + num(f.kg) + " kg · " + esc(f.ubicacion) + "</span></label>";
+          '<label class="fardo-opcion" for="fardo-' + f.codigo + "-" + p.id + '"><span class="etiqueta-codigo">' + esc(f.codigo) + "</span><span>" + num(f.kg) + " kg · de " + esc(f.empresa) + "</span></label>";
       }).join("") + "</div></fieldset>" +
       '<label class="etiqueta-campo mt-2" for="kg-' + p.id + '">Kilos que se lleva el taller</label>' +
       '<div class="form-linea"><input class="entrada" id="kg-' + p.id + '" name="kg" inputmode="decimal" placeholder="Ej.: 12,5"><button type="submit" class="btn-linea">Pedir al depósito</button></div>' +

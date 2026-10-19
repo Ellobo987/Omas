@@ -185,14 +185,14 @@
         atrasados.map(function(l){ return esc(primerNombre(costurera(l.costurera).nombre)) + " (" + l.codigo + ")"; }).join(", ") +
         "</div></div>";
     }
-    html += opcion("donacion", ICONO.camion, "Entró una donación", "Fardos que trae una empresa") +
+    html += opcion("donacion", ICONO.camion, "Entró una donación", "Bultos que trae una empresa") +
       opcion("retira", ICONO.sale, "Retira una costurera", "Material que sale para trabajar") +
       opcion("devuelve", ICONO.vuelve, "Devuelve una costurera", "Trabajo terminado y retazos");
     // Lo que quedó sin clasificar se separa desde el Stock
     var sinClasificar = DEPOSITO.filter(function(f){ return f.kg > 0 && f.material === SIN_CLASIFICAR; });
     var kgSin = sinClasificar.reduce(function(s, f){ return s + f.kg; }, 0);
     html += '<a class="opcion" href="stock.html">' + ICONO.caja + "<div><strong>Stock del depósito</strong><span>" +
-      (sinClasificar.length ? (sinClasificar.length === 1 ? "1 fardo" : sinClasificar.length + " fardos") + " sin clasificar (" + kg(kgSin) + ")" : "Qué hay en cada sección y mover fardos") +
+      (sinClasificar.length ? (sinClasificar.length === 1 ? "1 bulto" : sinClasificar.length + " bultos") + " sin clasificar (" + kg(kgSin) + ")" : "Qué hay en cada sección y mover bultos") +
       "</span></div></a>";
     html += '<hr class="puntada"><h2 class="seccion">Hoy en el depósito</h2>';
     if(hoy.length){
@@ -416,11 +416,11 @@
   PASOS.fardo = function(){
     var d = estado.d;
     // Lo que todavía no se separó no se le da a una costurera
-    var html = '<h1 class="titulo">¿Qué se lleva?</h1><p class="bajada">Fardos clasificados que hay en el depósito.</p>' +
+    var html = '<h1 class="titulo">¿Qué se lleva?</h1><p class="bajada">Bultos clasificados que hay en el depósito.</p>' +
       DEPOSITO.filter(function(f){ return f.kg > 0 && f.material !== SIN_CLASIFICAR; }).map(function(f){
         return '<button type="button" class="etiqueta' + (d.fardo === f.codigo ? " elegida" : "") + '" data-accion="fardo" data-codigo="' + f.codigo + '">' +
           '<span class="etiqueta-codigo">' + f.codigo + "</span><strong>" + esc(f.material) + "</strong>" +
-          "<span>" + kg(f.kg) + " disponibles · " + esc(f.ubicacion || "de " + f.empresa) + "</span></button>";
+          "<span>" + kg(f.kg) + " disponibles · " + "de " + esc(f.empresa) + "</span></button>";
       }).join("") || '<p class="vacio">No hay material clasificado en el depósito.</p>';
     return { html: html, boton: { texto: "Continuar", habilitado: !!d.fardo } };
   };
@@ -428,10 +428,10 @@
 
   PASOS.pesarRetiro = function(){
     var d = estado.d, f = fardoElegido(), n = neto(d.campos.retiro);
-    var html = '<h1 class="titulo">¿Cuánto se lleva?</h1><p class="bajada">' + esc(f.material) + " del fardo " + f.codigo + ".</p>" +
+    var html = '<h1 class="titulo">¿Cuánto se lleva?</h1><p class="bajada">' + esc(f.material) + " del bulto " + f.codigo + ".</p>" +
       visor([["retiro", "Peso en la balanza"]]);
     var pasa = n > f.kg + 0.05;
-    if(pasa) html += '<div class="aviso-caja"><strong>Es más de lo que hay.</strong> El fardo ' + f.codigo + " tiene " + kg(f.kg) + ".</div>";
+    if(pasa) html += '<div class="aviso-caja"><strong>Es más de lo que hay.</strong> El bulto ' + f.codigo + " tiene " + kg(f.kg) + ".</div>";
     return { html: html, boton: { texto: "Continuar", habilitado: n > 0 && !pasa } };
   };
 
@@ -649,12 +649,12 @@
       });
       // Lo que va a Descarte no entra al depósito; lo demás aparece en el Stock con su historial
       var agregados = d.fardos.filter(function(x){ return !x.sale; }).map(function(x){
-        var fardo = { codigo: x.codigo, material: x.material, kg: x.kg, ubicacion: "Sin ubicar", entro: iso(HOY), empresa: d.empresa,
+        var fardo = { codigo: x.codigo, material: x.material, kg: x.kg, entro: iso(HOY), empresa: d.empresa,
           historial: [{ fecha: registro.hora, texto: "Entró en la donación de " + d.empresa, por: p.nombre }] };
         DEPOSITO.push(fardo); return fardo;
       });
       restaurar = function(){ agregados.forEach(function(x){ DEPOSITO.splice(DEPOSITO.indexOf(x), 1); }); };
-      registro.texto = d.empresa + ": " + kg(totalPesadas()) + " en " + d.fardos.length + (d.fardos.length === 1 ? " fardo" : " fardos");
+      registro.texto = d.empresa + ": " + kg(totalPesadas()) + " en " + d.fardos.length + (d.fardos.length === 1 ? " bulto" : " bultos");
       registro.kg = totalPesadas(); registro.fardos = d.fardos.slice(); registro.empresa = d.empresa;
     }
 
@@ -709,7 +709,7 @@
     }
     if(r.tipo === "donacion"){
       html += '<div class="listo-kg"><span data-contar="' + r.kg + '">' + cifra(r.kg) + "</span><small>kg</small></div>" +
-        '<p class="listo-texto">entraron de ' + esc(r.empresa) + ". Escribí estos códigos en las etiquetas de los fardos:</p>" +
+        '<p class="listo-texto">entraron de ' + esc(r.empresa) + ". Escribí estos códigos en las etiquetas de los bultos:</p>" +
         r.fardos.map(function(f){
           return '<div class="etiqueta"><span class="etiqueta-codigo grande">' + f.codigo + "</span><strong>" + esc(f.destino) + " · " + kg(f.kg) + "</strong></div>";
         }).join("") +

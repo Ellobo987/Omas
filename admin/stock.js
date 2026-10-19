@@ -3,10 +3,10 @@
    · Una lista corta: un renglón por sección con sus kilos. Se toca y se despliegan sus fardos, de a una sección.
      "Sin clasificar" va primero y arranca abierta: es lo que hay que hacer.
    · Al tocar un fardo sube una hoja con su detalle, para moverlo y ver su historial.
-     Entero conserva el código (no hay que cambiar la etiqueta); una parte sale como fardo nuevo con su código.
+     Entero conserva el código (no hay que cambiar la etiqueta); una parte sale como bulto nuevo con su código.
      A Descarte, esos kilos salen del depósito. Lo movido entero se puede deshacer.
    Todo pasa por OmasApi (api.js): listarFardos, moverFardo y deshacerMovimiento. Con la API los fardos son
-   los bultos de la base (tabla Bulto); el historial y la ubicación solo existen en el modo prototipo. */
+   los bultos de la base (tabla Bulto); el historial solo existe en el modo prototipo. */
 (function(){
   "use strict";
 
@@ -40,7 +40,7 @@
     return d.toLocaleDateString("es-AR", { day: "numeric", month: "numeric" }) + " " + d.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" });
   }
   function total(lista){ return lista.reduce(function(s, f){ return s + f.kg; }, 0); }
-  function cantidad(n){ return n === 1 ? "1 fardo" : n + " fardos"; }
+  function cantidad(n){ return n === 1 ? "1 bulto" : n + " bultos"; }
   function porCodigo(codigo){ return fardos.filter(function(f){ return f.codigo === codigo; })[0]; }
   function fardosDe(s){
     return fardos.filter(function(f){ return f.material === s.material; })
@@ -91,10 +91,10 @@
     var conFardos = secciones().filter(function(s){ return fardosDe(s).length; });
     var vacias = secciones().filter(function(s){ return !fardosDe(s).length; });
     app.innerHTML = '<h1 class="titulo">Stock del depósito</h1>' +
-      '<p class="bajada">' + kg(total(fardos)) + " en " + cantidad(fardos.length) + ". Tocá una sección para ver sus fardos.</p>" +
+      '<p class="bajada">' + kg(total(fardos)) + " en " + cantidad(fardos.length) + ". Tocá una sección para ver sus bultos.</p>" +
       cajaUltimo() +
       '<div class="stock-lista">' + conFardos.map(seccion).join("") + "</div>" +
-      (vacias.length ? '<p class="nota-chica mt-3">Sin fardos: ' + vacias.map(function(s){ return esc(s.nombre); }).join(", ") + ".</p>" : "");
+      (vacias.length ? '<p class="nota-chica mt-3">Sin bultos: ' + vacias.map(function(s){ return esc(s.nombre); }).join(", ") + ".</p>" : "");
     if(foco){ var el = app.querySelector(foco); if(el) el.focus(); }
   }
 
@@ -106,7 +106,7 @@
       '<div class="pedido-top mb-1"><span class="etiqueta-codigo grande" id="hoja-titulo">' + esc(f.codigo) + "</span>" +
         '<span class="chip ' + (f.material === SIN_CLASIFICAR ? "chip-alerta" : "chip-neutro") + '">' + esc(s.nombre) + "</span></div>" +
       '<p class="fardo-kg">' + kg(f.kg) + "</p>" +
-      '<p class="nota-chica">De ' + esc(f.empresa) + " · entró " + textoDias(dias) + " · " + esc(f.ubicacion || "remito " + f.remito) + "</p>" +
+      '<p class="nota-chica">De ' + esc(f.empresa) + " · entró " + textoDias(dias) + (f.remito ? " · remito " + esc(f.remito) : "") + "</p>" +
       '<form class="pedido-form mover-form" novalidate>' +
         '<fieldset><legend class="etiqueta-campo">' + (f.material === SIN_CLASIFICAR ? "¿A dónde va?" : "¿A dónde lo movés?") + '</legend><div class="chips-panel">' +
         opciones.map(function(x){
@@ -120,7 +120,7 @@
           '<label class="pildora" for="cuanto-parte">Una parte</label></div></fieldset>' +
         '<div class="mover-parte" hidden><label class="etiqueta-campo mt-3" for="mover-kg">¿Cuántos kilos?</label>' +
           '<input class="entrada mb-0" id="mover-kg" name="kg" inputmode="decimal" placeholder="Ej.: 12,5"></div>' +
-        '<p class="nota-chica mt-2 mb-0">Entero sigue con el mismo código. Una parte sale como fardo nuevo, con otro código.</p>' +
+        '<p class="nota-chica mt-2 mb-0">Entero sigue con el mismo código. Una parte sale como bulto nuevo, con otro código.</p>' +
         '<p class="taller-error" data-error role="alert" hidden></p>' +
         '<button type="submit" class="btn-grande mt-3">Mover</button>' +
         '<button type="button" class="enlace w-100" data-cerrar>Cancelar</button></form>' +
@@ -194,7 +194,7 @@
     function mal(texto, campo){ error.textContent = texto; error.hidden = false; if(campo) campo.focus(); }
     if(!destino) return mal("Elegí a dónde va.", form.querySelector('input[name="destino"]'));
     if(parte && cuanto <= 0) return mal("Poné cuántos kilos movés.", form.elements.kg);
-    if(parte && cuanto > f.kg + 0.05) return mal("El fardo tiene " + kg(f.kg) + ": no se puede mover más que eso.", form.elements.kg);
+    if(parte && cuanto > f.kg + 0.05) return mal("El bulto tiene " + kg(f.kg) + ": no se puede mover más que eso.", form.elements.kg);
     boton.disabled = true;
     try {
       var materialAntes = f.material;
@@ -204,7 +204,7 @@
       await cargar(); render("#ultimo");
     } catch(err){
       boton.disabled = false;
-      mal(err.message || "No se pudo mover el fardo.");
+      mal(err.message || "No se pudo mover el bulto.");
     }
   });
 
