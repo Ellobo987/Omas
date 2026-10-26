@@ -46,7 +46,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         opciones.Cookie.Name = "omas_sesion";
         opciones.Cookie.HttpOnly = true;
-        opciones.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        // Publicada: solo por HTTPS. En la compu (desarrollo) también por http://localhost:5201,
+        // para poder abrir el panel con Live Server (http://localhost:5500) y que la sesión funcione.
+        opciones.Cookie.SecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
         opciones.Cookie.SameSite = SameSiteMode.Strict;
         opciones.ExpireTimeSpan = TimeSpan.FromHours(8);
         opciones.SlidingExpiration = true;
@@ -129,7 +131,9 @@ foreach (var carpeta in new[] { "admin", "img", "css", "js" })
 }
 app.MapGet("/admin", () => Results.Redirect("/admin/ingresar.html")).ExcludeFromDescription();
 
-app.UseHttpsRedirection();
+// En desarrollo no se redirige http → https: Live Server llama a http://localhost:5201 y una
+// redirección rompería el pedido CORS. Publicada, todo va por HTTPS.
+if (!app.Environment.IsDevelopment()) app.UseHttpsRedirection();
 app.UseCors("PoliticaCors");
 app.UseRateLimiter();
 app.UseAuthentication();

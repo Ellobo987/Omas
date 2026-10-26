@@ -34,12 +34,18 @@
 
    No hay registro público: las cuentas las crea Administración desde la pantalla Usuarios.
    Este archivo lo carga también talleres.html del sitio público, solo para leer los talleres. */
+/* Live Server abre en 127.0.0.1, pero para el navegador 127.0.0.1 y localhost son sitios distintos
+   y la cookie de sesión no viajaría a la API (localhost:5201). Se pasa solo a localhost. */
+if(location.hostname === "127.0.0.1" && location.port === "5500") location.replace(location.href.replace("//127.0.0.1", "//localhost"));
+
 window.OmasApi = (function(){
   "use strict";
 
   var CONFIG = {
     // La API se publica en el mismo dominio que el panel, así la cookie de sesión viaja sola
-    base: "/api",
+    // Abierto desde la API (o publicado): la API está en el mismo lugar → "/api".
+    // Abierto con Live Server (puerto 5500): la API corre aparte en la compu → http://localhost:5201/api.
+    base: location.port === "5500" ? "http://localhost:5201/api" : "/api",
     // true: todo simulado en el navegador, sin API (para mostrar el prototipo sin prender nada)
     modoPrototipo: false
   };
